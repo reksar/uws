@@ -1,42 +1,26 @@
-. $(cd $(dirname $BASH_SOURCE[0]) && pwd)/ft.sh
-
-
-log_info_prefix=[INFO]
-log_info_prefix_format="norm black iwhite"
-log_info_text_format="norm iwhite norm"
-
-log_ok_prefix=[OK]
-log_ok_prefix_format="norm black green"
-log_ok_text_format="norm green norm"
-
-log_warn_prefix=[WARN]
-log_warn_prefix_format="norm black yellow"
-log_warn_text_format="norm yellow norm"
-
-log_err_prefix=[ERR]
-log_err_prefix_format="norm black red"
-log_err_text_format="norm red norm"
+[[ `type -t ft` != "function" ]] \
+  && . "$(cd $(dirname $BASH_SOURCE[0]) && pwd)/ft.sh"
 
 
 INFO() {
-  ftn $log_info_prefix_format $log_info_prefix
-  ft $log_info_text_format " $1"
+  ftn norm black white "[INFO]"
+  ft norm iwhite norm " $1"
 }
 
 
 OK() {
-  ftn $log_ok_prefix_format $log_ok_prefix
-  ft $log_ok_text_format " $1"
+  ftn norm black green "[OK]"
+  ft norm igreen norm " $1"
 }
 
 
 WARN() {
-  ftn $log_warn_prefix_format $log_warn_prefix
-  ft $log_warn_text_format " $1"
+  ftn norm black yellow "[WARN]"
+  ft norm yellow norm " $1"
 }
 
 
 ERR() {
-  ftn $log_err_prefix_format $log_err_prefix >&2
-  ft $log_err_text_format " $1" >&2
+  ftn norm black red "[ERR]" >&2
+  ft norm ired norm " $1" >&2
 }
