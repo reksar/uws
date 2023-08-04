@@ -1,0 +1,34 @@
+is_package_name_python() {
+  # Check if `$1` value starts with "Python-<digit>".
+  grep -i '^python-[[:digit:]]' <<< "$1" > /dev/null || return 1
+}
+
+
+modify_ext_suffix() {
+  # When importing a shared lib, e.g. `_ssl`, the `ModuleNotFoundError` error
+  # occurs in a Python installed with `pyenv` in Cygwin.
+  #
+  # The `.pyenv/versions/<x.y.z>/lib/python<x.y>/lib-dynload` dir contains file
+  # names of format `<lib>.<EXT_SUFFIX>`, e.g. `_ssl.cpython-311.dll`. The
+  # import should work when we rename these files to `<lib>.dll`.
+  #
+  # The `EXT_SUFFIX` is set in the Python's `configure` script: 
+  #
+  #   EXT_SUFFIX=.${SOABI}${SHLIB_SUFFIX}
+  #
+  # We need to set `EXT_SUFFIX=${SHLIB_SUFFIX}`.
+  #
+  # See `make_package()`, `install_package_using()` functions in the
+  # `.pyenv/plugins/python-build/bin/python-build` script.
+  #
+  # See `.pyenv/plugins/python-build/share/python-build/*` scripts.
+  local configure="$BUILD_PATH/$1/configure"
+  sed -i "s/^EXT_SUFFIX=.*/EXT_SUFFIX=\${SHLIB_SUFFIX}/" "$configure"
+}
+
+
+before_install_package() {
+  # This hook is called on any package installing, so first we check if the
+  # current package name is Python.
+  is_package_name_python "$1" && modify_ext_suffix "$1"
+}

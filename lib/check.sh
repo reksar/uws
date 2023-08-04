@@ -12,10 +12,16 @@ is_cygwin() {
 
 
 is_venv() {
-  [[ ! -z ${VIRTUAL_ENV:-} ]] && return 0 || return 1
+  [[ -n ${VIRTUAL_ENV:-} ]] && return 0 || return 1
+}
+
+
+is_sudoer() {
+  [[ `groups` =~ "sudo" ]] && return 0 || return 1
 }
 
 
 has_ansible() {
-  is_exe ansible && is_exe ansible-playbook && return 0 || return 1
+  is_exe ansible && is_exe ansible-playbook && return 0
+  return 1
 }

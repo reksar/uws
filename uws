@@ -21,16 +21,6 @@ check_args() {
 
 
 check_args $1 $2 || exit 1
-
 uws=$(cd $(dirname $BASH_SOURCE[0]) && pwd)
-
-. "$uws/base/sudo.sh"
-
-ensure_sudo || exit 2
-
-if is_sudoer
-then
-  "$uws/base/$1.sh" ${2:-}
-else
-  as_sudoer "$uws/base/$1.sh" ${2:-}
-fi
+"$uws/base/sudo/install.sh" || exit 2
+"$uws/base/sudo/execute.sh" "$uws/base/$1.sh" ${2:-}

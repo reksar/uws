@@ -1,8 +1,11 @@
 #!/bin/bash
 
-uws=${uws:-$(cd $(dirname $(dirname $BASH_SOURCE[0])) && pwd)}
+uws=${wus:-$(cd $(dirname $BASH_SOURCE[0]) && cd .. && pwd)}
 
-. "$uws/lib/log.sh"
+[[ `type -t ERR` != "function" ]] && . "$uws/lib/log.sh"
+. "$uws/base/python/ensure.sh"
 
-INFO "Testing sudo ..."
-sudo ls /
+ensure_python || exit 1
+
+INFO "Testing Python ..."
+python --version
