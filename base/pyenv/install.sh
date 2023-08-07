@@ -208,28 +208,11 @@ tweak_pyenv() {
 }
 
 
-plug_pyenv() {
-
-  local bashrc="$HOME/.bashrc"
-
-  grep "export PYENV_ROOT=\"\$HOME/.pyenv\"" $bashrc \
-    && grep "export PATH=\"\$PYENV_ROOT/bin:" $bashrc \
-    && grep "eval \"\$(pyenv init --path)\"" $bashrc \
-    && return 0
-
-  local pyenvrc="$uws/base/pyenv/pyenvrc"
-
-  INFO "Plugging pyenv in $bashrc"
-  cat $pyenvrc >> $bashrc \
-    && OK "pyenv plugged." \
-    && return 0
-
-  ERR "Can't plug pyenv in $bashrc"
-  return 1
-}
-
-
-install_system_packages && deploy_pyenv && tweak_pyenv && plug_pyenv && exit 0
+install_system_packages \
+  && deploy_pyenv \
+  && tweak_pyenv \
+  && "$uws/base/pyenv/addrc.sh" \
+  && exit 0
 
 ERR "Can't install pyenv!"
 exit 1

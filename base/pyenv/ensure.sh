@@ -15,11 +15,12 @@ uws=${uws:-$(cd $(dirname $BASH_SOURCE[0]) && cd .. && cd .. && pwd)}
 ensure_pyenv() {
 
   is_exe pyenv && return 0
+
+  # Maybe pyenv is installed but not initialized?
   . "$uws/base/pyenv/pyenvrc"
-  is_exe pyenv && return 0
+  is_exe pyenv && "$uws/base/pyenv/addrc.sh" && return 0
 
   "$uws/base/pyenv/install.sh" || return 1
-
   is_exe pyenv && return 0
 
   ERR "Cannot ensure pyenv!"
