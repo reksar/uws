@@ -31,3 +31,5 @@ Cygwin as well.
 `lib` - non-executable common scripts. Must be included in other scripts.
 
 `utils` - executable common scripts.
+
+`tests/bash/run.sh` - test some bash functions from `lib`.

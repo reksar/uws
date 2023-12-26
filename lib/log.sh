@@ -1,4 +1,4 @@
-[[ `type -t ft` != "function" ]] \
+[[ `type -t ft` != function ]] \
   && . "$(cd $(dirname $BASH_SOURCE[0]) && pwd)/ft.sh"
 
 

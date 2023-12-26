@@ -1,5 +1,16 @@
 # Boolean checks.
 
+is_positive_int() {
+  [[ "$1" =~ ^[0-9]+$ ]] && return 0
+  return 1
+}
+
+
+is_natural() {
+  is_positive_int "$1" && [[ $1 -gt 0 ]] && return 0
+  return 1
+}
+
 
 is_exe() {
   which $1 > /dev/null 2>&1 && return 0 || return 1
