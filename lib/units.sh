@@ -1,6 +1,5 @@
 to_bytes() {
-  x="${1:-}"
-  x="${x/ /}" # No spaces
+  x=$(echo ${1:-} | tr -d " ") # No spaces
   x="${x^^}" # Uppercased
   x="${x/I/i}" # Excluding lowercased 'i'
   x="${x%B}" # Without 'B' suffix

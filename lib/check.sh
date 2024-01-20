@@ -1,13 +1,19 @@
 # Boolean checks.
 
-is_positive_int() {
+is_int_positive() {
   [[ "$1" =~ ^[0-9]+$ ]] && return 0
   return 1
 }
 
 
+is_int_negative() {
+  [[ "$1" =~ ^-[0-9]+$ ]] && return 0
+  return 1
+}
+
+
 is_natural() {
-  is_positive_int "$1" && [[ $1 -gt 0 ]] && return 0
+  is_int_positive "$1" && [[ $1 -gt 0 ]] && return 0
   return 1
 }
 
