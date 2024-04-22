@@ -32,23 +32,33 @@ ROOT_LABEL=ROOT
 # }}}
 
 [[ -z $1 ]] && {
+GF=$DEFAULT_GRUB_FS
+GS=$DEFAULT_GRUB_SZ
+EF___=$DEFAULT_EFI_FS
+ES____=$DEFAULT_EFI_SZ
+SS_=$DEFAULT_SWAP_SZ
+RF_=$DEFAULT_ROOT_FS
 cat << EOF
-Writes a $PARTITION_TABLE partition table to the [disk]:
-+------+------+-------------------------------------+
-| GRUB | EFI  | LUKS encrypted container            |
-| for  |      +----------+--------------------------+
-| BIOS |      | LVM swap | LVM root, all rest space |
-+------+------+----------+--------------------------+
-
-Using: sysdisk.sh {options} [disk]
-
+Writes a $PARTITION_TABLE partition table to [disk]:
++------+--------+-------------------------------------+
+| GRUB | EFI    | LUKS encrypted container            |
+| for  |        +----------+--------------------------+
+| BIOS |        | LVM swap | LVM root, all rest space |
++------+--------+----------+--------------------------+
+Defaults:
++------+--------+----------+--------------------------+
+| $GF | $EF___  | swap     | $RF_                     |
+| $GS | $ES____ | $SS_     | All rest [disk] space    |
++------+--------+----------+--------------------------+
+Using:
+  sysdisk.sh {options} [disk]
 Options:
-  --grub-sz (default: --grub-sz=$DEFAULT_GRUB_SZ)
-  --grub-fs (default: --grub-fs=$DEFAULT_GRUB_FS)
-  --efi-sz (default: --efi-sz=$DEFAULT_EFI_SZ)
-  --efi-fs (default: --efi-fs=$DEFAULT_EFI_FS)
-  --swap-sz (default: --swap-sz=$DEFAULT_SWAP_SZ, recommended: RAM size * 2)
-  --root-fs (default: --root-fs=$DEFAULT_ROOT_FS)
+  --grub-sz 
+  --grub-fs 
+  --efi-sz 
+  --efi-fs 
+  --swap-sz 
+  --root-fs 
 EOF
 exit 1
 }
