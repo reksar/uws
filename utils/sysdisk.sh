@@ -53,12 +53,12 @@ Defaults:
 Using:
   sysdisk.sh {options} [disk]
 Options:
-  --grub-sz 
-  --grub-fs 
-  --efi-sz 
-  --efi-fs 
-  --swap-sz 
-  --root-fs 
+  --grub-sz
+  --grub-fs
+  --efi-sz
+  --efi-fs
+  --swap-sz
+  --root-fs
 EOF
 exit 1
 }
