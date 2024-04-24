@@ -196,12 +196,12 @@ grub_sz=$(to_bytes "${_grub_sz:-$DEFAULT_GRUB_SZ}")
 grub_fs=${_grub_fs:-$DEFAULT_GRUB_FS}
 
 is_blockdev_fs $grub_fs || {
-  ERR "GRUB partition FS is not available for a block device!"
+  ERR "GRUB partition FS $grub_fs is not available for a block device!"
   exit 3
 }
 
 is_mkfs $grub_fs || {
-  ERR "GRUB partition FS is not supported by \`mk_fs\`!"
+  ERR "GRUB partition FS $grub_fs is not supported by \`mk_fs\`!"
   exit 3
 }
 
@@ -217,12 +217,12 @@ efi_sz=$(to_bytes "${_efi_sz:-$DEFAULT_EFI_SZ}")
 efi_fs=${_efi_fs:-$DEFAULT_EFI_FS}
 
 is_blockdev_fs $efi_fs || {
-  ERR "EFI partition FS is not available for a block device!"
+  ERR "EFI partition FS $efi_fs is not available for a block device!"
   exit 3
 }
 
 is_mkfs $efi_fs || {
-  ERR "EFI partition FS is not supported by \`mk_fs\`!"
+  ERR "EFI partition FS $efi_fs is not supported by \`mk_fs\`!"
   exit 3
 }
 
@@ -230,12 +230,12 @@ is_mkfs $efi_fs || {
 root_fs=${_root_fs:-$DEFAULT_ROOT_FS}
 
 is_blockdev_fs $root_fs || {
-  ERR "ROOT partition FS is not available for a block device!"
+  ERR "ROOT partition FS $root_fs is not available for a block device!"
   exit 3
 }
 
 is_mkfs $root_fs || {
-  ERR "ROOT partition FS is not supported by \`mk_fs\`!"
+  ERR "ROOT partition FS $root_fs is not supported by \`mk_fs\`!"
   exit 3
 }
 
