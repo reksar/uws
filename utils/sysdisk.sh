@@ -31,77 +31,13 @@ ROOT_LABEL=ROOT
 
 # }}}
 
-[[ -z $1 ]] && {
-GF=$DEFAULT_GRUB_FS
-GS=$DEFAULT_GRUB_SZ
-EF___=$DEFAULT_EFI_FS
-ES____=$DEFAULT_EFI_SZ
-SS_=$DEFAULT_SWAP_SZ
-RF_=$DEFAULT_ROOT_FS
-cat << EOF
-Writes a $PARTITION_TABLE partition table to [disk]:
-+------+--------+-------------------------------------+
-| GRUB | EFI    | LUKS encrypted container            |
-| for  |        +----------+--------------------------+
-| BIOS |        | LVM swap | LVM root, all rest space |
-+------+--------+----------+--------------------------+
-Defaults:
-+------+--------+----------+--------------------------+
-| $GF | $EF___  | swap     | $RF_                     |
-| $GS | $ES____ | $SS_     | All rest [disk] space    |
-+------+--------+----------+--------------------------+
-Using:
-  sysdisk.sh {options} [disk]
-Options:
-  --grub-sz
-  --grub-fs
-  --efi-sz
-  --efi-fs
-  --swap-sz
-  --root-fs
-EOF
-exit 1
-}
 
-for i in $@
-do
-  case $i in
-    --grub-sz=*)
-      _grub_sz=${i#*=}
-      shift
-      ;;
-    --grub-fs=*)
-      _grub_fs=${i#*=}
-      shift
-      ;;
-    --efi-sz=*)
-      _efi_sz=${i#*=}
-      shift
-      ;;
-    --efi-fs=*)
-      _efi_fs=${i#*=}
-      shift
-      ;;
-    --swap-sz=*)
-      _swap_sz=${i#*=}
-      shift
-      ;;
-    --root-fs=*)
-      _root_fs=${i#*=}
-      shift
-      ;;
-    *)
-      ;;
-  esac
-done
-
-disk=${1#/dev/}
-
-
+# -- Includes -- {{{
 lib="$(cd "$(dirname "$BASH_SOURCE[0]")/../lib" && pwd)"
 . "$lib/check.sh" || exit 2
 . "$lib/units.sh" || exit 2
 . "$lib/notifications.sh" || exit 2
+# }}}
 
 
 # -- Functions -- {{{
@@ -176,12 +112,100 @@ memsize() {
 # }}}
 
 
+# -- Parse args -- {{{
+
+# -- -- Help -- -- {{{
+[[ -z $1 || "$1" == "-h" ]] && {
+GF=$DEFAULT_GRUB_FS
+GS=$DEFAULT_GRUB_SZ
+EF___=$DEFAULT_EFI_FS
+ES____=$DEFAULT_EFI_SZ
+SS_=$DEFAULT_SWAP_SZ
+RF_=$DEFAULT_ROOT_FS
+cat << EOF
+Writes a $PARTITION_TABLE partition table to [disk]:
++------+--------+-------------------------------------+
+| GRUB | EFI    | LUKS encrypted container            |
+| for  |        +----------+--------------------------+
+| BIOS |        | LVM swap | LVM root, all rest space |
++------+--------+----------+--------------------------+
+Defaults:
++------+--------+----------+--------------------------+
+| $GF | $EF___  | swap     | $RF_                     |
+| $GS | $ES____ | $SS_     | All rest [disk] space    |
++------+--------+----------+--------------------------+
+Using:
+  sysdisk.sh {options} [disk]
+Options:
+  --grub-sz
+  --grub-fs
+  --efi-sz
+  --efi-fs
+  --swap-sz
+  --root-fs
+EOF
+exit 1
+}
+# }}}
+
+for i in $@
+do
+  case $i in
+    --grub-sz=*)
+      _grub_sz=${i#*=}
+      shift
+      ;;
+    --grub-fs=*)
+      _grub_fs=${i#*=}
+      shift
+      ;;
+    --efi-sz=*)
+      _efi_sz=${i#*=}
+      shift
+      ;;
+    --efi-fs=*)
+      _efi_fs=${i#*=}
+      shift
+      ;;
+    --swap-sz=*)
+      _swap_sz=${i#*=}
+      shift
+      ;;
+    --root-fs=*)
+      _root_fs=${i#*=}
+      shift
+      ;;
+    *)
+      ;;
+  esac
+done
+
+disk=${1#/dev/}
+
+# }}}
+
+
 # -- Process args -- {{{
 
 [[ -z $disk ]] && {
   ERR "Destination disk is not specified!"
   INFO "Specify a disk block device, e.g. \"/dev/sda\" or \"sda\"."
   exit 3
+}
+
+ls /sys/block/$disk &> /dev/null || {
+  ERR "Cannot find the \"$disk\" block device!"
+  exit 3
+}
+
+ro=$(cat /sys/block/$disk/ro 2> /dev/null)
+
+[[ $ro != 0 ]] && {
+  [[ $ro == 1 ]] && {
+    ERR "The \"$disk\" disk is readonly!"
+    exit 5
+  }
+  WARN "Unable to check the \"$disk\" is readonly!"
 }
 
 
@@ -196,8 +220,7 @@ grub_sz=$(to_bytes "${_grub_sz:-$DEFAULT_GRUB_SZ}")
 grub_fs=${_grub_fs:-$DEFAULT_GRUB_FS}
 
 is_blockdev_fs $grub_fs || {
-  ERR "GRUB partition FS $grub_fs is not available for a block device!"
-  exit 3
+  WARN "GRUB partition FS $grub_fs is not set for a block device!"
 }
 
 is_mkfs $grub_fs || {
@@ -217,8 +240,7 @@ efi_sz=$(to_bytes "${_efi_sz:-$DEFAULT_EFI_SZ}")
 efi_fs=${_efi_fs:-$DEFAULT_EFI_FS}
 
 is_blockdev_fs $efi_fs || {
-  ERR "EFI partition FS $efi_fs is not available for a block device!"
-  exit 3
+  WARN "EFI partition FS $efi_fs is not set for a block device!"
 }
 
 is_mkfs $efi_fs || {
@@ -230,8 +252,7 @@ is_mkfs $efi_fs || {
 root_fs=${_root_fs:-$DEFAULT_ROOT_FS}
 
 is_blockdev_fs $root_fs || {
-  ERR "ROOT partition FS $root_fs is not available for a block device!"
-  exit 3
+  WARN "ROOT partition FS $root_fs is not set for a block device!"
 }
 
 is_mkfs $root_fs || {
@@ -251,8 +272,10 @@ mem_sz=$(memsize)
 
 [[ $swap_sz -lt $mem_sz ]] && WARN "$swap_sz SWAP < $mem_sz RAM"
 
+# }}}
 
-# -- Reserve free space after the root volume -- {{{
+
+# -- -- Reserve free space after the root volume -- -- {{{
 #
 # The LVM volume group must have at least 256MiB of unallocated space to
 # dedicate to the snapshot or the logical volume will be skipped.
@@ -269,25 +292,6 @@ mem_sz=$(memsize)
 }
 
 is_natural $lvm_reserved_sz || lvm_reserved_sz=0
-
-# }}}
-
-
-ls /sys/block/$disk &> /dev/null || {
-  ERR "Cannot find the \"$disk\" block device!"
-  exit 4
-}
-
-
-ro=$(cat /sys/block/$disk/ro 2> /dev/null)
-
-[[ $ro != 0 ]] && {
-  [[ $ro == 1 ]] && {
-    ERR "The \"$disk\" disk is readonly!"
-    exit 5
-  }
-  WARN "Unable to check the \"$disk\" is readonly!"
-}
 
 # }}}
 
@@ -405,7 +409,7 @@ parted --script --fix --align=optimal /dev/$disk \
 
 # -- Encrypted volumes -- {{{
 
-INFO "Creating the encrypted LUKS container."
+INFO "Creating the encrypted LUKS container on $luks_part."
 
 # NOTE: GRUB's support for LUKS2 is limited!
 cryptsetup luksFormat --batch-mode --type luks1 $luks_part || exit 8
