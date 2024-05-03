@@ -37,6 +37,7 @@ lib="$(cd "$(dirname "$BASH_SOURCE[0]")/../lib" && pwd)"
 . "$lib/check.sh" || exit 2
 . "$lib/units.sh" || exit 2
 . "$lib/notifications.sh" || exit 2
+notification_title="[SYSDISK]"
 # }}}
 
 
@@ -115,7 +116,7 @@ memsize() {
 # -- Parse args -- {{{
 
 # -- -- Help -- -- {{{
-[[ -z $1 || "$1" == "-h" ]] && {
+[[ -z ${1:-} || "${1:-}" == "-h" ]] && {
 GF=$DEFAULT_GRUB_FS
 GS=$DEFAULT_GRUB_SZ
 EF___=$DEFAULT_EFI_FS
@@ -468,4 +469,3 @@ mk_fs $root_fs $root_part $ROOT_LABEL
 
 mount --mkdir $root_part "$ROOT_MOUNT_POINT"
 mount --mkdir $efi_part "$ROOT_MOUNT_POINT/efi"
-

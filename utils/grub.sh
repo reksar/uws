@@ -1,9 +1,11 @@
 #!/bin/bash
 
-# GRUB setup on a system disk partitioned using `utils/sysdisk.sh` to allow 
-# hybrid boot with EFI/BIOS.
+# GRUB setup on a system disk. Allows hybrid boot with EFI/BIOS.
+#
+# Requires a disk partitioned with `utils/sysdisk.sh` or similar.
 #
 # See https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#Configuring_GRUB_2
+
 
 ETCGRUB="/etc/default/grub"
 BOOT_DIR="/boot"
@@ -11,20 +13,18 @@ BOOT_DIR="/boot"
 # Separated partition for EFI boot when /boot is encrypted.
 EFI_DIR="/efi"
 
-LOCALNAME="[GRUB install]"
-OK="[OK]$LOCALNAME"
-ERR="[ERR]$LOCALNAME"
-WARN="[WARN]$LOCALNAME"
-INFO="[INFO]$LOCALNAME"
+notification_title="[GRUB]"
+uws="$(cd "$(dirname "$BASH_SOURCE[0]")/.." && pwd)"
+. "$uws/lib/notifications.sh"
 
 
 which grub-install &> /dev/null || {
-  echo "$ERR grub-install not found!"
+  ERR "grub-install not found!"
   exit 1
 }
 
 [[ ! -f $ETCGRUB ]] && {
-  echo "$ERR $ETCGRUB not found!"
+  ERR "$ETCGRUB not found!"
   exit 1
 }
 
@@ -32,14 +32,14 @@ which grub-install &> /dev/null || {
 # System disk checking {{{
 
 [[ -z $1 ]] && {
-  echo "$ERR No system disk specified for installing GRUB!"
+  ERR "No system disk specified for installing GRUB!"
   exit 2
 }
 
 disk=${1#/dev/}
 
 lsblk --filter "type=='disk'" /dev/$disk &> /dev/null || {
-  echo "$ERR There is no $disk disk!"
+  ERR "There is no $disk disk!"
   exit 2
 }
 
@@ -49,7 +49,7 @@ lsblk \
   /dev/$disk \
   | grep $EFI_DIR &> /dev/null \
   || {
-    echo "$ERR The $disk disk has no partition mounted as $EFI_DIR !"
+    ERR "The $disk disk has no partition mounted as $EFI_DIR !"
     exit 2
   }
 
@@ -64,13 +64,13 @@ crypt_parts=$(lsblk \
 crypt_count=$(echo $crypt_parts | wc -w)
 
 [[ $crypt_count -eq 1 ]] || {
-  echo "$WARN Exacly 1 encrypted partition on $disk is expected!"
+  WARN "Exacly 1 encrypted partition on $disk is expected!"
 }
 
 # }}}
 
 
-echo "$INFO Installing GRUB for system disk /dev/$disk"
+INFO "Installing GRUB for system disk /dev/$disk"
 
 
 # Configuring GRUB {{{
@@ -78,17 +78,17 @@ echo "$INFO Installing GRUB for system disk /dev/$disk"
 [[ $crypt_count -gt 0 ]] && {
 
   CRYPTODISK=GRUB_ENABLE_CRYPTODISK
-  echo "$INFO Enabling $CRYPTODISK option"
+  INFO "$CRYPTODISK"
   grep $CRYPTODISK $ETCGRUB > /dev/null || {
-    echo "$ERR $CRYPTODISK option not found!"
-    exit 4
+    ERR "$CRYPTODISK option not found!"
+    exit 3
   }
   sed -i "s/.*$CRYPTODISK.*/$CRYPTODISK=y/" $ETCGRUB
 
   CMDLINE=GRUB_CMDLINE_LINUX
   grep "^$CMDLINE=\".*\"" $ETCGRUB > /dev/null || {
-    echo "$ERR $CMDLINE option not found!"
-    exit 4
+    ERR "$CMDLINE option not found!"
+    exit 3
   }
 
   for part in $crypt_parts
@@ -96,14 +96,14 @@ echo "$INFO Installing GRUB for system disk /dev/$disk"
     # NOTE: `lsblk` may not work properly with UUID in chrooted mode!
     uuid=$(blkid --match-tag UUID --output value /dev/$part)
     [[ $(echo $uuid | wc -w) -ne 1 ]] && {
-      echo "$ERR Invalid $part UUID: '$uuid'"
-      exit 4
+      ERR "Invalid $part UUID: '$uuid'"
+      exit 3
     }
     grep "$CMDLINE=.*$uuid" $ETCGRUB && {
-      echo "$ERR $CMDLINE already has $uuid UUID!"
-      exit 4
+      ERR "$CMDLINE already has $uuid UUID!"
+      exit 3
     }
-    echo "$INFO Adding cryptlvm $part UUID $uuid to $CMDLINE"
+    INFO "Adding cryptlvm for $part $uuid to $CMDLINE"
     sed -i \
       "s/\(^$CMDLINE=\".*\)\"/\1 cryptdevice=UUID=$uuid:cryptlvm\"/" \
       $ETCGRUB
@@ -114,14 +114,9 @@ echo "$INFO Installing GRUB for system disk /dev/$disk"
 # }}}
 
 
-echo "$INFO Installing to $EFI_DIR for EFI"
-grub-install --target=x86_64-efi --efi-directory=$EFI_DIR --recheck
-
-echo "$INFO Installing to /dev/$disk for BIOS"
-grub-install --target=i386-pc --recheck /dev/$disk
-
-echo "$INFO Generating configuration"
-grub-mkconfig --output=$BOOT_DIR/grub/grub.cfg
+grub-install --target=x86_64-efi --efi-directory=$EFI_DIR --recheck || exit 4
+grub-install --target=i386-pc --recheck /dev/$disk || exit 4
+grub-mkconfig --output=$BOOT_DIR/grub/grub.cfg || exit 4
 
 
-echo "$OK Done!"
+OK "Installed!"

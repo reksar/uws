@@ -1,53 +1,46 @@
 #!/bin/bash
 
 
-LOCALNAME="[Arch install]"
-OK="[OK]$LOCALNAME"
-ERR="[ERR]$LOCALNAME"
-INFO="[INFO]$LOCALNAME"
+uws="$(cd "$(dirname "$BASH_SOURCE[0]")/../.." && pwd)"
+notification_title="[Arch install]"
+. "$uws/lib/notifications.sh"
 
 
-lsb_release -i | grep Arch > /dev/null || {
-  echo "$ERR Running from outside Arch Linux!"
+lsb_release -i 2> /dev/null | grep Arch > /dev/null || {
+  ERR "Running from outside Arch Linux!"
   exit 1
 }
 
-[[ -z $1 ]] && {
-  echo "$ERR Specify a system disk for installing Arch Linux!"
+[[ -z ${1:-} ]] && {
+  ERR "Specify a system disk for installing Arch Linux!"
   exit 1
 }
 
 disk=${1#/dev/}
-echo "$INFO Installing Arch Linux to /dev/$disk"
-
-
-uws="$(cd "$(dirname "$BASH_SOURCE[0]")/../.." && pwd)"
+INFO "Installing Arch Linux to /dev/$disk"
 
 
 settings="$uws/utils/arch/install/settings.sh"
 . "$settings"
-echo "$INFO Using $settings"
+INFO "Using $settings"
 
 
 sysdisk="$uws/utils/sysdisk.sh"
-echo "$INFO Partitioning the /dev/$disk with $sysdisk"
+INFO "Partitioning the /dev/$disk with $sysdisk"
 "$sysdisk" $disk || exit 2
 
 
-echo "$INFO Installing base system to $ROOT_MOUNT_POINT"
+INFO "Installing base system to $ROOT_MOUNT_POINT"
 pacstrap -K $ROOT_MOUNT_POINT $PACKAGES || exit 3
-genfstab -U $ROOT_MOUNT_POINT >> $ROOT_MOUNT_POINT/etc/fstab
+genfstab -U $ROOT_MOUNT_POINT >> $ROOT_MOUNT_POINT/etc/fstab || exit 3
 
 
-echo "$INFO Proceeding installation with arch-chroot"
+INFO "Copying UWS to $ROOT_MOUNT_POINT/root"
+cp -r "$uws" $ROOT_MOUNT_POINT/root || exit 4
 
-cp -r "$uws/utils/arch/install" $ROOT_MOUNT_POINT/root
-chmod +x $ROOT_MOUNT_POINT/root/install/setup.sh
-arch-chroot $ROOT_MOUNT_POINT /root/install/setup.sh || exit 4
-
-cp "$uws/utils/grub.sh" $ROOT_MOUNT_POINT/root/install
-chmod +x $ROOT_MOUNT_POINT/root/install/grub.sh
-arch-chroot $ROOT_MOUNT_POINT /root/install/grub.sh $disk || exit 5
+INFO "Setup with arch-chroot"
+arch-chroot $ROOT_MOUNT_POINT /root/uws/utils/grub.sh $disk || exit 4
+arch-chroot $ROOT_MOUNT_POINT /root/uws/utils/arch/install/setup.sh || exit 4
 
 
-echo "$OK Done!"
+OK "Done!"

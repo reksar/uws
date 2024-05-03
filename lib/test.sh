@@ -7,9 +7,9 @@
 
 test_eq() {
 
-  x="${1:-}"
-  y="${2:-}"
-  msg="${3:-}"
+  local x="${1:-}"
+  local y="${2:-}"
+  local msg="${3:-}"
 
   [[ "$x" == "$y" ]] && {
     OK "$msg"
@@ -23,17 +23,16 @@ test_eq() {
 
 test_re() {
 
-  re="${1:-}"
+  local re="${1:-}"
+  local value="${2:-}"
+  local msg="${3:-}"
 
   [[ -z $re ]] && {
     ERR "Empty regexp test!"
     return 2
   }
 
-  value="${2:-}"
-  msg="${3:-}"
-
-  echo $value | grep -P "$re" > /dev/null && {
+  echo "$value" | grep -P "$re" &> /dev/null && {
     OK "$msg"
     return 0
   }
@@ -41,3 +40,4 @@ test_re() {
   ERR "[ \"$value\" =~ \"$re\" ] $msg"
   return 1
 }
+

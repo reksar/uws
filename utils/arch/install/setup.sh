@@ -1,10 +1,12 @@
 #!/bin/bash
 
-LOCALNAME="[Arch setup]"
-INFO="[INFO]$LOCALNAME"
 
-install="$(cd "$(dirname "$BASH_SOURCE[0]")" && pwd)"
-. "$install/settings.sh"
+uws="$(cd "$(dirname "$BASH_SOURCE[0]")/../../.." && pwd)"
+notification_title="[Arch setup]"
+
+. "$uws/lib/notifications.sh"
+. "$uws/utils/arch/install/settings.sh"
+
 
 sed -i 's/\(^HOOKS=(.*\<block\>\)/\1 encrypt lvm2/' /etc/mkinitcpio.conf
 mkinitcpio -P
@@ -23,22 +25,21 @@ echo "127.0.0.1\tlocalhost" >> /etc/hosts
 echo "::1\t\tlocalhost" >> /etc/hosts
 echo "127.0.1.1\t$HOSTNAME.localdomain\t$HOSTNAME" >> /etc/hosts
 
-echo "$INFO Set password for root"
+INFO "Set password for root"
 passwd
-
-echo "$INFO Adding sudo group"
+INFO "Adding sudo group"
 groupadd sudo
-echo "$INFO Adding user $USER"
+INFO "Adding user $USER"
 useradd -m -s /bin/bash -G users,sudo $USER
-echo "$INFO Set password for $USER"
+INFO "Set password for $USER"
 passwd $USER
 
-pacman -Q | grep dhcpcd && {
-  echo "$INFO Enabling DHCP"
+pacman -Q | grep dhcpcd > /dev/null && {
+  INFO "Enabling DHCP"
   systemctl enable dhcpcd
 }
 
-pacman -Q | grep iwd && {
-  echo "$INFO Enabling IWD service"
+pacman -Q | grep iwd > /dev/null && {
+  INFO "Enabling IWD service"
   systemctl enable iwd.service
 }
