@@ -6,6 +6,7 @@ TIMEZONE="Europe/Kiev"
 HOSTNAME="arch"
 USER="reksarka"
 
-# Must be same as the `ROOT_MOUNT_POINT` in the `utils/sysdisk.sh`.
-ROOT_MOUNT_POINT="/mnt/sysroot"
+# Will be created during setup and used to unlock the partition by initramfs.
+# See https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#Avoiding_having_to_enter_the_passphrase_twice
+LUKS_KEYFILE="/root/cryptlvm.keyfile"
 

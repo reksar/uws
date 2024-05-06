@@ -2,8 +2,9 @@
 
 
 uws="$(cd "$(dirname "$BASH_SOURCE[0]")/../.." && pwd)"
-notification_title="[Arch install]"
+
 . "$uws/lib/notifications.sh"
+notification_title="[Arch install]"
 
 
 lsb_release -i 2> /dev/null | grep Arch > /dev/null || {
@@ -19,28 +20,42 @@ lsb_release -i 2> /dev/null | grep Arch > /dev/null || {
 disk=${1#/dev/}
 INFO "Installing Arch Linux to /dev/$disk"
 
-
 settings="$uws/utils/arch/install/settings.sh"
-. "$settings"
 INFO "Using $settings"
+. "$settings"
 
 
 sysdisk="$uws/utils/sysdisk.sh"
-INFO "Partitioning the /dev/$disk with $sysdisk"
+INFO "Partitioning the /dev/$disk using $sysdisk"
+
+[[ $(grep "ROOT_MOUNT_POINT=" "$sysdisk" | wc -l) -eq 1 ]] || {
+  ERR "ROOT_MOUNT_POINT in $sysdisk"
+  exit 2
+}
+
+root_mount_point=$(
+  grep "ROOT_MOUNT_POINT=" "$sysdisk" | sed "s/ROOT_MOUNT_POINT=//"
+)
+
+[[ -z $root_mount_point ]] && {
+  ERR "Unable to read ROOT_MOUNT_POINT from $sysdisk"
+  exit 2
+}
+
 "$sysdisk" $disk || exit 2
 
 
-INFO "Installing base system to $ROOT_MOUNT_POINT"
-pacstrap -K $ROOT_MOUNT_POINT $PACKAGES || exit 3
-genfstab -U $ROOT_MOUNT_POINT >> $ROOT_MOUNT_POINT/etc/fstab || exit 3
+INFO "Installing base system to $root_mount_point"
+pacstrap -K $root_mount_point $PACKAGES || exit 3
+genfstab -U $root_mount_point >> $root_mount_point/etc/fstab || exit 3
 
 
-INFO "Copying UWS to $ROOT_MOUNT_POINT/root"
-cp -r "$uws" $ROOT_MOUNT_POINT/root || exit 4
+INFO "Copying UWS to $root_mount_point/root"
+cp -r "$uws" $root_mount_point/root || exit 4
 
-INFO "Setup with arch-chroot"
-arch-chroot $ROOT_MOUNT_POINT /root/uws/utils/grub.sh $disk || exit 4
-arch-chroot $ROOT_MOUNT_POINT /root/uws/utils/arch/install/setup.sh || exit 4
+INFO "Setup with arch-chroot to $root_mount_point"
+arch-chroot $root_mount_point /root/uws/utils/arch/install/setup.sh $disk \
+|| exit 5
 
 
 OK "Done!"
