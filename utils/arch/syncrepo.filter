@@ -1,0 +1,151 @@
+- **.old
+
++ /iso
++ /iso/latest
++ /iso/latest/archlinux-x86_64.iso
++ /iso/latest/archlinux-x86_64.iso.sig
++ /iso/latest/archlinux-bootstrap-x86_64.tar.zst
++ /iso/latest/archlinux-bootstrap-x86_64.tar.zst.sig
++ /iso/latest/b2sums.txt
++ /iso/latest/sha256sums.txt
+
++ /core
++ /core/os
++ /core/os/x86_64
++ /core/os/x86_64/*
+
++ /multilib
++ /multilib/os
++ /multilib/os/x86_64
++ /multilib/os/x86_64/*
+
++ /extra
++ /extra/os
++ /extra/os/x86_64
+
++ /extra/os/x86_64/alacritty-[0-9]*
++ /extra/os/x86_64/alsa-*
++ /extra/os/x86_64/ansible-*
++ /extra/os/x86_64/ant-*
++ /extra/os/x86_64/apache-[0-9]*
++ /extra/os/x86_64/awesome-*
++ /extra/os/x86_64/blender-[0-9]*
++ /extra/os/x86_64/bluez-*
++ /extra/os/x86_64/brightnessctl-[0-9]*
++ /extra/os/x86_64/broadcom-wl-*
++ /extra/os/x86_64/busybox-[0-9]*
++ /extra/os/x86_64/cmake-[0-9]*
++ /extra/os/x86_64/composer-[0-9]*
++ /extra/os/x86_64/cython-[0-9]*
++ /extra/os/x86_64/chromium-*
++ /extra/os/x86_64/dbeaver-*
++ /extra/os/x86_64/docker-*
++ /extra/os/x86_64/doublecmd-*
++ /extra/os/x86_64/dovecot-*
++ /extra/os/x86_64/doxygen-*
++ /extra/os/x86_64/efifs-[0-9]*
++ /extra/os/x86_64/efitools-[0-9]*
++ /extra/os/x86_64/electron31-*
++ /extra/os/x86_64/emacs-*
++ /extra/os/x86_64/fasm-[0-9]*
++ /extra/os/x86_64/fd-[0-9]*
++ /extra/os/x86_64/ffcall-[0-9]*
++ /extra/os/x86_64/fff-[0-9]*
++ /extra/os/x86_64/fflas-*
++ /extra/os/x86_64/ffmpeg*
++ /extra/os/x86_64/ffms2-*
++ /extra/os/x86_64/ffnvcodec-*
++ /extra/os/x86_64/fftw-*
++ /extra/os/x86_64/filezilla-[0-9]*
+
++ /extra/os/x86_64/firefox-i18n-en-us-*
++ /extra/os/x86_64/firefox-i18n-ru-*
+- **/firefox-i18n-*
++ /extra/os/x86_64/firefox-*
++ /extra/os/x86_64/firefox-developer-edition-i18n-en-us-*
++ /extra/os/x86_64/firefox-developer-edition-i18n-ru-*
+- **/firefox-developer-edition-i18n-*
++ /extra/os/x86_64/firefox-developer-edition-*
+
++ /extra/os/x86_64/fish-[0-9]*
++ /extra/os/x86_64/flac-*
++ /extra/os/x86_64/flake8-*
+
+- **/gimp-help*
++ /extra/os/x86_64/gimp-*
+
++ /extra/os/x86_64/git-*
++ /extra/os/x86_64/go-*
++ /extra/os/x86_64/hashcat-*
++ /extra/os/x86_64/i3-wm-*
++ /extra/os/x86_64/jupyter-*
++ /extra/os/x86_64/jupyterlab-*
++ /extra/os/x86_64/kafka-[0-9]*
+
++ /extra/os/x86_64/libreoffice-fresh-[0-9]*
++ /extra/os/x86_64/libreoffice-fresh-ru-*
+- **/libreoffice-fresh-*
+
++ /extra/os/x86_64/libreoffice-still-[0-9]*
++ /extra/os/x86_64/libreoffice-still-ru-*
+- **/libreoffice-still-*
+
++ /extra/os/x86_64/libreoffice-extension-*
+
++ /extra/os/x86_64/lua-*
++ /extra/os/x86_64/lua53-*
++ /extra/os/x86_64/luacheck-*
++ /extra/os/x86_64/luajit-[0-9]*
++ /extra/os/x86_64/luakit-[0-9]*
++ /extra/os/x86_64/luarocks-[0-9]*
++ /extra/os/x86_64/mariadb-*
++ /extra/os/x86_64/mesa-*
++ /extra/os/x86_64/mumble-*
++ /extra/os/x86_64/nasm-[0-9]*
++ /extra/os/x86_64/neovim-*
++ /extra/os/x86_64/network-manager-*
++ /extra/os/x86_64/networkmanager-*
++ /extra/os/x86_64/nginx-*
++ /extra/os/x86_64/nim-[0-9]*
++ /extra/os/x86_64/ninja-[0-9]*
++ /extra/os/x86_64/nodejs-*
++ /extra/os/x86_64/npm-*
++ /extra/os/x86_64/obs-studio-[0-9]*
++ /extra/os/x86_64/obsidian-[0-9]*
+
+- /extra/os/x86_64/php-legacy*
++ /extra/os/x86_64/php-*
+
++ /extra/os/x86_64/phpmyadmin-[0-9]*
++ /extra/os/x86_64/podman-*
++ /extra/os/x86_64/postfix-*
++ /extra/os/x86_64/postfixadmin-*
++ /extra/os/x86_64/postgresql-*
++ /extra/os/x86_64/pulse-native-*
++ /extra/os/x86_64/pulseaudio-*
++ /extra/os/x86_64/pulsemixer-*
++ /extra/os/x86_64/qemu-*
++ /extra/os/x86_64/rust*
++ /extra/os/x86_64/telegram-desktop-*
+
+- **/thunderbird-i18n*
++ /extra/os/x86_64/thunderbird-*
+
++ /extra/os/x86_64/tmux-*
++ /extra/os/x86_64/tmuxp-*
++ /extra/os/x86_64/tor-*
+
+
++ **/vim-spell-en-*
++ **/vim-spell-ru-*
+- **/vim-spell-*
++ /extra/os/x86_64/vim-*
+
++ /extra/os/x86_64/wget-[0-9]*
++ /extra/os/x86_64/whois-[0-9]*
++ /extra/os/x86_64/wl-clipboard-*
++ /extra/os/x86_64/wl-mirror-*
++ /extra/os/x86_64/zip-[0-9]*
++ /extra/os/x86_64/zsh-*
+
+- /**
