@@ -1,8 +1,3 @@
-"""
-QEMU runner.
-Run doctests with `python -m doctest qemu.py {-v}`.
-"""
-
 import argparse
 import os
 import re
@@ -43,7 +38,10 @@ class ArgParser(argparse.ArgumentParser):
 
         super().__init__(
             description="QEMU runner",
-            usage="qemu [system] {options}",
+            usage=(
+                "qemu [system] {options} {-h | --help}\n" +
+                "testing: python -m doctest qemu.py {-v}"
+            ),
         )
 
         system_choices = QemuSystem.available_choices()
@@ -56,7 +54,7 @@ class ArgParser(argparse.ArgumentParser):
         # QEMU system executable.
         self.add_argument(
             "system",
-            help=f"Any available QEMU executable. {additional_system_help}",
+            help=f"QEMU system executable. {additional_system_help}",
         )
 
         self.add_argument(
@@ -96,12 +94,18 @@ class ArgParser(argparse.ArgumentParser):
             help="Port forwarding.",
         )
 
+        # SEE: https://www.qemu.org/docs/master/system/introduction.html#virtualisation-accelerators
         self.add_argument(
             "-accel",
-            nargs="?",
-            const=True,
-            help=f"Virtualization acceleration.",
+            default=QemuSystem.default_accel(),
+            help=(
+                f"Virtualization acceleration." +
+                f" Default is '{QemuSystem.default_accel()}'." +
+                 " Set 'no' to disable."
+            ),
         )
+
+        #TODO: `-boot once=d` by default when CDROM ISO is used
 
 
     def separate(self):
@@ -145,7 +149,7 @@ class PositionalsAdapter:
         return f"{QEMU_SYSTEM}{QEMU_SYSTEM_ALIASES.get(value, value)}"
 
 
-class OptionAdapter():
+class OptionAdapter:
 
     @staticmethod
     def adapt(name, value):
@@ -156,8 +160,13 @@ class OptionAdapter():
         ('-unknown_option', 'some', '-unknown_option', 'values')
         >>> OptionAdapter.adapt("ram", "2G")
         ('-m', '2G')
+        >>> OptionAdapter.adapt("accel", "kvm")
+        ('-accel', 'kvm')
+        >>> OptionAdapter.adapt("accel", "no")
+        ''
         """
-        return OptionAdapter.to_shell(*OptionAdapter.to_regular(name, value))
+        regular = OptionAdapter.to_regular(name, value)
+        return regular and OptionAdapter.to_shell(*regular) or ""
 
 
     @staticmethod
@@ -191,12 +200,14 @@ class OptionAdapter():
 
 
     @staticmethod
-    def accel(value: str | bool):
-        # SEE: https://www.qemu.org/docs/master/system/introduction.html#virtualisation-accelerators
-        # TODO: crossplatform
-        # TODO: use "tcg" with 32-bit ARM
-        default = "kvm"
-        return "accel", default if value is True else value
+    def accel(value: str):
+        """
+        >>> OptionAdapter.accel("no")
+        False
+        >>> OptionAdapter.accel("kvm")
+        ('accel', 'kvm')
+        """
+        return (value != "no") and ("accel", value)
 
 
     @staticmethod
@@ -258,7 +269,14 @@ class QemuSystem:
         return *aliases, *systems
 
 
-class DiskImageMixin():
+    @staticmethod
+    @lru_cache(maxsize=1)
+    def default_accel():
+        # TODO: whpx for Windows, tcg for ARM x32
+        return "kvm"
+
+
+class DiskImageMixin:
 
     def format(self):
         ext = self.extension()
