@@ -105,8 +105,6 @@ class ArgParser(argparse.ArgumentParser):
             ),
         )
 
-        #TODO: `-boot once=d` by default when CDROM ISO is used
-
 
     def separate(self):
         args, argv = self.parse_known_args()
@@ -223,8 +221,8 @@ class OptionAdapter:
     @staticmethod
     def port(ports: str):
         """
-        >>> OptionAdapter.port("222:22")
-        ('nic', 'user,hostfwd=tcp::222-:22')
+        >>> OptionAdapter.port("2222:22")
+        ('nic', 'user,hostfwd=tcp::2222-:22')
         """
         host, guest = ports.split(":")
         return "nic", f"user,hostfwd=tcp::{host}-:{guest}"
@@ -237,6 +235,63 @@ class OptionAdapter:
         ('m', '2G')
         """
         return "m", size
+
+
+class Middleware:
+
+    @staticmethod
+    def args(positionals, options, argv):
+        return Middleware.boot(positionals, options, argv)
+
+
+    @staticmethod
+    def boot(positionals, options, argv):
+        """
+        >>> Middleware.boot([],[],["-cdrom", "CD.iso", "-boot", "d"])
+        ([], [], ['-cdrom', 'CD.iso', '-boot', 'd'])
+        >>> Middleware.boot([],[],["-boot", "c"])
+        ([], [], ['-boot', 'c'])
+        >>> Middleware.boot([],[],["-cdrom", "CD.iso"])
+        ([], [], ['-cdrom', 'CD.iso', '-boot', 'once=d'])
+        """
+
+        def has(name):
+            return any((
+                Middleware.has_option(options, name),
+                Middleware.has_argv(argv, name),
+            ))
+
+        if has("cdrom") and not has("boot"):
+            return positionals, options, argv + ["-boot", "once=d"]
+        return positionals, options, argv
+
+
+    @staticmethod
+    def has_option(options, name):
+        """
+        >>> Middleware.has_option([("n1", "v1"), ("n2", "v2")], "nope")
+        False
+        >>> Middleware.has_option([("n1", "v1"), ("n2", "v2")], "v1")
+        False
+        >>> Middleware.has_option([("n1", "v1"), ("n2", "v2")], "n1")
+        True
+        """
+        names = map(item_0, options)
+        return name in names
+
+
+    @staticmethod
+    def has_argv(argv, name):
+        """
+        >>> Middleware.has_argv(["a", "b", "c"], "nope")
+        False
+        >>> Middleware.has_argv(["a", "b", "c"], "a")
+        False
+        >>> Middleware.has_argv(["a", "-b", "c"], "b")
+        True
+        """
+        names = filter(method("startswith", "-"), argv)
+        return f"-{name}" in names
 
 
 class QemuSystem:
@@ -424,7 +479,7 @@ def shell_args():
     def to_shell(adapter, kwargs):
         return starmap(adapter, filter(item_1, kwargs))
 
-    positionals, options, argv = ArgParser().separate()
+    positionals, options, argv = Middleware.args(*ArgParser().separate())
     shell_positionals = to_shell(PositionalsAdapter.adapt, positionals)
     shell_options = to_shell(OptionAdapter.adapt, options)
     return *shell_positionals, *chain.from_iterable(shell_options), *argv
