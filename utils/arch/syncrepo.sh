@@ -7,6 +7,7 @@ notification_title="[Arch syncrepo]"
 
 remote_repo="rsync://mirror.23m.com/archlinux"
 filter="$uws/utils/arch/syncrepo.filter"
+use_filter=yes
 rsync_opts=(
   --recursive --hard-links --safe-links --copy-links --times --delete-after
   --delete-excluded --info=progress2 --stats --human-readable
@@ -16,16 +17,17 @@ rsync_opts=(
 usage() {
 cat << EOF
 Usage:
-  syncrepo {options} [local repo]
+  syncrepo {options} [local_repo]
 Options:
   -h --help
     This help.
   -f --filter [file]
     Path to a file will be used as the rsync filter. If not provided, then the
-    default file will be used:
-    $filter
+    default file will be used: '$filter'.
   -i --info
     Do not sync files, just print stats.
+  -w --whole
+    Do not use filter, sync whole repo.
 EOF
 }
 
@@ -55,7 +57,7 @@ do
       shift
       ;;
     -w|--whole)
-      WARN "TODO: do not use filter"
+      use_filter=no
       shift
       ;;
     -*)
@@ -71,27 +73,29 @@ done
 
 set -- "${argv[@]}"
 
+
 local_repo="${1:-}"
 
-if [[ -z "$local_repo" ]]
-then
+[[ -z "$local_repo" ]] && {
   ERR "Local repo dir is not provided"
   exit 2
-fi
+}
 
-if [[ ! -d "$local_repo" ]]
-then
+[[ ! -d "$local_repo" ]] && {
   ERR "Local repo dir is not found: '$local_repo'"
   exit 2
-fi
+}
 
-if [[ ! -f "$filter" ]]
-then
-  ERR "No filter file '$filter'"
-  exit 2
-fi
 
-rsync_opts+=(--filter="merge $filter")
+[[ "$use_filter" == "yes" ]] && {
+
+  [[ ! -f "$filter" ]] && {
+    ERR "No filter file '$filter'"
+    exit 2
+  }
+
+  rsync_opts+=(--filter="merge $filter")
+}
 
 
 rsync "${rsync_opts[@]}" "$remote_repo" "$local_repo"
