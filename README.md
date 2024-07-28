@@ -33,3 +33,21 @@ Cygwin as well.
 `utils` - executable common scripts.
 
 `tests/bash/run.sh` - test some bash functions from `lib`.
+
+## Utils
+
+### `utils/sysdisk.sh`
+
+Partitioning the entire specified disk to be used as the system Linux disk.
+
+Allows to install Linux on the partitioned disk next.
+
+Run the `utils/sysdisk.sh` without args to see the help.
+
+### `utils/arch/install.sh`
+
+Some automatization for installing the Arch Linux to a system disk specified
+as argument.
+
+Uses `utils/arch/install/settings.sh`. In addition, asks some questions at the
+start of the installation.
