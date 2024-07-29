@@ -273,6 +273,8 @@ class Middleware:
         ([], [], ['-boot', 'c'])
         >>> Middleware.boot([],[],["-cdrom", "CD.iso"])
         ([], [], ['-cdrom', 'CD.iso', '-boot', 'once=d'])
+        >>> Middleware.boot([],[],["-disk", "/dev/sda"])
+        ([], [], ['-disk', '/dev/sda'])
         """
 
         def has(name):
@@ -295,9 +297,14 @@ class Middleware:
         False
         >>> Middleware.has_option([("n1", "v1"), ("n2", "v2")], "n1")
         True
+        >>> Middleware.has_option([("n1", None), ("n2", "v2")], "n1")
+        False
         """
-        names = map(item_0, options)
-        return name in names
+
+        def matched_option(option, value):
+            return option == name and value is not None
+
+        return any(starmap(matched_option, options))
 
 
     @staticmethod
