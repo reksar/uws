@@ -97,11 +97,23 @@ class ArgParser(argparse.ArgumentParser):
         # SEE: https://www.qemu.org/docs/master/system/introduction.html#virtualisation-accelerators
         self.add_argument(
             "-accel",
+            metavar="type",
             default=QemuSystem.default_accel(),
             help=(
                 f"Virtualization acceleration." +
                 f" Default is '{QemuSystem.default_accel()}'." +
                  " Set 'no' to disable."
+            ),
+        )
+
+        self.add_argument(
+            "-bios",
+            metavar="file",
+            nargs="?",
+            default=True,
+            help=(
+                "Boots via UEFI by default. You can specify a BIOS file or" +
+                " ommit the file path to boot via default QEMU BIOS."
             ),
         )
 
@@ -237,7 +249,15 @@ class OptionAdapter:
         return "m", size
 
 
+    @staticmethod
+    def bios(value):
+        return Bios.adapt(value)
+
+
 class Middleware:
+    """
+    To handle a bunch of related args.
+    """
 
     @staticmethod
     def args(positionals, options, argv):
@@ -437,6 +457,87 @@ class QemuDisk(DiskImageMixin):
             raise Exception(status.stderr.decode())
 
 
+class Bios:
+
+    default_file = Path("qemu", "OVMF.fd")
+
+    @staticmethod
+    def adapt(arg):
+        bios = Bios.default() or Bios.local() if arg is True else arg
+        if bios:
+            return "bios", bios
+        print("ERR: Unable to use a BIOS/UEFI!")
+
+
+    @staticmethod
+    def default():
+        # TODO: crossplatform
+        usr_share = Path("/usr/share")
+        bios = usr_share.joinpath(Bios.default_file)
+        if bios.is_file():
+            print("INFO: Using default QEMU UEFI.")
+            return str(bios)
+        print(f"WARN: Unable to use default UEFI '{bios}'!")
+
+
+    @staticmethod
+    def local():
+
+        config = Sys.config_home()
+        if not config:
+            print("ERR: Unable to detect a home config path!")
+            return
+
+        bios = config.joinpath(Bios.default_file)
+        if Path(bios).is_file():
+            print("INFO: Using local UEFI.")
+            return bios
+
+        # TODO: Try to get OVMF from
+        # https://www.qemu-advent-calendar.org/2014/download/qemu-xmas-uefi-zork.tar.xz
+
+        print(f"WARN: Unable to use local UEFI '{bios}'!")
+
+
+class Sys:
+
+    default_config_dir = ".config"
+
+    @staticmethod
+    def config_home():
+        return Sys.config_home_from_env() or Sys.config_home_heuristic()
+
+
+    @staticmethod
+    def config_home_from_env():
+        for env, postprocess in (
+            (
+                "XDG_CONFIG_HOME",
+                lambda x: x,
+            ),
+            (
+                "HOME",
+                lambda x: (x, Bios.default_config_dir),
+            ),
+            (
+                "XDG_CONFIG_DIRS",
+                lambda x: x.split(":")[0],
+            ),
+        ):
+            path = os.getenv(env)
+            if path:
+                return Path(postprocess(path))
+            print(f"WARN: no ${env} env var!")
+
+
+    @staticmethod
+    def config_home_heuristic():
+        home_match = re.match(r"(/home/\w+)/", __file__)
+        if home_match:
+            return Path(home_match[1], Sys.default_config_dir)
+        print("WARN: current script has not a '/home/<user>/' prefix!")
+
+
 def pipe(*functions):
     """
     `pipe(f2,f1)(x)` is the same as the composition `f2(f1(x))`, e.g.:
@@ -447,7 +548,7 @@ def pipe(*functions):
 
 
 def shell(*cmd):
-    return subprocess.run((cmd), capture_output=True)
+    return subprocess.run((cmd), capture_output=True, text=True)
 
 
 def has_exe_stat(file: str | Path):
@@ -471,7 +572,7 @@ def mime_type(file: str):
     status = shell("file", "--mime-type", "--brief", file)
     if status.returncode:
         raise Exception(status.stderr.decode())
-    return status.stdout.decode()
+    return status.stdout
 
 
 def shell_args():
@@ -489,7 +590,7 @@ def main():
     args = shell_args()
     print("Running QEMU", args)
     status = shell(*args)
-    print((status.returncode and status.stderr or status.stdout).decode())
+    print(status.returncode and status.stderr or status.stdout)
 
 
 if __name__ == "__main__":
