@@ -1,18 +1,24 @@
 #!/bin/bash
 
+uws=$(cd $(dirname $BASH_SOURCE[0]) && pwd)
+
+. "$uws/lib/python.sh"
+
 
 usage() {
 cat << EOF
 Usage:
-  uws ensure
-  uws ensure <config>
+  uws set
+  uws set <task>
+
+The <task> is a base file name.
 EOF
 }
 
 
 check_args() {
 
-  [[ $1 != "ensure" ]] \
+  [[ $1 != "set" ]] \
     && usage \
     && return 1
 
@@ -21,6 +27,14 @@ check_args() {
 
 
 check_args $1 $2 || exit 1
-uws=$(cd $(dirname $BASH_SOURCE[0]) && pwd)
-"$uws/base/sudo/install.sh" || exit 2
-"$uws/base/sudo/execute.sh" "$uws/base/$1.sh" ${2:-}
+
+[[ $1 == "set" ]] \
+  && exe=tasks.sh
+
+[[ $1 == "set" ]] \
+  && task=${2:-main}
+
+# TODO: check that Ansible already evailable.
+ensure_venv "$uws/venv" || exit 2
+
+"$uws/$exe" $task

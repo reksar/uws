@@ -1,0 +1,9 @@
+---
+- name: Setup Linux environment
+  hosts: localhost
+  connection: local
+  tasks:
+  - name: Include tasks
+    include_tasks: "{{ item }}.yml"
+    loop:
+      - fs

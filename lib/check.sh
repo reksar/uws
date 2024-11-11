@@ -1,5 +1,6 @@
 # Boolean checks.
 
+
 is_int_positive() {
   [[ "$1" =~ ^[0-9]+$ ]] && return 0
   return 1
@@ -25,11 +26,6 @@ is_exe() {
 
 is_cygwin() {
   uname | grep -i "^CYGWIN" > /dev/null && return 0 || return 1
-}
-
-
-is_venv() {
-  [[ -n ${VIRTUAL_ENV:-} ]] && return 0 || return 1
 }
 
 

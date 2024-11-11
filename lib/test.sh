@@ -5,6 +5,36 @@
   && . "$(cd "$(dirname $BASH_SOURCE[0])" && pwd)/notifications.sh"
 
 
+test_true() {
+
+  local cmd="$1"
+  local msg="${2:-}"
+
+  $($cmd) && {
+    OK "$msg"
+    return 0
+  }
+
+  ERR "[ \"$cmd\" returns not 0 ] $msg"
+  return 1
+}
+
+
+test_false() {
+
+  local cmd="$1"
+  local msg="${2:-}"
+
+  $($cmd) || {
+    OK "$msg"
+    return 0
+  }
+
+  ERR "[ \"$cmd\" returns 0 ] $msg"
+  return 1
+}
+
+
 test_eq() {
 
   local x="${1:-}"

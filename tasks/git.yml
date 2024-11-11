@@ -1,0 +1,32 @@
+- hosts: localhost
+
+  vars:
+    settings: "{{ lookup('file', '{{ uws }}/settings.yml') | from_yaml }}"
+
+  tasks:
+
+  - name: Fail on invalid Git settings
+    fail:
+      msg: "Invalid Git settings!"
+    when: >
+      not (
+        settings.git.user.name
+          and settings.git.user.email
+      )
+
+  - name: Install Git package
+    package:
+      state: present
+      name:
+        - git
+    become: true
+
+  - name: Configure Git
+    git_config:
+      scope: global
+      name: "{{ item.name }}"
+      value: "{{ item.value }}"
+    loop:
+      - { name: 'user.name', value: "{{ settings.git.user.name }}" }
+      - { name: 'user.email', value: "{{ settings.git.user.email }}" }
+      - { name: 'core.editor', value: "{{ settings.git.core.editor }}" }
