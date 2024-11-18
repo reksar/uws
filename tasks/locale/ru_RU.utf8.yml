@@ -1,0 +1,15 @@
+---
+- name: Extra locale config for ru_RU.utf8
+
+  vars:
+    locale: ru_RU.utf8
+
+  block:
+
+  - name: ∎ locale {{ locale }}
+    shell:
+      cmd: "locale -a"
+    register: locales
+    changed_when: false
+  - fail:
+    when: locale not in locales.stdout_lines
