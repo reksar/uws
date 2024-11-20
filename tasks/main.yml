@@ -1,9 +1,23 @@
----
-- name: Setup Linux environment
-  hosts: localhost
-  connection: local
-  tasks:
-  - name: Include tasks
-    include_tasks: "{{ item }}.yml"
-    loop:
-      - fs
+- import_playbook: >
+    {{
+      ( playbook_dir, 'fs.yml' )
+      | path_join
+    }}
+
+- import_playbook: >
+    {{
+      ( playbook_dir, 'locale.yml' )
+      | path_join
+    }}
+
+- import_playbook: >
+    {{
+      ( playbook_dir, 'git.yml' )
+      | path_join
+    }}
+
+- import_playbook: >
+    {{
+      ( playbook_dir, 'hyprland.yml' )
+      | path_join
+    }}
