@@ -9,9 +9,9 @@ usage() {
 cat << EOF
 Usage:
   uws set
-  uws set <task>
+  uws set <playbook>
 
-The <task> is a base file name.
+The <playbook> is a base file name.
 EOF
 }
 
@@ -29,12 +29,12 @@ check_args() {
 check_args ${1:-} ${2:-} || exit 1
 
 [[ $1 == "set" ]] \
-  && exe=tasks.sh
+  && exe=ansible
 
 [[ $1 == "set" ]] \
-  && task=${2:-main}
+  && option=${2:-main}
 
 # TODO: check that Ansible already evailable.
 ensure_venv "$uws/venv" || exit 2
 
-"$uws/$exe" $task
+"$uws/$exe" $option
