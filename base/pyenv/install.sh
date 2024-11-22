@@ -33,10 +33,10 @@ install_packages_with_apt_get() {
   "
 
   INFO "Installing required system packages for pyenv with apt-get."
-  sudo "$uws/utils/apt-permit.sh" true \
+  sudo "$uws/util/apt-permit.sh" true \
     && sudo apt-get update \
     && sudo apt-get install -y $packages \
-    && sudo "$uws/utils/apt-permit.sh" false \
+    && sudo "$uws/util/apt-permit.sh" false \
     && OK "pyenv dependencies are installed." \
     && return 0
 

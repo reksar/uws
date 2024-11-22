@@ -6,10 +6,10 @@ disk=${1#/dev/}
 notification_title="[Arch setup]"
 
 . "$uws/lib/notifications.sh"
-. "$uws/utils/arch/install/settings.sh"
+. "$uws/util/arch/install/settings.sh"
 
-"$uws/utils/arch/install/initramfs.sh" $disk || exit 1
-"$uws/utils/grub.sh" --luks-keyfile="$LUKS_KEYFILE" $disk || exit 1
+"$uws/util/arch/install/initramfs.sh" $disk || exit 1
+"$uws/util/grub.sh" --luks-keyfile="$LUKS_KEYFILE" $disk || exit 1
 
 sed -i 's/^#\(en_US\.UTF-8.*\)/\1/' /etc/locale.gen
 sed -i 's/^#\(ru_RU\.UTF-8.*\)/\1/' /etc/locale.gen

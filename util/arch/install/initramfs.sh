@@ -3,7 +3,7 @@
 
 uws="$(cd "$(dirname "$BASH_SOURCE[0]")/../../.." && pwd)"
 . "$uws/lib/notifications.sh"
-. "$uws/utils/arch/install/settings.sh"
+. "$uws/util/arch/install/settings.sh"
 
 disk=${1#/dev/}
 notification_title="[Arch initramfs]"

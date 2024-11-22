@@ -22,12 +22,12 @@ lsb_release -i 2> /dev/null | grep Arch > /dev/null || {
 disk=${1#/dev/}
 INFO "Using the entire system disk '/dev/$disk'."
 
-settings="$uws/utils/arch/install/settings.sh"
+settings="$uws/util/arch/install/settings.sh"
 INFO "Using '$settings'."
 . "$settings"
 
 
-sysdisk="$uws/utils/sysdisk.sh"
+sysdisk="$uws/util/sysdisk.sh"
 INFO "Using '$sysdisk' to partitioning the '/dev/$disk'."
 
 [[ $(grep "ROOT_MOUNT_POINT=" "$sysdisk" | wc -l) -eq 1 ]] || {
@@ -56,7 +56,7 @@ INFO "Copying UWS to '$root_mount_point/root'"
 cp -r "$uws" $root_mount_point/root || exit 4
 
 INFO "Setup with arch-chroot to '$root_mount_point'"
-arch-chroot $root_mount_point /root/uws/utils/arch/install/setup.sh $disk \
+arch-chroot $root_mount_point /root/uws/util/arch/install/setup.sh $disk \
 || exit 5
 
 

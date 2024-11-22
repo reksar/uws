@@ -20,7 +20,7 @@ min_python_version() {
 
 check_python() {
   local python=${1:-python}
-  is_exe $python && $python "$uws/utils/version.py" `min_python_version` \
+  is_exe $python && $python "$uws/util/version.py" `min_python_version` \
     && return 0
   return 1
 }
@@ -29,7 +29,7 @@ check_python() {
 update_alternatives() {
 
   INFO "Adding python3 as an alternative to python."
-  sudo "$uws/utils/alternative.sh" install python "`which python3`" \
+  sudo "$uws/util/alternative.sh" install python "`which python3`" \
     && OK "python is now an alias for python3." \
     && return 0
 
@@ -180,10 +180,10 @@ install_python_with_pyenv() {
 install_python_with_apt_get() {
 
   INFO "Installing Python with apt-get."
-  sudo "$uws/utils/apt-permit.sh" true \
+  sudo "$uws/util/apt-permit.sh" true \
     && sudo apt-get update \
     && sudo apt-get install -y python3 \
-    && sudo "$uws/utils/apt-permit.sh" false \
+    && sudo "$uws/util/apt-permit.sh" false \
     && OK "Python installed." \
     && return 0
 
