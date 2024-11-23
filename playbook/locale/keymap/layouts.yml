@@ -1,0 +1,30 @@
+# Import these tasks to set the `keyboard_layouts` list.
+
+- include_vars: "{{ uws }}/config/uws.yml"
+
+- name: /../ Keyboard layouts
+  set_fact:
+    # The `keyboard.layouts.list` or build the list based on the `locale.list`:
+    #   * take '<xx>_<YY>' or '<xx>_<YY>.<CP>'
+    #   * map -> '<xx>' or '<xx>.<CP>'
+    #   * map '<xx>' -> '<xx>.utf8' so all values became '<xx>.<CP>'.
+    keyboard_layouts: >-
+      {{
+        keyboard.layout.list or (
+          locale.list
+          | map('regex_search', '^\w+_\w+(\..*){0,1}')
+          | reject('==', None)
+          | map('regex_replace', '_\w+', '')
+          | map('regex_replace', '^(\w+)$', '\1.utf8')
+          | map('lower')
+          | unique
+        )
+      }}
+
+- name: /../ Keyboard layouts en -> us
+  when: keyboard.layout.en_to_us
+  set_fact:
+    keyboard_layouts: >-
+      {{
+        keyboard_layouts | map('regex_replace', '^en\.', 'us.')
+      }}

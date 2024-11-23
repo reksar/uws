@@ -28,7 +28,7 @@ Cygwin as well.
 
 `base` - to init base working environment and Ansible.
 
-`lib` - non-executable common scripts. Must be included in other scripts.
+`lib` - non-executable common scripts. To be included in other scripts.
 
 `utils` - executable common scripts.
 
@@ -51,3 +51,28 @@ as argument.
 
 Uses `utils/arch/install/settings.sh`. In addition, asks some questions at the
 start of the installation.
+
+# Notes
+
+Copy / edit inplace the system-wide config files.
+
+Make symbolic links to a user config files.
+
+## Ansible playbooks
+
+### Utility message types
+
+A prefixes of a `- name:` values.
+
+**/!/** - Ensure. If something wrong, try to make it OK. Fail otherwise.
+
+**/*/** - Setting.
+
+**/?/** - Search.
+
+**/./** - Store value in variable.
+
+**/../** - Store a collection of values in variable. Or map a collection to
+           make some data transformation.
+
+**/%/** - Filter a collection.

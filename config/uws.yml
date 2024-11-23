@@ -1,0 +1,46 @@
+# Use `locale -a` format.
+locale:
+  list:
+    - C
+    - C.utf8
+    - en_US.utf8
+    - ru_RU.utf8
+  default:
+    LANG: C.utf8
+    LC_MESSAGES: C.utf8
+
+keyboard:
+  layout:
+
+    # Automaticaly convert 'en' layout to 'us'.
+    en_to_us: true
+
+    # A list of keyboard layouts (case insensitive), e.g:
+    # - us
+    # - ru
+    # - ru.utf8
+    # - ru.cp1251
+    #
+    # NOTE: The 'en' is default, so will be ignored in many cases.
+    #
+    # NOTE: If the list contains more than 2 items, then only first != 'en'
+    #       item will be used for the console layout.
+    # TODO: Support more than 2 items.
+    #
+    # NOTE: If the list is empty (null), then the `locale.list` will be used.
+    list:
+
+    # Can be (case insesitive):
+    # * Alt+Shift
+    # * Ctrl+Shift
+    #
+    # SEE: `keymap` var in the 'keyboard/console.yml'.
+    switch: Alt+Shift
+
+git:
+  user:
+    # TODO: Use the Ansible vault
+    name: reksarka
+    email: reksarka@gmail.com
+  core:
+    editor: vim

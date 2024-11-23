@@ -1,27 +1,30 @@
+# TODO: Run only when the Hyprland installed.
 ---
 - name: Hyprland config
   hosts: all
 
   vars:
 
-    # Quoted to prevent adding the EOL.
-    config_dir: "{{ ansible_env.XDG_CONFIG_HOME
-        | default( (ansible_env.HOME, '.config') | path_join )
-      }}"
-
-    config_name: hyprland.conf
-    config_path: "{{ (config_dir, 'hypr', config_name) | path_join }}"
+    config:
+      name: hyprland.conf
+      dir: >-
+        {{
+          ansible_env.XDG_CONFIG_HOME
+          | default((ansible_env.HOME, '.config') | path_join)
+        }}
 
   tasks:
 
-  - name: ⚠ XDG_CONFIG_HOME
+  - name: /!/ XDG_CONFIG_HOME
     when: ansible_env.XDG_CONFIG_HOME | default('') == ''
     debug:
-      msg: "$XDG_CONFIG_HOME is not set, using the default '{{ config_dir }}'."
+      msg: > 
+        [WARN] $XDG_CONFIG_HOME is not set,
+        using the default '{{ config.dir }}'.
 
-  - name: ∎ hyprland.conf
+  - name: "/!/ '{{ config.name }}'"
     file:
-      path: "{{ config_path }}"
-      src: "{{ ( uws, 'config', config_name ) | path_join }}"
+      path: "{{ config.dir }}/hypr/{{ config.name }}"
+      src: "{{ uws }}/config/{{ config.name }}"
       state: link
       force: true

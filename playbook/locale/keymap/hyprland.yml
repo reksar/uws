@@ -1,0 +1,51 @@
+# TODO: Run only if the Hyprland installed.
+---
+- name: Hyprland keyboard layout
+  hosts: all
+
+  vars:
+    config:
+      file: "{{ uws }}/config/hyprland.conf"
+      indent: "  "
+
+  tasks:
+
+  - include_vars: "{{ uws }}/config/uws.yml"
+  - import_tasks: "{{ playbook_dir }}/layouts.yml"
+
+  - name: /./*/ 'kb_layout'
+    set_fact:
+      kb_layout: >-
+        {{
+          keyboard_layouts
+          | map('regex_replace', '\..*', '')
+          | join(',')
+        }}
+
+  # TODO: What if some other options can be set by this var?
+  - name: /./*/ 'kb_options'
+    set_fact:
+      # For example, the setting `keyboard.layout.switch` with the value
+      # 'Alt+Shift' will be converted to 'grp:alt_shift_toggle'.
+      kb_options: >-
+        grp:{{
+          keyboard.layout.switch
+          | lower
+          | regex_replace('\+', '_')
+        }}_toggle
+
+  - name: /*/ Hyprland keyboard settings
+    lineinfile:
+      path: "{{ config.file }}"
+      regexp: "^\\s*{{ item.name }}\\s*=.*"
+      line: "{{ config.indent + item.name }} = {{ item.value }}"
+      insertafter: "input {"
+      validate: >
+        '{{ uws }}/util/validate/gc.sh' '%s' '^\s*{{ item.name }}\s*=' '1'
+    register: settings
+    loop:
+      - {'name': 'kb_layout', 'value': "{{ kb_layout }}"}
+      - {'name': 'kb_options', 'value': "{{ kb_options }}"}
+
+- import_playbook: "{{ uws }}/playbook/hyprland.yml"
+  when: settings.results | map(attribute='changed') is any

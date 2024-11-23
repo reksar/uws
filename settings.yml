@@ -1,9 +1,0 @@
-python:
-  version: 3
-
-git:
-  user:
-    name: reksarka
-    email: reksarka@gmail.com
-  core:
-    editor: vim

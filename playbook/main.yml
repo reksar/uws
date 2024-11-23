@@ -1,23 +1,5 @@
-- import_playbook: >
-    {{
-      ( playbook_dir, 'fs.yml' )
-      | path_join
-    }}
-
-- import_playbook: >
-    {{
-      ( playbook_dir, 'locale.yml' )
-      | path_join
-    }}
-
-- import_playbook: >
-    {{
-      ( playbook_dir, 'git.yml' )
-      | path_join
-    }}
-
-- import_playbook: >
-    {{
-      ( playbook_dir, 'hyprland.yml' )
-      | path_join
-    }}
+- import_playbook: "{{ playbook_dir }}/fs.yml"
+- import_playbook: "{{ playbook_dir }}/locale.yml"
+- import_playbook: "{{ playbook_dir }}/font.yml"
+- import_playbook: "{{ playbook_dir }}/git.yml"
+- import_playbook: "{{ playbook_dir }}/hyprland.yml"
