@@ -15,6 +15,12 @@
 
   tasks:
 
+  # TODO: Check if it is needed.
+  - name: Install brightnessctl
+    package:
+      name: brightnessctl
+    become: true
+
   - name: /!/ XDG_CONFIG_HOME
     when: ansible_env.XDG_CONFIG_HOME | default('') == ''
     debug:
