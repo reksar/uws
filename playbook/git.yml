@@ -1,18 +1,19 @@
-- hosts: localhost
+---
+- name: Git settings
+  hosts: all
 
   vars:
-    settings: "{{ lookup('file', '{{ uws }}/settings.yml') | from_yaml }}"
+    git_settings: >
+      {{
+        lookup('file', (uws, 'config', 'uws.yml') | path_join) | from_yaml
+      }}
 
   tasks:
 
   - name: Fail on invalid Git settings
     fail:
       msg: "Invalid Git settings!"
-    when: >
-      not (
-        settings.git.user.name
-          and settings.git.user.email
-      )
+    when: (git_settings.git.user.name, git_settings.git.user.email) is not all
 
   - name: Install Git package
     package:
@@ -27,6 +28,6 @@
       name: "{{ item.name }}"
       value: "{{ item.value }}"
     loop:
-      - { name: 'user.name', value: "{{ settings.git.user.name }}" }
-      - { name: 'user.email', value: "{{ settings.git.user.email }}" }
-      - { name: 'core.editor', value: "{{ settings.git.core.editor }}" }
+      - { name: 'user.name', value: "{{ git_settings.git.user.name }}" }
+      - { name: 'user.email', value: "{{ git_settings.git.user.email }}" }
+      - { name: 'core.editor', value: "{{ git_settings.git.core.editor }}" }
