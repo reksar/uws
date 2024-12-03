@@ -1,0 +1,14 @@
+---
+- name: Install Applications
+  hosts: all
+
+  tasks:
+
+  - name: Install utility packages
+    package:
+      name:
+        - rsync
+        - pv
+        - patch
+        - tmux
+    become: true

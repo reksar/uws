@@ -1,3 +1,4 @@
+- import_playbook: "{{ playbook_dir }}/app.yml"
 - import_playbook: "{{ playbook_dir }}/fs.yml"
 - import_playbook: "{{ playbook_dir }}/locale.yml"
 - import_playbook: "{{ playbook_dir }}/font.yml"
