@@ -6,11 +6,7 @@
 
     config:
       name: hyprland.conf
-      dir: >-
-        {{
-          ansible_env.XDG_CONFIG_HOME
-          | default((ansible_env.HOME, '.config') | path_join)
-        }}
+      dir: "{{ XDG_CONFIG_HOME }}"
 
   tasks:
 
@@ -20,13 +16,6 @@
     package:
       name: hyprland
     become: true
-
-  - name: /!/ XDG_CONFIG_HOME
-    when: ansible_env.XDG_CONFIG_HOME | default('') == ''
-    debug:
-      msg: > 
-        [WARN] $XDG_CONFIG_HOME is not set,
-        using the default '{{ config.dir }}'.
 
   - name: "/!/ '{{ config.name }}'"
     file:
