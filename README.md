@@ -60,9 +60,9 @@ Make symbolic links to a user config files.
 
 ## Ansible playbooks
 
-### Utility message types
+### Utility message types (glossary)
 
-A prefixes of a `- name:` values.
+Prefixes of a `- name:` values.
 
 **/!/** - Ensure. If something wrong, try to make it OK. Fail otherwise.
 
@@ -76,3 +76,5 @@ A prefixes of a `- name:` values.
            make some data transformation.
 
 **/%/** - Filter a collection.
+
+**/v/** - Download.

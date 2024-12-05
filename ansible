@@ -6,5 +6,5 @@ ansible-playbook \
   --inventory=localhost, \
   --connection=local \
   --ask-become-pass \
-  --extra-vars="uws='$uws'" \
+  --extra-vars="uws='$uws' app='$(xdg-user-dir APP)'" \
   $uws/playbook/$1.yml

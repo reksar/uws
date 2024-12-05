@@ -5,11 +5,50 @@
       - wl-clipboard
   become: true
 
-- name: Packages for screen grabbing
-  package:
-    name:
-      - grim
-      - slurp
-      - swappy
-      - wf-recorder
-  become: true
+- name: Screen grabbing
+  block:
+
+  - name: Packages for screen grabbing
+    package:
+      name:
+        - grim
+        - slurp
+        - swappy
+        - wf-recorder
+    become: true
+
+  # TODO: Apply PRs from GitHub.
+  # TODO: alias for 'colorpick'
+  # FIXME: Suport for `gm convert` im Makefile to be compatible with the
+  #        'graphicsmagick' instead of `convert` from 'imagemagick'.
+  # FIXME: Rewrite Makefile
+  - name: /!/ `colorpick`
+
+    vars:
+      repo: https://github.com/jgmdev/wl-color-picker
+      dest: "{{ app }}/wl-color-picker"
+
+    block:
+
+    - name: /!/ required packages
+      package:
+        name:
+          - make
+          - graphicsmagick
+          - slurp
+          - grim
+          - zenity
+      become: true
+
+    - name: /v/ 'wl-color-picker'
+      git:
+        repo: "{{ repo }}"
+        dest: "{{ dest }}"
+        # TODO: Allow update after fixing the issues.
+        update: false
+
+    - name: Install 'wl-color-picker'
+      community.general.make:
+        chdir: "{{ dest }}"
+        target: install
+      become: true
