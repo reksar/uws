@@ -1,7 +1,6 @@
 - import_playbook: "{{ playbook_dir }}/app.yml"
 - import_playbook: "{{ playbook_dir }}/fs.yml"
 - import_playbook: "{{ playbook_dir }}/locale.yml"
-- import_playbook: "{{ playbook_dir }}/font.yml"
 - import_playbook: "{{ playbook_dir }}/git.yml"
 - import_playbook: "{{ playbook_dir }}/vim.yml"
 - import_playbook: "{{ playbook_dir }}/hyprland.yml"

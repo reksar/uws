@@ -4,11 +4,31 @@
 
   tasks:
 
-  - name: Install utility packages
+  - name: /!/ Utility packages
     package:
       name:
         - rsync
         - pv
         - patch
         - tmux
+    become: true
+
+  - name: /!/ Dev packages
+    package:
+      name:
+        - base-devel
+    become: true
+
+  # TODO: Check if it is needed.
+  - name: /!/ brightnessctl
+    package:
+      name: brightnessctl
+    become: true
+
+  # TODO: Check if GUI installed.
+  - name: /!/ Image packages
+    package:
+      name:
+        - gimp
+        - eog
     become: true

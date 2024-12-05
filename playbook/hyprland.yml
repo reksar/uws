@@ -1,4 +1,3 @@
-# TODO: Run only when the Hyprland installed.
 ---
 - name: Hyprland config
   hosts: all
@@ -15,10 +14,11 @@
 
   tasks:
 
-  # TODO: Check if it is needed.
-  - name: Install brightnessctl
+  - import_tasks: "{{ playbook_dir }}/wayland/app.yml"
+
+  - name: /!/ Hyprland
     package:
-      name: brightnessctl
+      name: hyprland
     become: true
 
   - name: /!/ XDG_CONFIG_HOME

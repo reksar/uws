@@ -1,0 +1,15 @@
+- name: Common Wayland packages
+  package:
+    name:
+      - xdg-user-dirs
+      - wl-clipboard
+  become: true
+
+- name: Packages for screen grabbing
+  package:
+    name:
+      - grim
+      - slurp
+      - swappy
+      - wf-recorder
+  become: true
