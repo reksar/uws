@@ -52,3 +52,27 @@
         chdir: "{{ dest }}"
         target: install
       become: true
+
+- name: /!/ foot
+
+  vars:
+    config_dir: "{{ XDG_CONFIG_HOME}}/foot"
+
+  block:
+
+  - name: /!/ `foot` terminal package
+    package:
+      name: foot
+    become: true
+
+  - name: "/!/ {{ config_dir }}"
+    file:
+      path: "{{ config_dir }}"
+      state: directory
+
+  - name: "/!/ {{ config_dir }}/foot.ini"
+    file:
+      src: "{{ uws }}/config/foot.ini"
+      path: "{{ config_dir }}/foot.ini"
+      state: link
+      force: true
