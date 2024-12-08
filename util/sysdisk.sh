@@ -100,8 +100,8 @@ memsize() {
   # NOTE: Useless spaces will be trimmed by `to_bytes`.
   size=$(cat /proc/meminfo | grep -Pio "(?<=MemTotal:)\s*\d+\s*\w*")
 
-  size=${size^^} # Uppercased
-  size=${size%B} # Without "B" suffix
+  size=${size^^}  # Uppercased
+  size=${size%B}  # Without "B" suffix
 
   # Usually the $size is shown in "kB" (SI units), but really is "KiB"
   # (IEC units). So here are the SI -> IEC units converted.

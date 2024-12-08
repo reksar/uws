@@ -1,37 +1,35 @@
 " Vim color file
-" Name: Alexstraza
-" See: 256-color palette - https://jonasjacek.github.io/colors
+" Name: Neofusion
+" Based On: https://github.com/diegoulloao/neofusion.nvim
+" TODO: console colors
 
 hi clear
 
-if version > 580
-  if exists("syntax_on")
-    syntax reset
-  endif
+if exists('syntax_on')
+  syntax reset
 endif
 
-let g:colors_name = "alexstraza"
+let g:colors_name = 'neofusion'
+
+let s:normbg = ['#0d121f', 0]
+let s:norm = ['#e3d8ce', 0]
+let s:comment = ['#21506c', 0]
+let s:const = ['#2c97d5', 0]
+let s:type = ['#5bcbe4', 0]
+let s:special = ['#f35b39', 0]
+let s:statement = ['#cb6555', 0]
+let s:bound = ['#031b27', 0]
+let s:nontxt = ['#21506c', 0]
 
 let s:fg = ['fg', 'fg']
 let s:bg = ['bg', 'bg']
 let s:no = ['NONE', 'NONE']
 
-let s:is_dark = (&background == "dark")
-
-let s:norm = s:is_dark ? ['#baae8f', 180] : ['#080808', 232]
-let s:normbg = s:is_dark ? ['#21201d', 234] : ['#eeeeee', 255]
-let s:comment = s:is_dark ? ['#8a8a8a', 245] : ['#808080', 244]
-let s:const = s:is_dark ? ['#edcd98', 179] : ['#005f00', 22]
-let s:special = s:is_dark ? ['#a75b51', 167] : ['#af5f00', 130]
-let s:type = s:is_dark ? ['#687b6d', 65] : ['#005faf', 25]
-let s:bound = s:is_dark ? ['#1b1a18', 233] : ['#e4e4e4', 254]
-let s:nontxt = s:is_dark ? ['#585858', 240] : ['#a8a8a8', 248]
-
 for [name, style, fg, bg] in [
 \
 \  ['Normal', 'NONE', s:norm, s:normbg],
-\  ['Statement', 'bold', s:fg, s:bg],
 \  ['TabLineSel', 'NONE', s:bg, s:fg],
+\  ['FoldColumn', 'bold', s:normbg, s:norm],
 \
 \  ['Comment', 'NONE', s:comment, s:bg],
 \  ['SpecialComment', 'bold', s:comment, s:bg],
@@ -47,12 +45,18 @@ for [name, style, fg, bg] in [
 \  ['Error', 'bold,inverse', s:special, s:bg],
 \  ['MatchParen', 'bold,underline,inverse', s:bg, s:special],
 \
+\  ['SpecialChar', 'NONE', s:type, s:bg],
+\
 \  ['Type', 'NONE', s:type, s:bg],
 \  ['Pmenu', 'NONE', s:bg, s:type],
 \  ['SuccessMsg', 'bold', s:bg, s:type],
 \
+\  ['Statement', 'NONE', s:statement, s:bg],
+\  ['Question', 'bold', s:statement, s:bg],
+\  ['StatusLineTerm', 'NONE', s:bg, s:statement],
+\
 \  ['CursorLine', 'NONE', s:no, s:bound],
-\  ['CursorLineNr', 'bold', s:comment, s:bound],
+\  ['CursorLineNr', 'bold', s:bound, s:nontxt],
 \
 \  ['NonText', 'NONE', s:nontxt, s:bg],
 \  ['LineNr', 'NONE', s:nontxt, s:bound],
@@ -68,24 +72,30 @@ endfor
 hi DiagnosticError guifg=#dd3f19 guibg=bg gui=bold
 hi DiagnosticSignError guifg=#dd3f19 guibg=#1b1a18 gui=bold
 
+hi! link Added Statement
+hi! link Changed Type
 hi! link ColorColumn CursorLine
+hi! link Conditional Operator
+hi! link Delimiter Special
 hi! link DiffAdd Pmenu
 hi! link DiffChange StatusLine
 hi! link Directory Constant
 hi! link ErrorMsg Error
-hi! link Folded SuccessMsg
+hi! link Folded CursorLineNr
 hi! link Identifier Normal
-hi! link Include Statement
 hi! link IncSearch Visual
+hi! link Include Statement
 hi! link MoreMsg Type
+hi! link Operator Special
 hi! link PmenuBar LineNr
 hi! link PreProc Constant
+hi! link Removed Special
 hi! link Search Visual
+hi! link SignColumn LineNr
 hi! link SpecialKey Special
-hi! link Question Type
+hi! link StatusLineTermNC StatusLineTerm
 hi! link TabLine StatusLine
 hi! link TabLineFill StatusLineNC
 hi! link Title Statement
 hi! link WildMenu Todo
-hi! link SignColumn LineNr
 hi! link healthSuccess SuccessMsg

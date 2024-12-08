@@ -16,19 +16,20 @@ syn keyword pythonDef def lambda nextgroup=pythonFunction skipwhite
 syn keyword pythonType nonlocal skipwhite
 
 syn region pythonBrackets matchgroup=pythonPunctuation start=/(/ end=/)/
-  \ transparent fold
+\ transparent fold
 syn region pythonBrackets matchgroup=pythonPunctuation start=/\[/ end=/\]/
-  \ transparent fold
+\ transparent fold
 syn region pythonBrackets matchgroup=pythonPunctuation start=/{/ end=/}/
-  \ transparent fold containedin=pythonString
+\ transparent fold containedin=pythonString
 
 syn region pythonStringTriple matchgroup=pythonTripleQuotes
-  \ start=+[uU]\=\z('''\|"""\)+ skip=+\\["']+ end="\z1" keepend
-  \ contains=pythonEscape,pythonSpaceError,pythonDoctest,@Spell
+\ start=+[uU]\=\z('''\|"""\)+ skip=+\\["']+ end="\z1" keepend
+\ contains=pythonEscape,pythonSpaceError,pythonDoctest,@Spell
 
 hi link pythonConst Constant
 hi link pythonDecorator Special
 hi link pythonDef Type
+hi link pythonOperator Statement
 hi link pythonPunctuation Special
 hi link pythonStringTriple Comment
 hi link pythonTripleQuotes Comment

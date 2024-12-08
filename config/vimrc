@@ -2,8 +2,8 @@
 set nocompatible  " with Vi
 set noswapfile
 
-language messages en_US.UTF-8
-set langmenu=en_US.UTF-8
+language messages C.UTF-8
+set langmenu=C.UTF-8
 
 set encoding=utf-8
 set fileencodings=utf-8,latin1,cp1251,cp866
@@ -12,7 +12,7 @@ set backspace=indent,eol,start
 filetype plugin indent on
 syntax on
 
-let &clipboard = has('win32') ? "unnamed" : "unnamedplus"
+let &clipboard = has('win32') ? 'unnamed' : 'unnamedplus'
 
 set termguicolors
 set background=dark
@@ -24,6 +24,15 @@ set path+=**
 set complete-=i
 " Exclude tags from searching for completion.
 set complete-=t
+
+" On `set wrap` wraps words, not symbols.
+set linebreak
+
+" The default is `shellcmdflag=-c`, but you can make the shell interactive with
+" `shellcmdflag=-ic`. But the interactive shell has some disadvantages. So
+" this is the alternative solution for non-interactive Vim shell.
+" Requires `shopt -s expand_aliases` in the specified file.
+let $BASH_ENV = '~/.bash_aliases'
 " }}}
 
 " Statusbar: {{{
@@ -34,7 +43,7 @@ set statusline+=\ %{&fileencoding?&fileencoding:&encoding}]\ [%l:%c\ %p%%]
 
 " GUI: {{{
 if has('gui_running')
-  colorscheme alexstraza
+  colorscheme alexstrasza
   " Window size
   set lines=35 columns=90
   " Hide toolbar (button panel)
@@ -59,10 +68,10 @@ else
 
   if !(has('termguicolors') && &termguicolors) && &t_Co != 256
   " Terminal Low Color: ------------------------------------------------------
-    colorscheme alexstraza
+    colorscheme alexstrasza
   else
   " Terminal High Color: -----------------------------------------------------
-    colorscheme alexstraza
+    colorscheme alexstrasza
   endif
 endif
 " }}}
@@ -117,6 +126,9 @@ nnoremap <CR> :nohlsearch<CR><CR>
 
 " Switch line relative/absolute numbers on `Alt+N`
 nnoremap <A-n> :set invrelativenumber<CR>
+
+" `:let cmd = '<a shell cmd>'`, then you can run a `cmd` on `Alt+R`.
+nnoremap <A-r> :exe '!' . cmd<CR>
 
 " Navigation between splitted windows
 " Ctrl + <direction key>

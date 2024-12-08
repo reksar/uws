@@ -6,18 +6,45 @@ endif
 syn clear
 source $VIMRUNTIME/syntax/yaml.vim
 
-syn match yamlOperator /\s\+==\s\+/
+syn region yamlBlockString start=/^\z(\s\+\)/ skip=/^$/ end=/^\%(\z1\)\@!/
+\ contained
+\ contains=yamlBool
 
-syn region yamlFlowMapping matchgroup=yamlFlowIndicator start=/{/ end=/}/
-  \ contains=@yamlFlow
+syn region yamlFlowStringVar matchgroup=yamlDoubleBraces start=/{{/ end=/}}/
+\ keepend
+\ contains=yamlBool
+\ containedin=yamlFlowString,yamlBlockStr
 
-syn region yamlStrVar matchgroup=SpecialChar start=/{{/ end=/}}/
-  \ keepend transparent containedin=yamlFlowString
+syn match yamlVarDelimiter /\({\|}\|(\|)\||\|,\|\.\|=\|:\|!\)/
+\ containedin=yamlBlockString,yamlFlowStringVar,yamlNodeTag
 
-hi link yamlBlockCollectionItemStart SpecialChar
-hi link yamlKeyValueDelimiter Delimiter
+syn region yamlBlockStr matchgroup=yamlFlowStringDelimiter
+\ start=/"/ skip=/\\"/ end=/"/
+\ contains=yamlEscape
+\ skipwhite
+\ containedin=yamlBlockString
+
+syn region yamlBlockStr matchgroup=yamlFlowStringDelimiter
+\ start=/'/ skip=/\\'/ end=/'/
+\ contains=yamlEscape
+\ skipwhite
+\ containedin=yamlBlockString
+
+syn keyword yamlOpKey is or and not
+\ contained
+\ containedin=yamlBlockString,yamlFlowStringVar,yamlPlainScalar
+
+hi link yamlBlockCollectionItemStart Delimiter
+hi link yamlBlockMappingKey Type
 hi link yamlBlockMappingMerge Delimiter
-hi link yamlMappingKeyStart Delimiter
+hi link yamlBlockScalarHeader Label
+hi link yamlBlockStr Constant
+hi link yamlConstant Label
+hi link yamlDocumentStart Delimiter
+hi link yamlDoubleBraces Delimiter
 hi link yamlFlowMappingMerge Delimiter
-hi link yamlFlowIndicator Delimiter
-hi link yamlOperator Operator
+hi link yamlFlowStringVar Normal
+hi link yamlKeyValueDelimiter Delimiter
+hi link yamlMappingKeyStart Delimiter
+hi link yamlOpKey Label
+hi link yamlVarDelimiter Operator
