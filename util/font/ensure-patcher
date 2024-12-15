@@ -1,0 +1,83 @@
+#!/bin/bash
+
+# Ensure the Nerd Font Patcher to make a Nerd Font.
+#
+# Usage:
+#
+#   ensure-patcher <destination dir>
+#
+# See:
+# https://www.nerdfonts.com
+# https://github.com/ryanoasis/nerd-fonts?tab=readme-ov-file#font-patcher
+
+ZIP_NAME=FontPatcher.zip
+SCRIPT_NAME=font-patcher
+
+PATCHER_URL=https://github.com/ryanoasis/nerd-fonts/releases/latest/download/
+PATCHER_URL+=$ZIP_NAME
+
+
+lib="$(cd "$(dirname "$BASH_SOURCE[0]")/../../lib" && pwd)"
+. "$lib/notifications.sh" || exit 1
+. "$lib/python.sh" || exit 1
+
+notification_title="[Nerd Font Patcher]"
+
+
+dest="${1:-}"
+
+[[ -z "$dest" ]] && {
+  ERR "Destination dir is not provided!"
+  exit 2
+}
+
+for exe in python3 curl unzip fontforge ;
+do
+  which $exe &> /dev/null || {
+    ERR "'$exe' is required!"
+    exit 2
+  }
+done
+
+is_venv && {
+  WARN "Deactivate Python venv."
+  deactivate
+}
+
+system_site=$(python -c "import site; print(site.getsitepackages()[0])") \
+|| exit 2
+
+[[ -d "$system_site" ]] || {
+  ERR "Pythos\'s site '$system_site' does not exists!"
+  exit 2
+}
+
+# NOTE: For 'apt'-based distros, you need to install the 'python3-fontforge'.
+libs="fontforge.so psMat.so"
+
+for so in $libs ;
+do
+  [[ -f "$system_site/$so" ]] || {
+    ERR "'$system_site/$so' does not exists!"
+    exit 2
+  }
+done
+
+
+zip="$dest/$ZIP_NAME"
+patcher="$dest/$SCRIPT_NAME"
+
+[[ -f "$patcher" ]] || {
+  INFO "Download"
+  mkdir --parents "$dest"
+  curl --location --output "$zip" $PATCHER_URL
+	unzip -qd "$dest" "$zip"
+  chmod +x "$patcher"
+}
+
+
+ensure_venv --system-site-packages "$dest/venv" || exit 3
+
+INFO "Install required Python packages."
+pip install --upgrade pip || exit 3
+pip install setuptools || exit 3

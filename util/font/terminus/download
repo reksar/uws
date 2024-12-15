@@ -1,0 +1,35 @@
+#!/bin/bash
+
+notification_title="[Terminus]"
+
+# TODO: Determine the latest version URL.
+terminus_url="https://downloads.sourceforge.net/project/terminus-font"
+terminus_url+="/terminus-font-4.49/terminus-font-4.49.1.tar.gz"
+
+# Includes {{{
+lib="$(cd "$(dirname "$BASH_SOURCE[0]")/../../../lib" && pwd)"
+. "$lib/notifications.sh" || exit 1
+# Includes }}}
+
+# Destination {{{
+destination_dir="${1:-}"
+
+[[ -z "$destination_dir" ]] && {
+  ERR "Destination dir is not set!"
+  exit 2
+}
+
+[[ -d "$destination_dir" ]] || {
+  ERR "Destination dir does not exist!"
+  exit 2
+}
+# Destination }}}
+
+INFO "Download"
+
+# NOTE: Original file name is used to simplify the file format ensuring.
+curl \
+  --location \
+  --remote-name \
+  --output-dir "$destination_dir" \
+  "$terminus_url"

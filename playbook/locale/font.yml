@@ -1,0 +1,135 @@
+---
+- name: "Fonts setup"
+  hosts: "all"
+  gather_facts: "no"
+
+  vars:
+    src_font_dir: "{{ uws }}/res/font"
+
+  tasks:
+
+  - name: "Console PSF fonts"
+
+    vars:
+      config: "/etc/vconsole.conf"
+      psf_sys_dir: "/usr/share/kbd/consolefonts"
+      psf_default: "zap-ext-light24"
+      psf_glob: "{{ src_font_dir }}/*.psf.gz"
+
+    block:
+
+    - name: "/!/ PSF fonts destination"
+      stat:
+        path: "{{ psf_sys_dir }}"
+      register: dir
+      failed_when: not dir.stat.isdir
+
+    - name: "/?/ Missing PSF fonts"
+      shell: |
+        for i in $(ls {{ psf_glob }})
+        do
+          if [[ ! -f "{{ psf_sys_dir }}/$(basename $i)" ]]
+          then
+            echo $i
+          fi
+        done
+      register: missing_psf
+      changed_when: false
+
+    # NOTE: This is the main task, but it is extremely slow. The cause may be
+    #       somewhere in `with_fileglob`. Checking the `when` condition is
+    #       faster and prevents unnecessary execution.
+    - name: "Console PSF fonts setup"
+      when: missing_psf.stdout != ""
+      copy:
+        src: "{{ src_font_dir }}/"
+        dest: "{{ psf_sys_dir }}/"
+        decrypt: false
+      with_fileglob:
+        - "{{ psf_glob }}"
+      become: true
+
+    - name: "/!/ Default PSF font file"
+      find:
+        paths: "{{ psf_sys_dir }}"
+        patterns: "{{ psf_default }}.*"
+        recurse: false
+      register: font
+      failed_when: font.matched != 1
+
+    # TODO: Make a plugin for these 3 tasks {{{
+    - name: "Count FONT config lines"
+      shell:
+        cmd: "grep '^\\s*FONT=' '{{ config }}' | wc -l"
+      register: line_count
+      changed_when: false
+
+    - name: "Remove FONT option from '{{ config }}'"
+      when: line_count.stdout | int > 1
+      replace:
+        path: "{{ config }}"
+        regexp: ^\s*FONT=.*
+        validate: "'{{ uws }}/util/validate/gc.sh' '%s' '^\\s*FONT=' 0"
+      become: true
+
+    - name: "Set '{{ psf_default }}' console font"
+      lineinfile:
+        path: "{{ config }}"
+        regexp: ^\s*FONT=.*
+        line: "FONT={{ psf_default }}"
+        # Ensure exacly 1 line of this setting.
+        validate: "'{{ uws }}/util/validate/gc.sh' '%s' '^\\s*FONT=' 1"
+      become: true
+      notify: "Reload console config"
+      # }}}
+
+  - name: "System TTF fonts"
+
+    vars:
+      ttf_sys_dir: "/usr/share/fonts/TTF"
+      ttf_glob: "{{ src_font_dir }}/*.ttf"
+
+    block:
+
+    - name: "/!/ TTF fonts destination"
+      stat:
+        path: "{{ ttf_sys_dir }}"
+      register: dir
+      failed_when: not dir.stat.isdir
+
+    - name: "/?/ Missing TTF fonts"
+      shell: |
+        for i in $(ls {{ ttf_glob }})
+        do
+          if [[ ! -f "{{ ttf_sys_dir }}/$(basename $i)" ]]
+          then
+            echo $i
+          fi
+        done
+      register: missing_ttf
+      changed_when: false
+
+      # NOTE: This is the main task, but it is extremely slow. The cause may be
+      #       somewhere in `with_fileglob`. Checking the `when` condition is
+      #       faster and prevents unnecessary execution.
+    - name: "Install system TTF fonts"
+      when: missing_ttf.stdout != ""
+      copy:
+        src: "{{ src_font_dir }}/"
+        dest: "{{ ttf_sys_dir }}/"
+        decrypt: false
+      with_fileglob:
+        - "{{ ttf_glob }}"
+      become: true
+      notify: "Update font cache"
+
+  handlers:
+
+  - name: "Reload console config"
+    shell:
+      cmd: "systemctl restart systemd-vconsole-setup.service"
+    become: true
+
+  - name: "Update font cache"
+    shell:
+      cmd: "fc-cache --force"

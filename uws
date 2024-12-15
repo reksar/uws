@@ -2,8 +2,6 @@
 
 uws="$(cd $(dirname $BASH_SOURCE[0]) && pwd)"
 
-. "$uws/lib/python.sh"
-
 
 usage() {
 cat << EOF
@@ -34,8 +32,6 @@ check_args ${1:-} ${2:-} || exit 1
 [[ $1 == "set" ]] \
   && option=${2:-main}
 
-# TODO: Check that Ansible already evailable.
-ensure_venv "$uws/venv" || exit 2
 
 # TODO: Pass extra options to $exe
 "$exe" $option

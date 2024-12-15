@@ -74,3 +74,4 @@
     become: true
 
 - import_playbook: "{{ playbook_dir }}/locale/keymap.yml"
+- import_playbook: "{{ playbook_dir }}/locale/font.yml"

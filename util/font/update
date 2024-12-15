@@ -1,0 +1,29 @@
+#!/bin/bash
+
+FONTS="terminus input"
+
+uws="$(cd "$(dirname "$BASH_SOURCE[0]")/../.." && pwd)"
+destination="$uws/res/font"
+notification_title="[Fonts]"
+
+
+. "$uws/lib/notifications.sh" || exit 1
+
+
+makecmd() {
+  local font=$1
+  local makefile="$uws/util/font/$font/Makefile"
+  echo "make --silent --directory=\"$destination\" --makefile=\"$makefile\""
+}
+
+
+for font in $FONTS
+do
+  INFO "Update '$font'"
+  eval "$(makecmd $font) uninstall install"
+done
+
+for font in $FONTS
+do
+  eval "$(makecmd $font) clean"
+done

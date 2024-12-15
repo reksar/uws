@@ -9,16 +9,16 @@ __notifications__["INFO"]+=";local PREFIX_COLOR='norm black white'"
 __notifications__["INFO"]+=";local MSG_COLOR='norm iwhite norm'"
 
 __notifications__["OK"]="local PREFIX='[OK]'"
-__notifications__["OK"]+=";local PREFIX_COLOR='norm black green'"
-__notifications__["OK"]+=";local MSG_COLOR='norm igreen norm'"
+__notifications__["OK"]+=";local PREFIX_COLOR='norm black igreen'"
+__notifications__["OK"]+=";local MSG_COLOR='norm green norm'"
 
 __notifications__["WARN"]="local PREFIX='[WARN]'"
 __notifications__["WARN"]+=";local PREFIX_COLOR='norm black yellow'"
 __notifications__["WARN"]+=";local MSG_COLOR='norm yellow norm'"
 
 __notifications__["ERR"]="local PREFIX='[ERR]'"
-__notifications__["ERR"]+=";local PREFIX_COLOR='norm black red'"
-__notifications__["ERR"]+=";local MSG_COLOR='norm ired norm'"
+__notifications__["ERR"]+=";local PREFIX_COLOR='norm black ired'"
+__notifications__["ERR"]+=";local MSG_COLOR='norm red norm'"
 
 
 __notifications__notify() {

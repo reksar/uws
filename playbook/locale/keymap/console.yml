@@ -66,6 +66,7 @@
           )
         }}
 
+  # TODO: Make a plugin for these 3 tasks {{{
   - name: /?/ KEYMAP config count
     shell:
       cmd: "grep '^\\s*KEYMAP=' '{{ config.file }}' | wc -l"
@@ -89,6 +90,7 @@
       validate: "'{{ uws }}/util/validate/gc.sh' '%s' '^\\s*KEYMAP=' 1"
     become: true
     notify: Reload console config
+    # }}}
 
   handlers:
 

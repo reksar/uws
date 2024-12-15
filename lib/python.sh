@@ -12,26 +12,36 @@ is_venv() {
 }
 
 
+# Usage:
+#
+#   ensure_venv [venv options] [path]
+#
 ensure_venv() {
 
-  local venv_path="${1:-}"
+  [[ $# -gt 0 ]] && {
+    local options="${@:1:$#-1}"  # All but the last arg
+    local venv_path="${@: -1}"  # The last arg
+  } || {
+    local options=""
+    local venv_path=""
+  }
 
   is_venv "$venv_path" \
     && OK "Python venv is already active." \
     && return 0
 
   [[ -z "$venv_path" ]] \
-    && INFO "Setting the \$PWD/venv path." \
+    && INFO "Using the '$(pwd)/venv' path." \
     && local venv_path="$(pwd)/venv"
 
   local venv_bin="$venv_path/bin"
 
   [[ ! -x "$venv_bin/python" ]] || [[ ! -f "$venv_bin/activate" ]] && {
     INFO "Creating Python venv in '$venv_path'."
-    python -m venv "$venv_path" || return 1
+    python -m venv $options "$venv_path" || return 1
   }
 
-  INFO "Activating Python venv."
+  INFO "Activating Python venv '$venv_path'."
   . "$venv_bin/activate"
 
   is_venv "$venv_path" \
