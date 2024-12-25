@@ -35,7 +35,7 @@ for [name, style, fg, bg] in [
 \  ['Comment', 'NONE', s:comment, s:bg],
 \  ['Todo', 'inverse', s:comment, s:bg],
 \  ['SpecialComment', 'bold', s:comment, s:bg],
-\  ['StatusLine', 'NONE', s:bg, s:comment],
+\  ['StatusLine', 'NONE', s:bound, s:comment],
 \
 \  ['Constant', 'NONE', s:const, s:bg],
 \  ['WarningMsg', 'bold', s:bg, s:const],

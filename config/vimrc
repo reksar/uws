@@ -128,7 +128,10 @@ nnoremap <CR> :nohlsearch<CR><CR>
 nnoremap <A-n> :set invrelativenumber<CR>
 
 " `:let cmd = '<a shell cmd>'`, then you can run a `cmd` on `Alt+R`.
-nnoremap <A-r> :exe '!' . cmd<CR>
+nnoremap <A-r> :exe '!'.cmd<CR>
+" This is the same, but when the `Alt` is redirected via another console app.
+" The `^[` is the control char: put with `Ctrl+V`, `Esc`.
+nnoremap r :exe '!'.cmd<CR>
 
 " Navigation between splitted windows
 " Ctrl + <direction key>

@@ -1,34 +1,53 @@
 ---
-- name: Install Applications
-  hosts: all
+- name: "Install Applications"
+  hosts: "all"
 
   tasks:
 
-  - name: /!/ Utility packages
+  - name: "/!/ Utility packages"
     package:
       name:
         - rsync
         - pv
         - patch
-        - tmux
+        - zip
+        - unzip
+        - ripgrep
+        - ripgrep-all
+        - btop
+        - cmus
+        - evince
+        - pandoc-cli
+        - transmission-gtk
     become: true
 
-  - name: /!/ Dev packages
+  - name: "/!/ Dev packages"
     package:
       name:
         - base-devel
     become: true
 
   # TODO: Check if it is needed.
-  - name: /!/ brightnessctl
+  - name: "/!/ brightnessctl"
     package:
       name: brightnessctl
     become: true
 
-  # TODO: Check if GUI installed.
-  - name: /!/ Image packages
+  # TODO: Add to GUI packages.
+  - name: "/!/ Image packages"
     package:
       name:
         - gimp
         - eog
     become: true
+
+  # TODO: Check if GUI installed.
+  - name: "/!/ GUI packages"
+    package:
+      name:
+        - fontforge
+    become: true
+
+- import_playbook: "{{ playbook_dir }}/app/mpv.yml"
+- import_playbook: "{{ playbook_dir }}/app/tmux.yml"
+- import_playbook: "{{ playbook_dir }}/app/vim.yml"

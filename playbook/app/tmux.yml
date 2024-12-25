@@ -1,0 +1,24 @@
+---
+- name: "tmux"
+  hosts: "all"
+
+  tasks:
+
+  - name: "/!/ tmux"
+    package:
+      name:
+        - "tmux"
+    become: true
+
+  # TODO: Ensure plugged in '.tmux.conf'
+  - name: "/!/ TPM - Tmux Plugin Manager"
+    git:
+      repo: "https://github.com/tmux-plugins/tpm"
+      dest: "{{ ansible_env.HOME }}/.tmux/plugins/tpm"
+
+  - name: "/!/ .tmux.conf"
+    file:
+      path: "{{ ansible_env.HOME }}/.tmux.conf"
+      src: "{{ uws }}/config/tmux.conf"
+      state: "link"
+      force: true

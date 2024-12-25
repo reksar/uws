@@ -1,6 +1,6 @@
 ---
-- name: Vim setup
-  hosts: all
+- name: "Vim setup"
+  hosts: "all"
 
   vars:
     dotvim_link: "{{ (ansible_env.HOME, '.vim') | path_join }}"
@@ -8,12 +8,12 @@
 
   tasks:
 
-  - name: /!/ Vim package
+  - name: "/!/ Vim package"
     package:
-      name: vim
+      name: "vim"
     become: true
 
-  - name: /?/ .vim symlink
+  - name: "/?/ .vim symlink"
     stat:
       path: "{{ dotvim_link }}"
     register: dotvim_file
@@ -22,18 +22,18 @@
     when: not dotvim_file.stat.islnk
     file:
       path: "{{ dotvim_link }}"
-      state: absent
+      state: "absent"
 
   - name: "/!/ {{ dotvim_link }}"
     file:
       path: "{{ dotvim_link }}"
       src: "{{ (uws, 'res', 'vim') | path_join }}"
-      state: link
+      state: "link"
       force: true
 
   - name: "/!/ {{ dotvimrc_link }}"
     file:
       path: "{{ dotvimrc_link }}"
       src: "{{ (uws, 'config', 'vimrc') | path_join }}"
-      state: link
+      state: "link"
       force: true

@@ -1,0 +1,20 @@
+# TODO: Check if GUI installed.
+---
+- name: "MPV"
+  hosts: "all"
+
+  tasks:
+
+  - name: "/!/ MPV packages"
+    package:
+      name:
+        - mpv
+        - yt-dlp
+    become: true
+
+  # Use `dla <URL>` to download mp3
+  - name: "Aliases for YouTube downloading"
+    lineinfile:
+      path: "{{ ansible_env.HOME }}/.bashrc"
+      line: >
+        alias dla='yt-dlp --extract-audio --audio-format mp3 --audio-quality 0'

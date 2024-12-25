@@ -108,7 +108,7 @@ Make symbolic links to a user config files.
 
 Prefixes of a `- name:` values.
 
-**/!/** - Ensure. If something wrong, try to make it OK. Fail otherwise.
+**/!/** - Ensure. If something needs to be done, try to do it. Fail otherwise.
 
 **/*/** - Setting.
 

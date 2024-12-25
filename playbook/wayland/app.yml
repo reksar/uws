@@ -56,7 +56,7 @@
 - name: /!/ foot
 
   vars:
-    config_dir: "{{ XDG_CONFIG_HOME}}/foot"
+    config_dir: "{{ XDG_CONFIG_HOME }}/foot"
 
   block:
 
