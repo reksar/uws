@@ -1,0 +1,4 @@
+alias ls='ls --color=auto'
+alias ll='ls -la --color=auto'
+alias grep='grep --color=auto'
+alias bat='cat /sys/class/power_supply/BAT0/capacity'

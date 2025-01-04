@@ -1,0 +1,41 @@
+- name: "/!/ bash dotfiles"
+  copy:
+    src: "{{ uws }}/config/{{ item }}"
+    dest: "{{ ansible_env.HOME }}/.{{ item }}"
+  loop:
+    - "bashrc"
+    - "bash_aliases"
+    - "bash_profile"
+
+- name: "bash auto config"
+
+  vars:
+    auto_name: ".bashrc.auto"
+    auto_path: "{{ ansible_env.HOME }}/{{ auto_name }}"
+
+  block:
+
+  # TODO: Check that uncommented.
+  - name: "/?/ include bash auto config"
+    shell:
+      cmd: "grep '{{ auto_name }}' {{ uws }}/config/bashrc"
+    register: grep
+    failed_when: false
+    changed_when: false
+
+  - name: "bash auto config"
+    when: grep.rc == 0
+
+    block:
+
+    - name: "/!/ bash auto config"
+      copy:
+        dest: "{{ auto_path }}"
+        content: ""
+        force: false
+
+    - name: "/!/ Auto config warning"
+      lineinfile:
+        path: "{{ auto_path }}"
+        line: "# Do not edit this automatically generated file!"
+        insertbefore: "BOF"

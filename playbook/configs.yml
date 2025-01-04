@@ -1,0 +1,7 @@
+---
+- name: "Basic configs and dotfiles"
+  hosts: "all"
+
+  tasks:
+
+  - import_tasks: "{{ playbook_dir }}/configs/bash.yml"
