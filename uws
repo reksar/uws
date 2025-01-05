@@ -26,12 +26,8 @@ check_args() {
 
 check_args ${1:-} ${2:-} || exit 1
 
-[[ $1 == "set" ]] \
-  && exe="$uws/util/uws/set.sh"
-
-[[ $1 == "set" ]] \
-  && option=${2:-main}
+[[ $1 == "set" ]] && exe="$uws/util/uws/set.sh"
+[[ $1 == "set" ]] && option="${2:-}"
 
 
-# TODO: Pass extra options to $exe
-"$exe" $option
+"$exe" "$option"

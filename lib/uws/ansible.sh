@@ -1,4 +1,6 @@
-. "$(cd "$(dirname $BASH_SOURCE[0])/.." && pwd)/notifications.sh"
+uws="${uws:-$(cd "$(dirname $BASH_SOURCE[0])/../.." && pwd)}"
+
+. "$uws/lib/python.sh"
 
 ensure_ansible() {
 
