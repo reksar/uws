@@ -5,7 +5,6 @@ uws="${uws:-$(cd "$(dirname $BASH_SOURCE[0])/../.." && pwd)}"
 . "$uws/lib/uws/env.sh"
 . "$uws/lib/uws/ansible.sh"
 
-ensure_venv "$uws/venv" || exit 1
 ensure_ansible || exit 1
 
 # Playbook {{{

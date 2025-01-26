@@ -1,33 +1,26 @@
 #!/bin/bash
 
-uws="$(cd $(dirname $BASH_SOURCE[0]) && pwd)"
-
 
 usage() {
 cat << EOF
-Usage:
-  uws set
-  uws set <playbook>
+Setup Linux environment:
 
-The <playbook> is a base file name.
+  uws set <Ansible playbook>
+
+Testing:
+
+  uws test [bash|ansible]
 EOF
 }
 
 
-check_args() {
+uws="$(cd $(dirname $BASH_SOURCE[0]) && pwd)"
+exe="$uws/util/uws/${1:-}.sh"
+option="${2:-}"
 
-  [[ $1 != "set" ]] \
-    && usage \
-    && return 1
-
-  return 0
+[[ ! -f "$exe" ]] && {
+  usage
+  exit 1
 }
-
-
-check_args ${1:-} ${2:-} || exit 1
-
-[[ $1 == "set" ]] && exe="$uws/util/uws/set.sh"
-[[ $1 == "set" ]] && option="${2:-}"
-
 
 "$exe" "$option"

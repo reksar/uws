@@ -4,33 +4,21 @@ Configures a Linux environment. Some configs work on Cygwin as well.
 
 ## Usage
 
-`./uws set [playbook name]`
+### Setup Linux environment
 
-For example:
-`./uws set locale`
-`./uws set app`.
+`./uws set [playbook]`
 
-Where the `[playbook name]` is a playbook file basename without exstension.
-`./uws set` is the same as `./uws set main`.
+Where the `[playbook]` is a playbook file basename or relative path without the
+exstension.
 
-## Base steps
+Examples:
+    * `./uws set` is the same as `./uws set main`
+    * `./uws set app`
+    * `./uws set app/tmux`
 
-1. Ensure `sudo`.
+### Run tests
 
-2. Ensure `python --version` >= `min_python_version` from `settings.yml`.
-
-    2.1. The default value of `min_python_version` is **3**. Used when the
-    `min_python_version` is not set or invalid.
-
-    2.2. If `min_python_version` is **3**, it prefers to install Python with
-    the system package manager.
-
-    2.3. Uses `pyenv` to install non-system Python. When unable to install the
-    system Python or if `min_python_version` is specified more precisely.
-
-      * Ensure `pyenv`.
-
-      * Install Python with `pyenv`.
+`./uws test [bash|ansible]`
 
 # Layout
 
@@ -38,7 +26,9 @@ Where the `[playbook name]` is a playbook file basename without exstension.
 
 **base** - to init base working environment and Ansible.
 
-**lib** - non-executable common scripts. To be included in other scripts.
+**lib** - common scripts to be used in other scripts.
+
+**lib/ansible** - local Ansible modules and plugins.
 
 **util** - general-purpose executable utility scripts.
 

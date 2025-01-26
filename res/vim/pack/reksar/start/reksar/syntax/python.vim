@@ -61,9 +61,9 @@ syn region pythonFString matchgroup=pythonQuotes
 syn match pythonBStringType /\<b\('.\{-}'\|".\{-}"\)/
 \ contains=pythonString
 
-" bytes / plain multiline
+" bytes multiline
 syn region pythonBStringType
-\ start=/\(\<b\)\{-}\z('''\|"""\)/
+\ start=/\<b\z('''\|"""\)/
 \ end=/\z1/
 \ skip=/\\\\\|\\\z1/
 \ keepend

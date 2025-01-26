@@ -7,7 +7,7 @@ lib="$(cd "$(dirname "$BASH_SOURCE[0]")/../../lib" && pwd)"
 
 
 test_false "is_venv" \
-  "No active Python venv initially (deactivate otherwise)."
+  "No active Python venv initially (deactivate any venv before test)."
 
 test_false "is_venv some/path" \
   "Passing the path for unactive venv."

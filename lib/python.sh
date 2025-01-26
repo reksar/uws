@@ -51,3 +51,20 @@ ensure_venv() {
   ERR "Unable to activate Python venv in '$venv_path'!"
   return 1
 }
+
+
+ensure_pytest() {
+
+  [[ "$(pytest --version 2>/dev/null)" =~ "pytest" ]] || {
+    INFO "Installing pytest."
+    pip install pytest pytest-xdist pytest-mock execnet
+  }
+
+  [[ "$(pytest --version 2>/dev/null)" =~ "pytest" ]] || {
+    ERR "Unable to ensure pytest!"
+    return 1
+  }
+
+  OK "pytest ready."
+  return 0
+}
