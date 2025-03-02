@@ -94,6 +94,14 @@ Make symbolic links to a user config files.
 
 ## Ansible playbooks
 
+### Plugin docs
+
+Using the `ansible-doc` for the local `ansible_collections`:
+
+```sh
+. lib/uws/ansible.sh && ensure_ansible && ansible-doc <plugin>
+```
+
 ### Utility message types (glossary)
 
 Prefixes of a `- name:` values.
