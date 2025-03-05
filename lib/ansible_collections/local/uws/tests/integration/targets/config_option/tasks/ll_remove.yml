@@ -1,0 +1,88 @@
+# Remove all `ll` aliases from config.ini, excluding the commented.
+
+
+- set_fact:
+    tests: "{{ playbook_dir | regex_search('.*?/tests') }}"
+
+- set_fact:
+    module_tests: "{{ tests }}/integration/targets/config_option"
+
+- set_fact:
+    source_config: "{{ module_tests }}/res/config.ini"
+    test_config: "{{ playbook_dir }}/config.ini"
+
+
+- name: "Copy the test config to modify it during tests"
+  copy:
+    src: "{{ source_config }}"
+    dest: "{{ test_config }}"
+    force: true
+
+
+- set_fact:
+    grep_alias: "grep --count '^\\s*alias ll=' {{ test_config }}"
+    grep_commented: "grep --count '^\\s*#\\s*alias ll=' {{ test_config }}"
+
+
+- name: "Count initial aliases"
+  shell:
+    cmd: "{{ grep_alias }}"
+  register: grep
+  changed_when: false
+
+- set_fact:
+    ll_initial_count: "{{ grep.stdout }}"
+
+- name: "TEST there are several initial aliases"
+  assert:
+    that: "ll_initial_count | int > 1"
+
+
+- name: "Count initial commented aliases"
+  shell:
+    cmd: "{{ grep_commented }}"
+  register: grep
+  changed_when: false
+
+- set_fact:
+    ll_commented_initial_count: "{{ grep.stdout }}"
+
+- name: "TEST there are several initial commented aliases"
+  assert:
+    that: "ll_commented_initial_count | int > 1"
+
+
+- name: "Remove all uncommented aliases"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    option: "alias ll"
+    state: "absent"
+
+
+- name: "Count aliases"
+  shell:
+    cmd: "{{ grep_alias }}"
+  register: grep
+  changed_when: false
+
+- set_fact:
+    ll_count: "{{ grep.stdout }}"
+
+- name: "TEST there are no aliases"
+  assert:
+    that: "ll_count == 0"
+
+
+- name: "Count commented aliases"
+  shell:
+    cmd: "{{ grep_commented }}"
+  register: grep
+  changed_when: false
+
+- set_fact:
+    ll_commented_count: "{{ grep.stdout }}"
+
+- name: "TEST all commented aliases are still here"
+  assert:
+    that: "ll_commented_count == ll_commented_initial_count"
+
