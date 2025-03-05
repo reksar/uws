@@ -1,0 +1,19 @@
+---
+- name: "Ranger file manager"
+  hosts: "all"
+
+  tasks:
+
+  - name: "/!/ ranger"
+    package:
+      name:
+        - "ranger"
+    become: true
+
+  - name: "/>/ Ranger configs"
+    copy:
+      src: "{{ uws }}/config/ranger/{{ item }}"
+      dest: "{{ XDG_CONFIG_HOME }}/ranger/{{ item }}"
+    loop:
+      - "rc.conf"
+      - "commands.py"

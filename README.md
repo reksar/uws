@@ -122,3 +122,7 @@ Prefixes of a `- name:` values.
 **/%/** - Filter a collection.
 
 **/v/** - Download.
+
+**/>/** - Copy.
+
+**/x/** - Delete.
