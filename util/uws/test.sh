@@ -14,13 +14,7 @@ case $option in
   ansible)
     ensure_ansible || exit 1
     ensure_pytest || exit 1
-    lib=$(
-      ansible-config dump \
-      | grep ANSIBLE_COLLECTIONS_PATH \
-      | grep --perl-regexp --only-matching "'$uws.*?'" \
-      | tr --delete "'"
-    )
-    cd "$lib/ansible_collections/local/uws" \
+    cd "$uws/lib/ansible_collections/local/uws" \
       && ansible-test units --target-python default \
       && ansible-test integration
     ;;
