@@ -41,7 +41,11 @@ the `main()` function must be called and must return a JSON result.
 # Actions
 
 Actions, instead of modules, does not starts with a shebang and have no
-`main()` function. They just implements the `run()` method of `ActionBase` ABC.
+`main()` function.
+
+## Standard implementation
+
+They just implements the `run()` method of `ActionBase` ABC.
 
 The `ActionBase` class has the `_execute_module()` method, but has no method
 for running an action. See example in `ansible/plugins/action/shell.py`.
@@ -49,3 +53,9 @@ for running an action. See example in `ansible/plugins/action/shell.py`.
 The doc for an action must be placed separatelly in the `plugins/modules`.
 For example, the doc for the `shell` action is placed in
 `ansible/modules/shell.py`.
+
+## uws implementation
+
+Instead of using the `ActionBase` ABC, use the `ActionModuleBase` from the
+`local/uws/plugins/util/action.py` and decorate the `run()` method with the
+`@ActionModuleBase.prerun`.

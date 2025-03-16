@@ -1,41 +1,58 @@
-# NOTE: The doc is in the related module.
+# SEE: doc is in the related module.
 
 from __future__ import annotations
-#from ansible.errors import AnsibleActionFail
-from ansible.plugins.action import ActionBase
+
+import re
+from ansible_collections.local.uws.plugins.util.action import ActionModuleBase
 
 
-class ActionMixin:
+class ActionModule(ActionModuleBase):
 
-    def _execute_action(self, name, args=None, task_vars=None):
+    @ActionModuleBase.prerun
+    def run(self, status):
 
-        action = self._shared_loader_obj.action_loader.get(
-            name,
-            task=self._subtask(args),
-            connection=self._connection,
-            play_context=self._play_context,
-            loader=self._loader,
-            templar=self._templar,
-            shared_loader_obj=self._shared_loader_obj,
-        )
+        file = self.arg('file')
+        option = self.arg('option')
+        value = self.arg('value', None)
+        txt = self.run_lookup_plugin('file', [file])[0]
+        regex = self.name_value_re(option)
+        pattern = re.compile(regex, flags=re.MULTILINE)
+        entries = pattern.findall(txt)
 
-        return action.run(task_vars=task_vars)
+        if int(value is None) < len(entries):
+            status = self.sanitize(file, regex)
+            if status['rc'] != 0:
+                return status
 
-    def _subtask(self, args=None):
+        if value is not None:
+            status = self.ensure_option(option, value)
 
-        task = self._task.copy()
-
-        if args is not None:
-            task.args = args
-
-        return task
+        return status
 
 
-class ActionModule(ActionBase, ActionMixin):
+    def name_value_re(self, option):
+        """
+        Regex for the `option` name and value pair.
+        """
 
-    def run(self, tmp=None, task_vars=None):
-        super(ActionModule, self).run(tmp, task_vars)
+        # Delimiter between the option name and value:
+        separator = '='
 
-        value = self._task.args.get('value', None)
+        # An oneline commet starts with this prefix:
+        comment = '#'
 
-        return self._execute_action('debug', args={'msg': value}, task_vars=task_vars)
+        # NOTE: No spaces between the `option` and `separator`.
+        return f"^\\s*(?!{comment}\\s*)({option}){separator}(.*)"
+
+
+    def sanitize(self, file, regex):
+        return self.run_module('replace', {
+            'path': file,
+            'regexp': regex,
+            'replace': '',
+        })
+
+    def ensure_option(self, option, value):
+        # TODO: use lineinfile
+        pass
+

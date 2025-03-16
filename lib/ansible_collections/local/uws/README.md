@@ -1,5 +1,7 @@
 # Ansible Collection `local.uws`.
 
+See [Dir structure](https://docs.ansible.com/ansible/latest/dev_guide/developing_collections_structure.html)
+
 # Testing
 
 All tests are designed to run locally using the Python venv.

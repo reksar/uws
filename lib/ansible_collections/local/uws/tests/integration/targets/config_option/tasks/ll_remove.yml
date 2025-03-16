@@ -11,6 +11,10 @@
     source_config: "{{ module_tests }}/res/config.ini"
     test_config: "{{ playbook_dir }}/config.ini"
 
+- set_fact:
+    ll_alias: "(^|\\n)\\s*alias ll="
+    ll_commented: "(^|\\n)\\s*#\\s*alias ll="
+
 
 - name: "Copy the test config to modify it during tests"
   copy:
@@ -20,69 +24,55 @@
 
 
 - set_fact:
-    grep_alias: "grep --count '^\\s*alias ll=' {{ test_config }}"
-    grep_commented: "grep --count '^\\s*#\\s*alias ll=' {{ test_config }}"
-
-
-- name: "Count initial aliases"
-  shell:
-    cmd: "{{ grep_alias }}"
-  register: grep
-  changed_when: false
+    config: "{{ lookup('file', test_config) }}"
 
 - set_fact:
-    ll_initial_count: "{{ grep.stdout }}"
+    ll_alias_initial_count: >
+      {{
+        config | regex_findall(ll_alias) | length
+      }}
+    ll_commented_initial_count: >
+      {{
+        config | regex_findall(ll_commented) | length
+      }}
 
 - name: "TEST there are several initial aliases"
   assert:
-    that: "ll_initial_count | int > 1"
-
-
-- name: "Count initial commented aliases"
-  shell:
-    cmd: "{{ grep_commented }}"
-  register: grep
-  changed_when: false
-
-- set_fact:
-    ll_commented_initial_count: "{{ grep.stdout }}"
+    that:
+      - ll_alias_initial_count | int > 1
 
 - name: "TEST there are several initial commented aliases"
   assert:
-    that: "ll_commented_initial_count | int > 1"
+    that:
+      - ll_commented_initial_count | int > 1
 
 
 - name: "Remove all uncommented aliases"
   local.uws.config_option:
     file: "{{ test_config }}"
     option: "alias ll"
-    state: "absent"
 
-
-- name: "Count aliases"
-  shell:
-    cmd: "{{ grep_alias }}"
-  register: grep
-  changed_when: false
 
 - set_fact:
-    ll_count: "{{ grep.stdout }}"
+    config: "{{ lookup('file', test_config) }}"
+
+- set_fact:
+    ll_alias_count: >
+      {{
+        config | regex_findall(ll_alias) | length
+      }}
+    ll_commented_count: >
+      {{
+        config | regex_findall(ll_commented) | length
+      }}
 
 - name: "TEST there are no aliases"
   assert:
-    that: "ll_count == 0"
-
-
-- name: "Count commented aliases"
-  shell:
-    cmd: "{{ grep_commented }}"
-  register: grep
-  changed_when: false
-
-- set_fact:
-    ll_commented_count: "{{ grep.stdout }}"
+    that:
+      - ll_alias_count | int == 0
 
 - name: "TEST all commented aliases are still here"
   assert:
-    that: "ll_commented_count == ll_commented_initial_count"
+    that:
+      - ll_commented_initial_count == ll_commented_count
 
