@@ -1,4 +1,7 @@
-# There are multiple 'll' aliases in this file.
+# The bashrc format is not INI, but the similar.
+
+
+# There are multiple 'll' aliases defined in this file.
 alias ll='ls -l --color=auto'
 alias ll='ls -la'
 
@@ -9,3 +12,7 @@ alias ll='ls -la'
 
 # Yet another alias option with some indent.
   alias ll='ls -la --color=auto'
+
+
+# Default bash prompt statement
+# PS1='[\u@\h \W]\$ '

@@ -1,1 +1,5 @@
-- import_tasks: "ll_remove.yml"
+# Remove all option entries from the config, excluding the commented lines.
+- import_tasks: "option_remove.yml"
+
+# Remove not existing option from the config.
+- import_tasks: "no_option_remove.yml"

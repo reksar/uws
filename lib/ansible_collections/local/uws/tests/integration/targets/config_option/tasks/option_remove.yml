@@ -1,4 +1,4 @@
-# Remove all `ll` aliases from config.ini, excluding the commented.
+# Remove all `ll` aliases from bashrc, excluding the commented lines.
 
 
 - set_fact:
@@ -8,8 +8,8 @@
     module_tests: "{{ tests }}/integration/targets/config_option"
 
 - set_fact:
-    source_config: "{{ module_tests }}/res/config.ini"
-    test_config: "{{ playbook_dir }}/config.ini"
+    source_config: "{{ module_tests }}/res/bashrc"
+    test_config: "{{ playbook_dir }}/bashrc"
 
 - set_fact:
     ll_alias: "(^|\\n)\\s*alias ll="
