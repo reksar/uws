@@ -1,5 +1,12 @@
-# Remove all option entries from the config, excluding the commented lines.
-- import_tasks: "option_remove.yml"
+# Remove all option entries, excluding the commented lines.
+- import_tasks: "remove_option.yml"
 
-# Remove not existing option from the config.
-- import_tasks: "no_option_remove.yml"
+# Remove not existing option.
+- import_tasks: "remove_no_option.yml"
+
+# Add option that is not exists yet.
+- import_tasks: "add_option.yml"
+
+# Add option that is not set, but there is commented one.
+- import_tasks: "add_uncommented_option.yml"
+

@@ -12,11 +12,21 @@ class ActionModule(ActionModuleBase):
     def run(self, status):
 
         file = self.arg('file')
-        option = self.arg('option')
         value = self.arg('value', None)
-        txt = self.run_lookup_plugin('file', [file])[0]
-        regex = self.name_value_re(option)
+        option = self.arg('option')
+
+        # Separator between the option name and value:
+        separator = '='
+
+        # An oneline commet starts with this prefix:
+        comment = '#'
+
+        # Regex for the `option` name and value pair.
+        # NOTE: No spaces between the `option` and `separator`.
+        regex = f"^\\s*(?!{comment}\\s*)({option}){separator}(.*)"
+
         pattern = re.compile(regex, flags=re.MULTILINE)
+        txt = self.run_lookup_plugin('file', [file])[0]
         entries = pattern.findall(txt)
 
         if int(value is None) < len(entries):
@@ -25,24 +35,9 @@ class ActionModule(ActionModuleBase):
                 return status
 
         if value is not None:
-            status = self.ensure_option(option, value)
+            status = self.lineinfile(file, f"{option}{separator}{value}")
 
         return status
-
-
-    def name_value_re(self, option):
-        """
-        Regex for the `option` name and value pair.
-        """
-
-        # Delimiter between the option name and value:
-        separator = '='
-
-        # An oneline commet starts with this prefix:
-        comment = '#'
-
-        # NOTE: No spaces between the `option` and `separator`.
-        return f"^\\s*(?!{comment}\\s*)({option}){separator}(.*)"
 
 
     def sanitize(self, file, regex):
@@ -52,7 +47,9 @@ class ActionModule(ActionModuleBase):
             'replace': '',
         })
 
-    def ensure_option(self, option, value):
-        # TODO: use lineinfile
-        pass
+    def lineinfile(self, file, line):
+        return self.run_module('lineinfile', {
+            'path': file,
+            'line': line,
+        })
 
