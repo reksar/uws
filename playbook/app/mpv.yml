@@ -14,7 +14,8 @@
 
   # Use `dla <URL>` to download MP3.
   - name: "Aliases for YouTube downloading"
-    config_option:
-      path: "{{ ansible_env.HOME }}/.bashrc.auto"
-      line: >
-        alias dla='yt-dlp --extract-audio --audio-format mp3 --audio-quality 0'
+    local.uws.config_option:
+      file: "{{ ansible_env.HOME }}/.bashrc.auto"
+      option: "alias dla"
+      value: "'yt-dlp --extract-audio --audio-format mp3 --audio-quality 0'"
+
