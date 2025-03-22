@@ -1,0 +1,25 @@
+# Set PS1 when it is not set, but there is commented one.
+
+- import_tasks: "prepare_test_config.yml"
+
+# NOTE: `test_config` should have the "#PS1=..." comment line.
+- name: "TEST the PS1 option is not set"
+  assert:
+    that: >
+      lookup('file', test_config)
+      | regex_findall('^\s*PS1=', multiline=true)
+      | length == 0
+
+- name: "Set PS1"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    option: "PS1"
+    value: "'[\\u@\\h \\W]\\$ '"
+
+- name: "TEST the PS1 option is set"
+  assert:
+    that: >
+      lookup('file', test_config)
+      | regex_findall("^PS1='\[\\\\u@\\\\h \\W.*\$ '", multiline=true)
+      | length == 1
+

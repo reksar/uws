@@ -1,0 +1,18 @@
+# Set basic vars and prepare the config copy to modify it during tests.
+
+- set_fact:
+    tests: "{{ playbook_dir | regex_search('.*?/tests') }}"
+
+- set_fact:
+    module_tests: "{{ tests }}/integration/targets/config_option"
+
+- set_fact:
+    source_config: "{{ module_tests }}/res/bashrc"
+    test_config: "{{ playbook_dir }}/bashrc"
+
+- name: "Copy the test config to modify it during tests"
+  copy:
+    src: "{{ source_config }}"
+    dest: "{{ test_config }}"
+    force: true
+

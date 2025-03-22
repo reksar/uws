@@ -1,0 +1,18 @@
+# Try to remove the `PS1` option from bashrc config. The config contains only
+# the commented `PS1` option, so there is nothing to remove and the config
+# should be not changed during this test.
+
+- import_tasks: "prepare_test_config.yml"
+
+- name: "Remove PS1 option"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    option: "PS1"
+  register: result
+
+- name: "TEST the config is not changed"
+  assert:
+    that:
+      - result.changed == false
+      - result.failed == false
+

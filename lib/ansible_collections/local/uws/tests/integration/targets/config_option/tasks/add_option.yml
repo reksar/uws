@@ -1,0 +1,24 @@
+# Add PAGER to bashrc.
+
+- import_tasks: "prepare_test_config.yml"
+
+- name: "TEST PAGER is not set"
+  assert:
+    that: >
+      lookup('file', test_config)
+      | regex_findall('^\s*(export\s+){0,1}(PAGER=)', multiline=true)
+      | length == 0
+
+- name: "Set PAGER to less"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    option: "PAGER"
+    value: "less"
+
+- name: "TEST PAGER is set"
+  assert:
+    that: >
+      lookup('file', test_config)
+      | regex_findall('^\s*PAGER=less', multiline=true)
+      | length == 1
+

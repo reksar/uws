@@ -12,10 +12,9 @@
         - yt-dlp
     become: true
 
-  # Use `dla <URL>` to download mp3.
-  # TODO: Ensure exacly one unique line.
+  # Use `dla <URL>` to download MP3.
   - name: "Aliases for YouTube downloading"
-    lineinfile:
+    config_option:
       path: "{{ ansible_env.HOME }}/.bashrc.auto"
       line: >
         alias dla='yt-dlp --extract-audio --audio-format mp3 --audio-quality 0'

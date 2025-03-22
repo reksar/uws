@@ -12,6 +12,7 @@
         - patch
         - zip
         - unzip
+        - fzf
         - ripgrep
         - ripgrep-all
         - btop
