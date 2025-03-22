@@ -1,8 +1,11 @@
+# Remove not existing option.
+- import_tasks: "remove_no_option.yml"
+
 # Remove all option entries, excluding the commented lines.
 - import_tasks: "remove_option.yml"
 
-# Remove not existing option.
-- import_tasks: "remove_no_option.yml"
+# Like previous, but adds the new option entry after removing all old entries.
+- import_tasks: "replace_option.yml"
 
 # Add option that is not exists yet.
 - import_tasks: "add_option.yml"

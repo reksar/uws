@@ -1,11 +1,12 @@
-# Remove all `ll` aliases from bashrc, excluding the commented lines.
+# Set a new `ll` alias when there are multiple already set. All old `ll` alias
+# entries will be removed before the new entry will be added.
 
 - import_tasks: "prepare_test_config.yml"
 
 
 - set_fact:
-    ll_alias: "(^|\\n)\\s*alias ll="
-    ll_commented: "(^|\\n)\\s*#\\s*alias ll="
+    ll_alias: "^\\s*alias ll="
+    ll_commented: "^\\s*#\\s*alias ll="
 
 - set_fact:
     config: "{{ lookup('file', test_config) }}"
@@ -13,11 +14,11 @@
 - set_fact:
     ll_alias_initial_count: >
       {{
-        config | regex_findall(ll_alias) | length
+        config | regex_findall(ll_alias, multiline=true) | length
       }}
     ll_commented_initial_count: >
       {{
-        config | regex_findall(ll_commented) | length
+        config | regex_findall(ll_commented, multiline=true) | length
       }}
 
 - name: "TEST there are several initial aliases"
@@ -31,29 +32,38 @@
       - ll_commented_initial_count | int > 1
 
 
-- name: "Remove all uncommented aliases"
+- name: "Set the new alias value"
   local.uws.config_option:
     file: "{{ test_config }}"
     option: "alias ll"
+    value: "'ls --color=auto'"
+
+- set_fact:
+    ll_new_alias: "^\\s*alias ll='ls --color=auto'"
 
 
 - set_fact:
     config: "{{ lookup('file', test_config) }}"
 
+- name: "TEST the new alias is set"
+  assert:
+    that:
+      - config | regex_findall(ll_new_alias, multiline=true) | length == 1
+
 - set_fact:
     ll_alias_count: >
       {{
-        config | regex_findall(ll_alias) | length
+        config | regex_findall(ll_alias, multiline=true) | length
       }}
     ll_commented_count: >
       {{
-        config | regex_findall(ll_commented) | length
+        config | regex_findall(ll_commented, multiline=true) | length
       }}
 
-- name: "TEST there are no aliases"
+- name: "TEST there is only 1 alias entry"
   assert:
     that:
-      - ll_alias_count | int == 0
+      - ll_alias_count | int == 1
 
 - name: "TEST all commented aliases are still here"
   assert:
