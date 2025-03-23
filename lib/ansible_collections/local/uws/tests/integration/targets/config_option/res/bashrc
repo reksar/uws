@@ -1,6 +1,9 @@
 # The bashrc format is not INI, but the similar.
 
 
+export TERM=xterm-color
+
+
 # There are multiple 'll' aliases defined in this file.
 alias ll='ls -l --color=auto'
 alias ll='ls -la'

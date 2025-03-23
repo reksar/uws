@@ -13,3 +13,6 @@
 # Add option that is not set, but there is commented one.
 - import_tasks: "add_uncommented_option.yml"
 
+# Test idempotence: the file should not be changed when trying to set the same
+# option value.
+- import_tasks: "set_the_same_option.yml"

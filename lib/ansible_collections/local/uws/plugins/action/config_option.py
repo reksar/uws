@@ -29,8 +29,8 @@ class ActionModule(ActionModuleBase):
         txt = self.run_lookup_plugin('file', [file])[0]
         entries = pattern.findall(txt)
 
-        if int(value is None) < len(entries):
-            status = self.sanitize(file, regex)
+        if int(value is not None) < len(entries):
+            status = self.replace(file, regex)
             if status['rc'] != 0:
                 return status
 
@@ -40,7 +40,7 @@ class ActionModule(ActionModuleBase):
         return status
 
 
-    def sanitize(self, file, regex):
+    def replace(self, file, regex):
         return self.run_module('replace', {
             'path': file,
             'regexp': regex,

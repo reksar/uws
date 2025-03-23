@@ -13,13 +13,14 @@ short_description:
 description:
     Like the "ansible.builtin.lineinfile" module, but ensures that only one
     option with the specified name is exists. If the option is already exists,
-    it will be rewritten. But, if there are several options are exists, they
-    will be deleted. This is the difference from the
-    "ansible.builtin.lineinfile", that can only rewrite the first or last line.
+    it will be rewritten when a new value is provided. If there are several
+    options with the same name are exists, they will be deleted before adding
+    the new entry. This is the difference from the `lineinfile`, that can only
+    rewrite the first or the last line.
 
 options:
     file:
-        description: A config file of INI format.
+        description: A config file of INI format or similar.
         type: path
         required: true
     option:
@@ -43,6 +44,7 @@ EXAMPLES = r'''
     option: alias ll
 
 # Instead of previous example, the "alias ll=" will be added.
+# TODO. Not implemented yet!
 - name: Add alias with the empty value
   local.uws.config_option:
     file: ~/.bash_aliases
