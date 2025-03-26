@@ -35,6 +35,7 @@ ROOT_LABEL=ROOT
 # -- Includes -- {{{
 lib="$(cd "$(dirname "$BASH_SOURCE[0]")/../lib" && pwd)"
 . "$lib/check.sh" || exit 2
+. "$lib/disk.sh" || exit 2
 . "$lib/units.sh" || exit 2
 . "$lib/notifications.sh" || exit 2
 notification_title="[SYSDISK]"
@@ -58,40 +59,6 @@ is_blockdev_fs() {
   [[ -z $fs ]] && return 1
 
   return 0
-}
-
-
-is_mkfs() {
-  echo $1 | grep -P "^(vfat)|(fat\d{2})|(ext\d)$" &> /dev/null && return 0
-  return 1
-}
-
-
-mk_fs() {
-
-  # Unified mkfs interface.
-
-  local type=$1
-  local partition=$2
-  local label=$3
-
-  case "$type" in
-    vfat)
-      local options="--type=vfat ${label:+-n $label}"
-      ;;
-    fat[[:digit:]][[:digit:]])
-      local options="--type=vfat -F ${type#fat} ${label:+-n $label}"
-      ;;
-    ext[[:digit:]])
-      local options="--type=$type ${label:+-L $label}"
-      ;;
-    *)
-      ERR "Cannot generate \`mkfs\` options for $type!"
-      return 1
-      ;;
-  esac
-
-  mkfs $options $partition
 }
 
 
@@ -224,8 +191,8 @@ is_blockdev_fs $grub_fs || {
   WARN "GRUB partition FS $grub_fs is not set for a block device!"
 }
 
-is_mkfs $grub_fs || {
-  ERR "GRUB partition FS $grub_fs is not supported by \`mk_fs\`!"
+__is_mkfs $grub_fs || {
+  ERR "GRUB partition FS $grub_fs is not supported by \`_mkfs\`!"
   exit 3
 }
 
@@ -244,8 +211,8 @@ is_blockdev_fs $efi_fs || {
   WARN "EFI partition FS $efi_fs is not set for a block device!"
 }
 
-is_mkfs $efi_fs || {
-  ERR "EFI partition FS $efi_fs is not supported by \`mk_fs\`!"
+__is_mkfs $efi_fs || {
+  ERR "EFI partition FS $efi_fs is not supported by \`_mkfs\`!"
   exit 3
 }
 
@@ -256,8 +223,8 @@ is_blockdev_fs $root_fs || {
   WARN "ROOT partition FS $root_fs is not set for a block device!"
 }
 
-is_mkfs $root_fs || {
-  ERR "ROOT partition FS $root_fs is not supported by \`mk_fs\`!"
+__is_mkfs $root_fs || {
+  ERR "ROOT partition FS $root_fs is not supported by \`_mkfs\`!"
   exit 3
 }
 
@@ -461,11 +428,11 @@ mkswap $swap_part
 swapon $swap_part
 
 echo -n "$GRUB_LABEL: "
-mk_fs $grub_fs $grub_part $GRUB_LABEL
+_mkfs $grub_fs $grub_part $GRUB_LABEL
 echo -n "$EFI_LABEL: "
-mk_fs $efi_fs $efi_part $EFI_LABEL
+_mkfs $efi_fs $efi_part $EFI_LABEL
 echo -n "$ROOT_LABEL: "
-mk_fs $root_fs $root_part $ROOT_LABEL
+_mkfs $root_fs $root_part $ROOT_LABEL
 
 mount --mkdir $root_part "$ROOT_MOUNT_POINT"
 mount --mkdir $efi_part "$ROOT_MOUNT_POINT/efi"

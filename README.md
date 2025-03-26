@@ -36,13 +36,18 @@ Examples:
 
 ## Util
 
+Most of the util scripts are executable and shows the help when running without
+args or with the `-h` arg.
+
+### `util/cryptdisk.sh`
+
+Encrypt the entire disk or partition with LUKS.
+
 ### `util/sysdisk.sh`
 
 Partitioning the entire specified disk to be used as the system Linux disk.
 
 Allows to install Linux on the partitioned disk next.
-
-Run the `util/sysdisk.sh` without args to see the help.
 
 ### `util/arch/install.sh`
 
