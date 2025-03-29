@@ -3,11 +3,19 @@
 
 
 is_venv() {
+
   local venv_path="${1:-}"
+
   [[ -z "${VIRTUAL_ENV:-}" ]] && return 1
+
+  # If this arg is not provided, then only the $VIRTUAL_ENV needs to be set
+  # and we done after checking the previous condition.
   [[ -z "$venv_path" ]] && return 0
+
+  # The $venv_path is provided, so we need to check additional conditions.
   [[ "$venv_path" == "$VIRTUAL_ENV" ]] && return 0
   [[ "$PWD/$venv_path" == "$VIRTUAL_ENV" ]] && return 0
+
   return 1
 }
 
@@ -36,10 +44,24 @@ ensure_venv() {
 
   local venv_bin="$venv_path/bin"
 
-  [[ ! -x "$venv_bin/python" ]] || [[ ! -f "$venv_bin/activate" ]] && {
-    INFO "Creating Python venv in '$venv_path'."
-    python -m venv $options "$venv_path" || return 1
+  [[ -x "$venv_bin/python" ]] || [[ -f "$venv_bin/activate" ]] && {
+
+    INFO "Activating the existing venv '$venv_path'."
+    . "$venv_bin/activate"
+
+    is_venv "$venv_path" \
+      && OK "Python venv is active." \
+      && return 0
+
+    WARN "Something wrong with the existing venv!"
   }
+
+  [[ -d "$venv_path" ]] \
+    && WARN "Removing the existing venv '$venv_path'!" \
+    && rm -rf "$venv_path"
+
+  INFO "Creating Python venv in '$venv_path'."
+  python -m venv $options "$venv_path" || return 1
 
   INFO "Activating Python venv '$venv_path'."
   . "$venv_bin/activate"
@@ -48,7 +70,7 @@ ensure_venv() {
     && OK "Python venv is active." \
     && return 0
 
-  ERR "Unable to activate Python venv in '$venv_path'!"
+  ERR "Unable to ensure the Python venv in '$venv_path'!"
   return 1
 }
 

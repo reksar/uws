@@ -3,8 +3,8 @@
   hosts: "all"
 
   vars:
-    dotvim_link: "{{ (ansible_env.HOME, '.vim') | path_join }}"
-    dotvimrc_link: "{{ (ansible_env.HOME, '.vimrc') | path_join }}"
+    dotvim: "{{ (ansible_env.HOME, '.vim') | path_join }}"
+    dotvimrc: "{{ (ansible_env.HOME, '.vimrc') | path_join }}"
 
   tasks:
 
@@ -13,27 +13,25 @@
       name: "vim"
     become: true
 
-  - name: "/?/ .vim symlink"
+  - name: "/?/ .vim dir"
     stat:
-      path: "{{ dotvim_link }}"
-    register: dotvim_file
+      path: "{{ dotvim }}"
+    register: dotvim_dir
 
-  - name: "Delete dir '{{ dotvim_link }}'"
-    when: not dotvim_file.stat.islnk
+  - name: "Delete '{{ dotvim }}'"
+    when: not dotvim_dir.stat.isdir
     file:
-      path: "{{ dotvim_link }}"
+      path: "{{ dotvim }}"
       state: "absent"
 
-  - name: "/!/ {{ dotvim_link }}"
-    file:
-      path: "{{ dotvim_link }}"
-      src: "{{ (uws, 'res', 'vim') | path_join }}"
-      state: "link"
-      force: true
+  - name: "/!/ {{ dotvim }}"
+    synchronize:
+      src: "{{ (uws, 'res', 'vim') | path_join }}/"
+      dest: "{{ dotvim }}"
+      recursive: true
+      delete: true
 
-  - name: "/!/ {{ dotvimrc_link }}"
-    file:
-      path: "{{ dotvimrc_link }}"
+  - name: "/!/ {{ dotvimrc }}"
+    copy:
       src: "{{ (uws, 'config', 'vimrc') | path_join }}"
-      state: "link"
-      force: true
+      dest: "{{ dotvimrc }}"
