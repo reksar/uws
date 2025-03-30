@@ -1,0 +1,16 @@
+---
+- name: "Configure the system hardware"
+  hosts: "all"
+
+  tasks:
+
+  - name: "/?/ hardware role"
+    stat:
+      path: "{{ playbook_dir }}/roles/hardware"
+    register: role
+
+  - name: "Use hardware role"
+    when: role.stat.exists
+    include_role:
+      name: "hardware"
+

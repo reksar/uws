@@ -11,7 +11,7 @@ ensure_ansible || exit 1
 playbook="${1:-main}"
 
 [[ -f "$playbook" ]] || {
-  INFO "Determining '$playbook' playbook path."
+  INFO "Determining the '$playbook' playbook path."
   playbook="$uws/playbook/$playbook.yml"
 
   [[ -f "$playbook" ]] || {

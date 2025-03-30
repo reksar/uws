@@ -17,10 +17,10 @@ configure_ansible() {
   export ANSIBLE_HOME="$venv_site/ansible"
 
   ansible_collections="$ANSIBLE_HOME/collections"
-  uws_collections="$uws/lib"
-  export ANSIBLE_COLLECTIONS_PATH="$ansible_collections:$uws_collections"
+  lib="$uws/lib"
+  export ANSIBLE_COLLECTIONS_PATH="$ansible_collections:$lib"
 
-  #local_uws="$uws_collections/ansible_collections/local/uws"
+  #local_uws="$lib/ansible_collections/local/uws"
 
   #ansible_modules="$ANSIBLE_HOME/plugins/modules"
   #uws_modules="$local_uws/plugins/modules"
@@ -53,6 +53,7 @@ ensure_ansible() {
       ERR "Ansible is unavailable!"
       return 3
     }
+
   }
 
   OK "Ansible found."
