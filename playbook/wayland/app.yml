@@ -1,57 +1,60 @@
 - name: "Common Wayland packages"
   package:
     name:
-      - xdg-user-dirs
-      - wl-clipboard
+      - "xdg-user-dirs"
+      - "wl-clipboard"
   become: true
 
-- name: Screen grabbing
+
+- name: "Packages for a screen grabbing"
+  package:
+    name:
+      - "grim"
+      - "slurp"
+      - "swappy"
+      - "wf-recorder"
+  become: true
+
+
+# TODO: Apply PRs from GitHub.
+# TODO: alias for 'colorpick'
+# FIXME: Suport for `gm convert` im Makefile to be compatible with the
+#        'graphicsmagick' instead of `convert` from 'imagemagick'.
+# FIXME: Rewrite Makefile
+- name: "/!/ `colorpick`"
+
+  vars:
+    repo: "https://github.com/jgmdev/wl-color-picker"
+    dest: "{{ XDG_APP_DIR }}/wl-color-picker"
+
   block:
 
-  - name: Packages for screen grabbing
+  - name: "/!/ `colorpick` requirements"
     package:
       name:
-        - grim
-        - slurp
-        - swappy
-        - wf-recorder
+        - "make"
+        - "graphicsmagick"
+        - "slurp"
+        - "grim"
+        - "zenity"
     become: true
 
-  # TODO: Apply PRs from GitHub.
-  # TODO: alias for 'colorpick'
-  # FIXME: Suport for `gm convert` im Makefile to be compatible with the
-  #        'graphicsmagick' instead of `convert` from 'imagemagick'.
-  # FIXME: Rewrite Makefile
-  - name: /!/ `colorpick`
+  - name: "/v/ wl-color-picker"
+    git:
+      repo: "{{ repo }}"
+      dest: "{{ dest }}"
+      # TODO: Allow update after fixing the issues.
+      update: false
 
-    vars:
-      repo: https://github.com/jgmdev/wl-color-picker
-      dest: "{{ XDG_APP_DIR }}/wl-color-picker"
+  - name: "/!/ wl-color-picker"
+    make:
+      chdir: "{{ dest }}"
+      target: "install"
+    become: true
 
-    block:
+  - debug:
+      msg: "TODO: colorpick"
 
-    - name: /!/ required packages
-      package:
-        name:
-          - make
-          - graphicsmagick
-          - slurp
-          - grim
-          - zenity
-      become: true
-
-    - name: /v/ 'wl-color-picker'
-      git:
-        repo: "{{ repo }}"
-        dest: "{{ dest }}"
-        # TODO: Allow update after fixing the issues.
-        update: false
-
-    - name: Install 'wl-color-picker'
-      community.general.make:
-        chdir: "{{ dest }}"
-        target: install
-      become: true
 
 - name: "/!/ foot terminal"
 
