@@ -1,0 +1,6 @@
+---
+- name: "Arbitrary `uws set roles/<role>`"
+  hosts: "all"
+  tasks:
+    - import_role:
+        name: "{{ role }}"

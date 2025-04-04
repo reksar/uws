@@ -1,0 +1,11 @@
+- name: "/?/ has battery"
+  shell: "ls /sys/class/power_supply/BAT*"
+  register: ls
+  changed_when: false
+  failed_when: false
+
+- name: "/!/ Battery utils"
+  when: ls.rc == 0
+  block:
+    - debug:
+        msg: "TODO"

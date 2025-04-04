@@ -3,11 +3,11 @@
 
 usage() {
 cat << EOF
-Setup Linux environment:
+Setup the Linux environment:
 
-  uws set <Ansible playbook>
+  uws set {<playbook>|roles/<role>}
 
-Testing:
+Run tests:
 
   uws test [bash|ansible]
 EOF

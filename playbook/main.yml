@@ -1,4 +1,11 @@
-- import_playbook: "{{ playbook_dir }}/app.yml"
+---
+- name: "Default uws tasks"
+  hosts: "all"
+  roles:
+    - "local.uws.system"
+    - "local.uws.workstation"
+
+# TODO: Refactoring
 - import_playbook: "{{ playbook_dir }}/fs.yml"
 - import_playbook: "{{ playbook_dir }}/locale.yml"
 - import_playbook: "{{ playbook_dir }}/git.yml"

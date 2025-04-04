@@ -4,35 +4,63 @@ Configures a Linux environment. Some configs work on Cygwin as well.
 
 ## Usage
 
-### Setup Linux environment
+### Setup the Linux environment
 
-`./uws set [playbook]`
+`./uws set` - run the main playbook. Same as `./uws set main`.
 
-Where the `[playbook]` is a playbook file basename or relative path without the
+#### Specify a playbook
+
+`./uws set <playbook>`
+
+Where the `<playbook>` is a playbook file basename or relative path without the
 exstension.
 
-Examples:
-    * `./uws set` is the same as `./uws set main`
-    * `./uws set app`
-    * `./uws set app/tmux`
+##### Examples
+`./uws set app`
+`./uws set app/tmux`
+
+#### Specify a role
+
+`./uws set roles/<role>`
+
+Where the `<role>` can be a local role either from `playbook/roles/` or from
+Ansible collections.
+
+##### Examples
+
+`./uws set roles/hardware` - set the hardware role placed in the `playbook` dir.
+
+`./uws set roles/local.uws.system` - setup the Linux depending on the system
+configuration. Using the role from Ansible collection `local.uws`.
 
 ### Run tests
 
-`./uws test [bash|ansible]`
+`./uws test bash` - test some bash utils
+
+`./uws test ansible` - test local ansible collection
 
 # Layout
 
 **uws** - entry point.
 
-**base** - to init base working environment and Ansible.
+**config/** - configuration files.
 
-**lib** - common scripts to be used in other scripts.
+**util/** - general-purpose executable utility scripts.
 
-**lib/ansible** - local Ansible modules and plugins.
+**lib/** - library of scripts to be included in other scripts. **NOTE:** For
+`*.sh` scripts, strive to only define functions here. Make them clear and with
+no messages for user.
 
-**util** - general-purpose executable utility scripts.
+**playbook/** - general Ansible playbooks to configure a local Linux system.
 
-`tests/bash/run.sh` - test some bash functions from `lib`.
+**res/** - resources or assets.
+
+**tests/**
+  * **bash/** - tests for the bash scripts from **util/**.
+    * **run.sh** - entry point.
+
+**base** - to init working the base environment and Ansible.
+*Need to be refactored.*
 
 ## Util
 

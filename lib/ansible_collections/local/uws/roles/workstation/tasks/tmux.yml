@@ -1,0 +1,4 @@
+- name: "/!/ tmux package"
+  package:
+    name: "tmux"
+  become: true

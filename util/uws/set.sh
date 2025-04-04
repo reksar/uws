@@ -2,33 +2,48 @@
 
 uws="${uws:-$(cd "$(dirname $BASH_SOURCE[0])/../.." && pwd)}"
 
-. "$uws/lib/uws/env.sh"
 . "$uws/lib/uws/ansible.sh"
+. "$uws/lib/uws/set.sh"
 
-ensure_ansible || exit 1
 
-# Playbook {{{
-playbook="${1:-main}"
+# -- Parse arg {{{
 
-[[ -f "$playbook" ]] || {
-  INFO "Determining the '$playbook' playbook path."
-  playbook="$uws/playbook/$playbook.yml"
+arg="${1:-}"
 
-  [[ -f "$playbook" ]] || {
-    ERR "Playbook is not found: '$playbook'!"
-    exit 2
-  }
+playbook="$(playbook "$arg")"
 
-  OK "Using the '$playbook'"
+[[ -z "$playbook" ]] && {
+  ERR "Playbook is not found: '$playbook'!"
+  exit 1
 }
-# Playbook }}}
 
-# Extra vars {{{
+INFO "Using the playbook '$playbook'."
+
+role="$(role "$arg")"
+
+[[ -n "$role" ]] && INFO "Using the role '$role'."
+
+# -- Parse arg }}}
+
+
+# -- Extra vars {{{
+
+[[ -z "${XDG_CONFIG_HOME:-}" ]] && {
+  WARN "\$XDG_CONFIG_HOME is not set, using the '$HOME/.config'."
+  XDG_CONFIG_HOME="$HOME/.config"
+}
+
+# TODO: Make persistent when no XDG utils.
+XDG_APP_DIR="$(xdg-user-dir APP)"
+
 xdg_vars="$(set | grep XDG_ | tr '\n' ' ')"
-extra_vars="uws='$uws' $xdg_vars"
-# Extra vars }}}
+role_var="${role:+role=\'${role}\'}"
+extra_vars="uws='$uws' $xdg_vars $role_var"
 
-ansible-playbook \
+# -- Extra vars }}}
+
+
+ensure_ansible && ansible-playbook \
   --inventory=localhost, \
   --connection=local \
   --ask-become-pass \
