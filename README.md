@@ -39,28 +39,28 @@ configuration. Using the role from Ansible collection `local.uws`.
 
 `./uws test ansible` - test local ansible collection
 
-# Layout
+# Project layout
 
-**uws** - entry point.
+**uws** - Entry point.
 
-**config/** - configuration files.
+**config/** - Configuration files.
 
-**util/** - general-purpose executable utility scripts.
+**util/** - General-purpose executable utility scripts.
 
-**lib/** - library of scripts to be included in other scripts. **NOTE:** For
+**lib/** - Library of scripts to be included in other scripts. **NOTE:** For
 `*.sh` scripts, strive to only define functions here. Make them clear and with
 no messages for user.
 
-**playbook/** - general Ansible playbooks to configure a local Linux system.
+**playbook/** - General Ansible playbooks to configure a local Linux system.
 
-**res/** - resources or assets.
+**res/** - Resources and assets.
 
 **tests/**
-  * **bash/** - tests for the bash scripts from **util/**.
-    * **run.sh** - entry point.
+  * **bash/** - Tests the bash scripts from **util/**, **lib/**.
+    * **run.sh** - Entry point.
 
 **base** - to init working the base environment and Ansible.
-*Need to be refactored.*
+*NOTE: Refactoring is needed.*
 
 ## Util
 
@@ -137,20 +137,19 @@ Using the `ansible-doc` for the local `ansible_collections`:
 
 ### Utility message types (glossary)
 
-Prefixes of a `- name:` values.
+Prefixes of a `- name:` values for Ansible tasks.
 
 **/!/** - Ensure. If something needs to be done, try to do it. Fail otherwise.
 
-**/*/** - Setting.
+**/*/** - Setting / option.
 
-**/?/** - Search.
+**/?/** - Search / read.
 
 **/./** - Store value in variable.
 
-**/../** - Store a collection of values in variable. Or map a collection to
-           make some data transformation.
+**/../** - Store / transform a collection of values in variable.
 
-**/%/** - Filter a collection.
+**/%/** - Filter a data collection.
 
 **/v/** - Download.
 

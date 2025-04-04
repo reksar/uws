@@ -1,0 +1,42 @@
+- name: "/?/ batteries"
+  find:
+    paths: "/sys/class/power_supply"
+    patterns: "BAT*"
+    file_type: "link"
+  register: batteries
+
+- set_fact:
+    battery_paths: "{{ batteries.files | map(attribute='path') }}"
+    validators:
+      - { "file": "capacity", "re": "[1-9]\\d*" }
+      - { "file": "status", "re": "Charging|Discharging" }
+
+- name: "/%/ batteries by valid params"
+  find:
+    paths: "{{ battery_paths }}"
+    patterns: "{{ item.file }}"
+    contains: "{{ item.re }}"
+  loop: "{{ validators }}"
+  register: filtered
+
+- set_fact:
+    battery_path: >-
+      {{
+        filtered.results
+        | map(attribute='files')
+        | flatten
+        | map(attribute='path')
+        | map('dirname')
+        | community.general.counter
+        | dict2items
+        | selectattr('value', 'equalto', validators | length)
+        | map(attribute='key')
+        | first
+      }}
+
+- name: "/>/ battery util script"
+  template:
+    src: "files/battery.sh"
+    dest: "/usr/local/bin/battery"
+    mode: "u=rwx,g=rx,o=rx"
+  become: true

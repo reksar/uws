@@ -1,4 +1,49 @@
-- name: "/!/ tmux package"
+- name: "/!/ tmux packages"
   package:
-    name: "tmux"
+    name:
+      - "tmux"
+      - "git"
   become: true
+
+# TODO: Ensure plugged in '.tmux.conf'
+- name: "/!/ TPM - Tmux Plugin Manager"
+  git:
+    repo: "https://github.com/tmux-plugins/tpm"
+    dest: "{{ ansible_env.HOME }}/.tmux/plugins/tpm"
+    depth: 1
+
+
+- name: "Configure battery status"
+
+  vars:
+    battery_status: "#(battery) | "
+
+  block:
+
+  - name: "Configure battery"
+    import_role:
+      name: "local.uws.system"
+      tasks_from: "battery"
+
+  - name: "/?/ battery util"
+    stat:
+      path: "/usr/local/bin/battery"
+    register: battery_util
+
+  - set_fact:
+      battery: "{{ battery_util.stat.exists | ternary(battery_status, '') }}"
+
+
+- name: "/!/ tmux config"
+  vars:
+    language: "TODO:lang | "
+  template:
+    src: "{{ uws }}/config/tmux.conf"
+    dest: "{{ ansible_env.HOME }}/.tmux.conf"
+
+    # The default Jinja "{{ var }}" expressions are not available because of
+    # the Vim folding markers are used in comments.
+    variable_start_string: "<<"
+    variable_end_string: ">>"
+
+  notify: "Reload tmux config"

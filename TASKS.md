@@ -1,7 +1,12 @@
 [X] `uws set roles/<role>`
-[ ] roles/system
-  * [ ] battery info
+[X] roles/system
+  * [X] battery info
 [ ] roles/tmux
-  * [ ] install tmux
-  * [ ] battery status
-  * [ ] language (keyboard layout)
+  * [X] install tmux
+    * [X] install TPM
+  * [ ] Status bar
+    * [X] battery
+    * [ ] language (keyboard layout)
+    * [ ] Restyle inactive pane
+  * [ ] Simplify scrolling
+[ ] Move playbooks to the Ansible collection

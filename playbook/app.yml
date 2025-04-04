@@ -58,5 +58,4 @@
 
 - import_playbook: "{{ playbook_dir }}/app/mpv.yml"
 - import_playbook: "{{ playbook_dir }}/app/ranger.yml"
-- import_playbook: "{{ playbook_dir }}/app/tmux.yml"
 - import_playbook: "{{ playbook_dir }}/app/vim.yml"
