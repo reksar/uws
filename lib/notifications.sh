@@ -47,6 +47,7 @@ __notifications__notify() {
 
   # Join the message args.
   local msg=""
+  local arg=""
   for arg in ${@:$MSG_START:$overcount}
   do
     local msg+=" $arg"
