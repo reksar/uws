@@ -1,3 +1,0 @@
----
-- import_playbook: "{{ playbook_dir }}/keymap/console.yml"
-- import_playbook: "{{ playbook_dir }}/keymap/hyprland.yml"

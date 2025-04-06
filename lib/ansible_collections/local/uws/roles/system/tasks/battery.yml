@@ -36,7 +36,7 @@
 
 - name: "/>/ battery util script"
   template:
-    src: "files/battery.sh"
+    src: "templates/battery.sh"
     dest: "/usr/local/bin/battery"
     mode: "u=rwx,g=rx,o=rx"
   become: true

@@ -1,0 +1,3 @@
+- name: "Reload console config"
+  shell: "systemctl restart systemd-vconsole-setup.service"
+  become: true

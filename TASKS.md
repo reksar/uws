@@ -1,7 +1,7 @@
 [X] `uws set roles/<role>`
-[X] roles/system
+[X] system role
   * [X] battery info
-[ ] roles/tmux
+[ ] tmux
   * [X] install tmux
     * [X] install TPM
   * [ ] Status bar
@@ -9,4 +9,7 @@
     * [ ] language (keyboard layout)
     * [ ] Restyle inactive pane
   * [ ] Simplify scrolling
+[ ] Hyprland
+  * [ ] Kill active window on `Alt+F4` or `Alt+Zoom`
 [ ] Move playbooks to the Ansible collection
+[ ] Make the *locale* meta role: collect the *locale* tasks from other roles

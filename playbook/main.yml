@@ -1,12 +1,14 @@
 ---
 - name: "Default uws tasks"
   hosts: "all"
+  vars_files:
+    - "{{ uws }}/config/uws.yml"
   roles:
     - "local.uws.system"
+    - "local.uws.locale"
     - "local.uws.workstation"
 
 # TODO: Refactoring
 - import_playbook: "{{ playbook_dir }}/fs.yml"
-- import_playbook: "{{ playbook_dir }}/locale.yml"
 - import_playbook: "{{ playbook_dir }}/git.yml"
 - import_playbook: "{{ playbook_dir }}/hyprland.yml"

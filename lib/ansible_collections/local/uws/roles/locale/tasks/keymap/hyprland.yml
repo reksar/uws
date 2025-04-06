@@ -1,0 +1,35 @@
+# TODO: Run only if the Hyprland installed.
+# TODO: Move to the hyprland role.
+
+- include_vars:
+    file: "keyboard.yml"
+
+- set_fact:
+    config:
+      file: "{{ uws }}/config/hyprland.conf"
+      indent: "  "
+
+- set_fact:
+    kb_layout: "{{ layouts | map('regex_replace', '\\..*', '') | join(',') }}"
+
+# For example, if the uws setting `keyboard.layout.switch == 'Alt+Shift'`,
+# then here we get 'alt_shift'.
+- set_fact:
+    switch: "{{ keyboard.layout.switch | lower | regex_replace('\\+', '_') }}"
+
+# TODO: What if some other options are already set by this?
+- set_fact:
+    kb_options: "grp:{{ switch }}_toggle"
+
+# FIXME: Write the direct config
+- name: "/*/ Hyprland keyboard settings"
+  lineinfile:
+    path: "{{ config.file }}"
+    regexp: "^\\s*{{ item.name }}\\s*=.*"
+    line: "{{ config.indent + item.name }} = {{ item.value }}"
+    insertafter: "input {"
+    validate: >
+      '{{ uws }}/util/validate/gc.sh' '%s' '^\s*{{ item.name }}\s*=' '1'
+  loop:
+    - {'name': 'kb_layout', 'value': "{{ kb_layout }}"}
+    - {'name': 'kb_options', 'value': "{{ kb_options }}"}

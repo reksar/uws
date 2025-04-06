@@ -1,0 +1,66 @@
+# Formats of `locale -a` and `/etc/locale.(conf|gen)` outputs are differ.
+# Usually there is no compatibility issues, but I prefer to follow the
+# traditional naming conventions.
+#
+# If the `locales.system.<LC>` has the format of `locale -a`, it will be
+# converted to the format of the config file: the ".uft<n>" suffix will be
+# replaced with the ".UTF-<n>".
+- name: "/!/*/ System default locales"
+  set_fact:
+    locale: >
+      {{
+        locale | combine(
+          {
+            'default': {
+              item.key: item.value | regex_replace('\.utf(\d+)$', '.UTF-\1'),
+            },
+          },
+          recursive=true,
+        )
+      }}
+  loop: "{{ locale.default | dict2items }}"
+  # Do reverse convertation to ensure the default system locale will be
+  # generated before, using the required `locales`.
+  failed_when: >
+    (
+      locale.default
+      | dict2items
+      | map(attribute='value')
+      | map('regex_replace', '\.UTF-(\d+)$', '.utf\1')
+      | unique
+    ) is subset(locale.list)
+
+- name: "/?/ Available locales"
+  shell:
+    cmd: "locale -a"
+  register: available_locales
+  changed_when: false
+
+- name: "/../ Available locales"
+  set_fact:
+    available_locales: "{{ available_locales.stdout_lines }}"
+
+- name: "/%/ Missing locales"
+  set_fact:
+    missing_locales: >
+      {{
+        available_locales
+        | intersect(locale.list)
+        | symmetric_difference(locale.list)
+      }}
+
+# TODO: Generate locales
+# * Uncomment `/etc/locale.gen`
+# * Run `locale-gen`
+
+# Editing the `/etc/locale.conf` directly instead of using the `localectl` is
+# more general solution.
+- name: "/*/ System locale defaults"
+  lineinfile:
+    path: "/etc/locale.conf"
+    regexp: "^\\s*({{ item.key }}=).*"
+    line: "{{ item.key }}={{ item.value }}"
+    validate: >
+      '{{ uws }}/util/validate/gc.sh' '%s' '{{ item.key }}={{ item.value }}'
+  loop: "{{ locale.default | dict2items }}"
+  become: true

@@ -1,13 +1,6 @@
 ---
 - name: "Hyprland config"
   hosts: "all"
-
-  vars:
-
-    config:
-      name: "hyprland.conf"
-      dir: "{{ XDG_CONFIG_HOME }}"
-
   tasks:
 
   - import_tasks: "{{ playbook_dir }}/wayland/app.yml"
@@ -17,7 +10,7 @@
       name: "hyprland"
     become: true
 
-  - name: "/!/ {{ config.name }}"
+  - name: "/!/ hyprland.conf"
     copy:
-      src: "{{ uws }}/config/{{ config.name }}"
-      dest: "{{ config.dir }}/hypr/{{ config.name }}"
+      src: "{{ uws }}/config/hyprland.conf"
+      dest: "{{ XDG_CONFIG_HOME }}/hypr/hyprland.conf"

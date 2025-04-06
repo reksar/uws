@@ -1,0 +1,43 @@
+# Use `keyboard.layout.list` or build the list based on the `locale.list`:
+#   * take '<xx>_<YY>' or '<xx>_<YY>.<CP>'
+#   * map -> '<xx>' or '<xx>.<CP>'
+#   * map '<xx>' -> '<xx>.utf8' so all values became '<xx>.<CP>'.
+#
+# Additionaly, replace the 'en' to 'us' if needed.
+layouts: >
+  {{
+    (
+      keyboard.layout.list or (
+        locale.list
+        | map('regex_search', '^\w+_\w+(\..*){0,1}')
+        | reject('==', None)
+        | map('regex_replace', '_\w+', '')
+        | map('regex_replace', '^(\w+)$', '\1.utf8')
+        | map('lower')
+        | unique
+      )
+    )
+    | map(
+      'regex_replace',
+      '^en\.',
+      keyboard.layout.en_to_us | ternary('us.', 'en.')
+    )
+  }}
+
+keymap:
+  dir: "/usr/share/kbd/keymaps/i386/qwerty"
+  default: "us.utf8"
+  # list:
+  #   <keyboard layout>:
+  #     <layout switch>: <keymap>
+  list:
+    us.utf8:
+      # These are stubs. Hotkeys does not affect anything.
+      ctrl+shift: "us.map.gz"
+      alt+shift: "us.map.gz"
+    ru.utf8:
+      ctrl+shift: "ru.map.gz"
+      alt+shift: "ruwin_alt_sh-UTF-8.map.gz"
+    ru.cp1251:
+      ctrl+shift: "ruwin_ct_sh-CP1251.map.gz"
+      alt+shift: "ru_win.map.gz"

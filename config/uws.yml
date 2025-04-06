@@ -10,7 +10,13 @@ locale:
     LC_MESSAGES: C.utf8
 
 keyboard:
+
   layout:
+
+    # Can be the one of (case insesitive):
+    #  alt+shift
+    #  ctrl+shift
+    switch: alt+shift
 
     # Automaticaly convert 'en' layout to 'us'.
     en_to_us: true
@@ -25,17 +31,10 @@ keyboard:
     #
     # NOTE: If the list contains more than 2 items, then only first != 'en'
     #       item will be used for the console layout.
-    # TODO: Support more than 2 items.
+    # TODO: Support more than 2 items for console.
     #
     # NOTE: If the list is empty (null), then the `locale.list` will be used.
     list:
-
-    # Can be (case insesitive):
-    # * Alt+Shift
-    # * Ctrl+Shift
-    #
-    # SEE: `keymap` var in the 'keyboard/console.yml'.
-    switch: Alt+Shift
 
 git:
   user:
