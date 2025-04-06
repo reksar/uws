@@ -1,0 +1,23 @@
+---
+- name: "Uninstall pyenv"
+  hosts: "all"
+  tasks:
+
+  # TODO: Remove packages.
+
+  - name: "/x/ pyenv repo"
+    file:
+      path: "{{ ansible_env.HOME }}/.pyenv"
+      state: "absent"
+
+  - name: "/x/ pyenv bash integration"
+    blockinfile:
+      path: "{{ ansible_env.HOME }}/.bashrc.auto"
+      block: |-
+        export PYENV_ROOT="$HOME/.pyenv"
+        [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+        eval "$(pyenv init - bash)"
+      marker: "# -- pyenv {mark}"
+      marker_begin: "{{ '{{{' }}"
+      marker_end: "{{ '}}}' }}"
+      state: "absent"

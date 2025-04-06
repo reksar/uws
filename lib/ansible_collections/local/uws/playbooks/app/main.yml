@@ -1,3 +1,4 @@
+# TODO: Refactoring.
 ---
 - name: "Install Applications"
   hosts: "all"
@@ -56,6 +57,6 @@
         - fontforge
     become: true
 
-- import_playbook: "{{ playbook_dir }}/app/mpv.yml"
-- import_playbook: "{{ playbook_dir }}/app/ranger.yml"
-- import_playbook: "{{ playbook_dir }}/app/vim.yml"
+- import_playbook: "mutil/uws/set.shpv.yml"
+- import_playbook: "ranger.yml"
+- import_playbook: "vim.yml"
