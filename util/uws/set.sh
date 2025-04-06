@@ -8,12 +8,12 @@ uws="${uws:-$(cd "$(dirname $BASH_SOURCE[0])/../.." && pwd)}"
 
 # -- Parse arg {{{
 
-arg="${1:-}"
+arg="${1:-main}"
 
 playbook="$(playbook "$arg")"
 
 [[ -z "$playbook" ]] && {
-  ERR "Playbook is not found: '$playbook'!"
+  ERR "Playbook is not found: '$arg'!"
   exit 1
 }
 

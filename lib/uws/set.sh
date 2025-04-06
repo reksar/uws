@@ -1,24 +1,27 @@
-# Utils to parse an <argument> passed to `uws set <argument>`.
-
 uws="${uws:-$(cd "$(dirname $BASH_SOURCE[0])/../.." && pwd)}"
 
 
 role() {
-  local arg="${1:-}"
-  [[ "$arg" =~ ^roles/ ]] && echo "${arg#roles/}"
+  # Shows a role name without the prefix.
+  local alias="${1:-}"
+  [[ "$alias" =~ ^roles/ ]] && echo "${alias#roles/}"
 }
 
 
 playbook() {
+  # Shows a playbook file path by the specified playbook alias.
 
-  local arg="${1:-main}"
+  local alias="${1:-}"
 
-  [[ -f "$arg" ]] && echo "$arg" && return
-  [[ -f "$uws/$arg" ]] && echo "$uws/$arg" && return
-  [[ -f "$uws/playbook/$arg" ]] && echo "$uws/playbook/$arg" && return
+  local collection="$uws/lib/ansible_collections/local/uws"
+  local playbooks="$collection/playbooks"
 
-  [[ -n $(role "$arg") ]] && local name="role" || local name="$arg"
-  local file="$uws/playbook/$name.yml"
+  [[ -f "$alias" ]] && echo "$alias" && return
+  [[ -f "$collection/$alias" ]] && echo "$collection/$alias" && return
+  [[ -f "$playbooks/$alias" ]] && echo "$playbooks/$alias" && return
+
+  [[ -n $(role "$alias") ]] && local name="role" || local name="$alias"
+  local file="$playbooks/$name.yml"
   [[ -f "$file" ]] && echo "$file"
 }
 
