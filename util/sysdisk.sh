@@ -191,7 +191,7 @@ is_blockdev_fs $grub_fs || {
   WARN "GRUB partition FS $grub_fs is not set for a block device!"
 }
 
-__is_mkfs $grub_fs || {
+_is_mkfs $grub_fs || {
   ERR "GRUB partition FS $grub_fs is not supported by \`_mkfs\`!"
   exit 3
 }
@@ -211,7 +211,7 @@ is_blockdev_fs $efi_fs || {
   WARN "EFI partition FS $efi_fs is not set for a block device!"
 }
 
-__is_mkfs $efi_fs || {
+_is_mkfs $efi_fs || {
   ERR "EFI partition FS $efi_fs is not supported by \`_mkfs\`!"
   exit 3
 }
@@ -223,7 +223,7 @@ is_blockdev_fs $root_fs || {
   WARN "ROOT partition FS $root_fs is not set for a block device!"
 }
 
-__is_mkfs $root_fs || {
+_is_mkfs $root_fs || {
   ERR "ROOT partition FS $root_fs is not supported by \`_mkfs\`!"
   exit 3
 }
