@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import argparse
 import os
 import re
@@ -24,11 +26,13 @@ item_1 = itemgetter(1)
 
 
 QEMU_SYSTEM="qemu-system-"
+
 QEMU_SYSTEM_ALIASES = {
     "x64": "x86_64",
     "x86": "i386",
     "x32": "i386",
 }
+
 RAM_DEFAULT = "2G"
 
 
@@ -39,22 +43,27 @@ class ArgParser(argparse.ArgumentParser):
         super().__init__(
             description="QEMU runner",
             usage=(
-                "qemu [system] {options} {-h | --help}\n" +
-                "testing: python -m doctest qemu.py {-v}"
+                "qemu [system] {options | --help | -h}\n" +
+                "QEMU native {options} forwarding is available."
             ),
         )
 
         system_choices = QemuSystem.available_choices()
-        additional_system_help = system_choices and (
-            f"There are '{QEMU_SYSTEM}*' executables are available, so you" +
-            f" can also specify one of these values: {system_choices}."
+
+        additional_system_help = (
+            system_choices and (
+                f"There are standard '{QEMU_SYSTEM}*' executables found, so " +
+                f"these aliases available: {system_choices}."
+            )
         ) or ""
 
-        # NOTE: Ommiting the `choices` arg here allows to specify an arbitrary
-        # QEMU system executable.
+        # NOTE: Ommiting the `choices` allows to specify an arbitrary QEMU exe.
         self.add_argument(
             "system",
-            help=f"QEMU system executable. {additional_system_help}",
+            help=(
+                f"QEMU executable: arbitrary, system or alias. " +
+                additional_system_help
+            ),
         )
 
         self.add_argument(
@@ -68,7 +77,11 @@ class ArgParser(argparse.ArgumentParser):
             metavar=("path", "size"),
             nargs="+",
             action="append",
-            help="Physical disk device or disk image path.",
+            help=(
+                "Physical disk device or disk image path. " +
+                "When the specified image does not exist, the [size] can be " +
+                "used to create it automatically."
+            ),
         )
 
         # TODO
@@ -90,8 +103,12 @@ class ArgParser(argparse.ArgumentParser):
 
         self.add_argument(
             "-port",
-            metavar="host_port:guest_port",
-            help="Port forwarding.",
+            metavar="host:guest",
+            help=(
+                "TCP port forwarding. For example, to make the guest 22 TCP " +
+                "port (SSH) available on the host 2222 TCP port, " +
+                "set '-port 2222:22'."
+            ),
         )
 
         # SEE: https://www.qemu.org/docs/master/system/introduction.html#virtualisation-accelerators
@@ -100,9 +117,9 @@ class ArgParser(argparse.ArgumentParser):
             metavar="type",
             default=QemuSystem.default_accel(),
             help=(
-                f"Virtualization acceleration." +
-                f" Default is '{QemuSystem.default_accel()}'." +
-                 " Set 'no' to disable."
+                f"Virtualization acceleration. " +
+                f"Default is '{QemuSystem.default_accel()}'. " +
+                 "Set 'no' to disable."
             ),
         )
 
@@ -112,8 +129,8 @@ class ArgParser(argparse.ArgumentParser):
             nargs="?",
             default=True,
             help=(
-                "Boots via UEFI by default. You can specify a BIOS file or" +
-                " ommit the file path to boot via default QEMU BIOS."
+                "Boots via UEFI by default. You can specify a BIOS file or " +
+                "ommit the file path to boot via default QEMU BIOS."
             ),
         )
 
@@ -176,7 +193,7 @@ class OptionAdapter:
         ''
         """
         regular = OptionAdapter.to_regular(name, value)
-        return regular and OptionAdapter.to_shell(*regular) or ""
+        return (regular and OptionAdapter.to_shell(*regular)) or ""
 
 
     @staticmethod
@@ -326,7 +343,7 @@ class QemuSystem:
     @staticmethod
     @lru_cache(maxsize=1)
     def available():
-        qemu_system = re.compile(f"^{QEMU_SYSTEM}(\w+)$")
+        qemu_system = re.compile(f"^{QEMU_SYSTEM}(\\w+)$")
         qemu_matches = filter(None, map(qemu_system.fullmatch, exe_names()))
         return tuple(map(item_1, qemu_matches))
 
@@ -361,13 +378,39 @@ class QemuSystem:
 class DiskImageMixin:
 
     def format(self):
+        """
+        >>> x=DiskImageMixin(); x.path=Path("/path/to/file"); x.format()
+        'raw'
+        >>> x=DiskImageMixin(); x.path=Path("file.img"); x.format()
+        'raw'
+        >>> x=DiskImageMixin(); x.path=Path("file.iso"); x.format()
+        'raw'
+        >>> x=DiskImageMixin(); x.path=Path("file.qcow"); x.format()
+        'qcow'
+        >>> x=DiskImageMixin(); x.path=Path("file.qcow2"); x.format()
+        'qcow2'
+        >>> x=DiskImageMixin(); x.path=Path("fileqcow2"); x.format()
+        'raw'
+        """
         ext = self.extension()
         return ext.startswith("qcow") and ext or "raw"
 
 
     def extension(self):
-        match = re.search("\.(qcow2?|img|iso)$", self.path.suffix)
-        return match and match[1] or ""
+        """
+        >>> x=DiskImageMixin(); x.path=Path("file.qcow"); x.extension()
+        'qcow'
+        >>> x=DiskImageMixin(); x.path=Path("file.qcow2"); x.extension()
+        'qcow2'
+        >>> x=DiskImageMixin(); x.path=Path("file.img"); x.extension()
+        'img'
+        >>> x=DiskImageMixin(); x.path=Path("file.iso"); x.extension()
+        'iso'
+        >>> x=DiskImageMixin(); x.path=Path("file.iso2"); x.extension()
+        ''
+        """
+        match = re.search(r"\.(qcow2?|img|iso)$", self.path.suffix)
+        return (match and match[1]) or ""
 
 
 class QemuDrive(DiskImageMixin):
@@ -447,11 +490,11 @@ class QemuDisk(DiskImageMixin):
             if self.path.match("/dev/*"):
                 raise FileNotFoundError(f"No disk device: '{self.path}'!")
             raise ValueError(
-                f"Unable to create the '{self.path}' disk image, because" +
-                f" the size is not provided!"
+                f"Unable to create the '{self.path}' disk image, because " +
+                f"the size is not provided!"
             )
         if not is_exe("qemu-img"):
-            raise FileNotFoundError("No 'qemu-img' cmd!")
+            raise FileNotFoundError("No 'qemu-img' executable!")
         status = shell(
             "qemu-img",
             "create",
@@ -489,20 +532,16 @@ class Bios:
 
     @staticmethod
     def local():
-
         config = Sys.config_home()
         if not config:
             print("ERR: Unable to detect a home config path!")
             return
-
         bios = config.joinpath(Bios.default_file)
         if Path(bios).is_file():
             print("INFO: Using local UEFI.")
             return bios
-
         # TODO: Try to get OVMF from
         # https://www.qemu-advent-calendar.org/2014/download/qemu-xmas-uefi-zork.tar.xz
-
         print(f"WARN: Unable to use local UEFI '{bios}'!")
 
 
@@ -517,24 +556,25 @@ class Sys:
 
     @staticmethod
     def config_home_from_env():
-        for env, postprocess in (
+        for name, path in (
+            # NOTE: Mind the order!
             (
                 "XDG_CONFIG_HOME",
-                lambda x: x,
-            ),
-            (
-                "HOME",
-                lambda x: (x, Bios.default_config_dir),
+                lambda env: Path(env),
             ),
             (
                 "XDG_CONFIG_DIRS",
-                lambda x: x.split(":")[0],
+                lambda env: Path(env.split(":")[0]),
+            ),
+            (
+                "HOME",
+                lambda env: Path(env, Sys.default_config_dir),
             ),
         ):
-            path = os.getenv(env)
-            if path:
-                return Path(postprocess(path))
-            print(f"WARN: no ${env} env var!")
+            env = os.getenv(name)
+            if env:
+                return path(env)
+            print(f"WARN: ${name} is not set!")
 
 
     @staticmethod
@@ -547,7 +587,7 @@ class Sys:
 
 def pipe(*functions):
     """
-    `pipe(f2,f1)(x)` is the same as the composition `f2(f1(x))`, e.g.:
+    The `pipe(f2,f1)(x)` is the same as composition `f2(f1(x))`:
     >>> pipe(bin,ord)('!') == bin(ord('!'))
     True
     """

@@ -17,7 +17,7 @@ exstension.
 
 ##### Examples
 `./uws set app`
-`./uws set app/tmux`
+`./uws set app/qemu`
 
 #### Specify a role
 
@@ -35,29 +35,34 @@ configuration. Using the role from Ansible collection `local.uws`.
 
 ### Run tests
 
-`./uws test bash` - test some bash utils
+Test the Ansible collection at `lib/ansible_collections/local/uws`:
+`./uws test ansible`
 
-`./uws test ansible` - test local ansible collection
+Test `lib` bash scripts:
+`./uws test bash`
+
+Test `util` scripts:
+run a `tests/util/*` executable
 
 # Project layout
 
 **uws** - Entry point.
 
-**config/** - Configuration files.
+**config/** - Configuration files. Store all in one place.
 
 **util/** - General-purpose executable utility scripts.
 
-**lib/** - Library of scripts to be included in other scripts. **NOTE:** For
-`*.sh` scripts, strive to only define functions here. Make them clear and with
-no messages for user.
-
-**playbook/** - General Ansible playbooks to configure a local Linux system.
+**lib/** - Library of scripts to be included in other scripts. **NOTE:** strive
+to only **define** common functions here. Make them clear and without the
+side-effects, like user messages.
+  * **ansible_collections/** - local Ansible collections.
 
 **res/** - Resources and assets.
 
 **tests/**
   * **bash/** - Tests the bash scripts from **util/**, **lib/**.
     * **run.sh** - Entry point.
+  * **util/** - tests for utility scripts.
 
 **base** - to init working the base environment and Ansible.
 *NOTE: Refactoring is needed.*
