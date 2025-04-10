@@ -1,0 +1,8 @@
+- name: "/!/ System base utils"
+  package:
+    name:
+      - "patch"
+      - "sshfs"
+      - "unzip"
+      - "zip"
+  become: true

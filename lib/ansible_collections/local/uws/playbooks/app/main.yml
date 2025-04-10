@@ -10,9 +10,6 @@
       name:
         - rsync
         - pv
-        - patch
-        - zip
-        - unzip
         - fzf
         - ripgrep
         - ripgrep-all
