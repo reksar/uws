@@ -40,6 +40,8 @@
 
   - name: "Run '{{ playbook_target }}' tasks from all related roles"
     include_role:
-      name: "{{ item }}"
+      name: "{{ role_name }}"
       tasks_from: "{{ playbook_target }}"
     loop: "{{ related_roles }}"
+    loop_control:
+      loop_var: "role_name"

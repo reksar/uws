@@ -16,6 +16,7 @@ let &clipboard = has('win32') ? 'unnamed' : 'unnamedplus'
 
 set termguicolors
 set background=dark
+set mouse=a
 
 set path+=**
 
