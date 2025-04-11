@@ -1,3 +1,9 @@
+- name: "/?/ tmux running"
+  shell: "tmux info"
+  register: tmux_info
+  changed_when: tmux_info.rc == 0
+  failed_when: false
+  notify: "Reload tmux config"
+
 - name: "Reload tmux config"
-  shell:
-    cmd: "tmux source {{ ansible_env.HOME }}/.tmux.conf"
+  shell: "tmux source {{ ansible_env.HOME }}/.tmux.conf"

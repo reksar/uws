@@ -40,10 +40,8 @@
   template:
     src: "{{ uws }}/config/tmux.conf"
     dest: "{{ ansible_env.HOME }}/.tmux.conf"
-
     # The default Jinja "{{ var }}" expressions are not available because of
     # the Vim folding markers are used in comments.
     variable_start_string: "<<"
     variable_end_string: ">>"
-
-  notify: "Reload tmux config"
+  notify: "/?/ tmux running"
