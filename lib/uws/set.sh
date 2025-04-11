@@ -1,15 +1,32 @@
 uws="${uws:-$(cd "$(dirname $BASH_SOURCE[0])/../.." && pwd)}"
 
 
-role() {
-  # Shows a role name without the prefix.
+playbook_name() {
+  # Shows a playbook file base name (can be prepended by nested dirs) from the
+  # specified `uws set <alias>`.
+
   local alias="${1:-}"
-  [[ "$alias" =~ ^roles/ ]] && echo "${alias#roles/}"
+
+  local prefix
+
+  for prefix in "roles" "tasks"
+  do
+    [[ "$alias" =~ ^$prefix/ ]] && echo "$prefix" && return
+  done
+
+  echo "$alias"
 }
 
 
-playbook() {
-  # Shows a playbook file path (if found) by the specified playbook alias.
+playbook_target() {
+  local alias="${1:-}"
+  local name="$(playbook_name "$alias")"
+  [[ "$name" == "$alias" ]] || echo "${alias#$name/}"
+}
+
+
+playbook_file() {
+  # Shows a playbook file path (if found) from the specified `uws set <alias>`.
 
   local alias="${1:-}"
 
@@ -20,7 +37,7 @@ playbook() {
   [[ -f "$collection/$alias" ]] && echo "$collection/$alias" && return
   [[ -f "$playbooks/$alias" ]] && echo "$playbooks/$alias" && return
 
-  [[ -n $(role "$alias") ]] && local name="role" || local name="$alias"
+  local name="$(playbook_name "$alias")"
   local file="$playbooks/$name.yml"
   [[ -f "$file" ]] && echo "$file"
 }

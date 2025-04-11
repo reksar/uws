@@ -6,24 +6,19 @@ uws="${uws:-$(cd "$(dirname $BASH_SOURCE[0])/../.." && pwd)}"
 . "$uws/lib/uws/set.sh"
 
 
-# -- Parse arg {{{
-
 arg="${1:-main}"
 
-playbook="$(playbook "$arg")"
+playbook="$(playbook_file "$arg")"
+target="$(playbook_target "$arg")"
 
 [[ -z "$playbook" ]] && {
   ERR "Playbook is not found: '$arg'!"
   exit 1
 }
 
-INFO "Using the playbook '$playbook'."
+INFO "Playbook: '$playbook'."
 
-role="$(role "$arg")"
-
-[[ -n "$role" ]] && INFO "Using the role '$role'."
-
-# -- Parse arg }}}
+[[ -n "$target" ]] && INFO "Target: '$target'."
 
 
 # -- Extra vars {{{
@@ -37,8 +32,8 @@ role="$(role "$arg")"
 XDG_APP_DIR="$(xdg-user-dir APP)"
 
 xdg_vars="$(set | grep XDG_ | tr '\n' ' ')"
-role_var="${role:+role=\'${role}\'}"
-extra_vars="uws='$uws' $xdg_vars $role_var"
+playbook_target="${target:+playbook_target=\'${target}\'}"
+extra_vars="uws='$uws' $playbook_target $xdg_vars"
 
 # -- Extra vars }}}
 

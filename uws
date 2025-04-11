@@ -3,9 +3,12 @@
 
 usage() {
 cat << EOF
-Setup the Linux environment:
+Configure Linux and applications:
 
-  uws set {<playbook>|roles/<role>}
+  uws set {playbook}
+  uws set roles/<role>
+  uws set roles/<namespace>.<collection>.<role>
+  uws set tasks/<relative path vithin a role>
 
 Run tests:
 

@@ -1,0 +1,45 @@
+---
+- name: "Collect from roles `uws set tasks/<relative path>`"
+  hosts: "all"
+  vars_files:
+    - "{{ uws }}/config/uws.yml"
+  vars:
+    uws_roles: "{{ uws }}/lib/ansible_collections/local/uws/roles"
+    tasks_name: "{{ playbook_target | basename }}"
+    tasks_path: "{{ playbook_target | dirname }}"
+  tasks:
+
+  - name: "/?/ all roles"
+    find:
+      path: "{{ uws_roles }}"
+      file_type: "directory"
+    register: all_roles
+
+  - set_fact:
+      search_dirs: >-
+        {{
+          all_roles.files
+          | map(attribute='path')
+          | map('regex_replace', '^(.*)$', '\1/tasks/' + tasks_path)
+        }}
+
+  - name: "/?/ tasks"
+    find:
+      paths: "{{ search_dirs }}"
+      pattern: "{{ tasks_name }}.yml"
+    register: found_tasks
+
+  - set_fact:
+      task_files: "{{ found_tasks.files | map(attribute='path') }}"
+
+  - set_fact:
+      related_roles: >
+        {{
+          task_files | map('regex_replace', uws_roles + '/(\w+)/.*', '\1')
+        }}
+
+  - name: "Run '{{ playbook_target }}' tasks from all related roles"
+    include_role:
+      name: "{{ item }}"
+      tasks_from: "{{ playbook_target }}"
+    loop: "{{ related_roles }}"

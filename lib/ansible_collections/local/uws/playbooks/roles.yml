@@ -5,4 +5,4 @@
     - "{{ uws }}/config/uws.yml"
   tasks:
     - import_role:
-        name: "{{ role }}"
+        name: "{{ playbook_target }}"
