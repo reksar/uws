@@ -9,7 +9,7 @@ role() {
 
 
 playbook() {
-  # Shows a playbook file path by the specified playbook alias.
+  # Shows a playbook file path (if found) by the specified playbook alias.
 
   local alias="${1:-}"
 

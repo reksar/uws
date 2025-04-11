@@ -2,33 +2,37 @@
 
 
 uws="$(cd "$(dirname "$BASH_SOURCE[0]")/../.." && pwd)"
+playbooks="$uws/lib/ansible_collections/local/uws/playbooks"
 . "$uws/lib/test.sh"
 . "$uws/lib/uws/set.sh"
 
 
-test_eq "$(playbook)" "$uws/playbook/main.yml" \
-  "Default playbook must be main."
+test_eq "$(playbook)" "" \
+  "Empty playbook by default."
 
-test_eq "$(playbook app)" "$uws/playbook/app.yml" \
-  "Hight level playbook."
+test_eq "$(playbook not/existing)" "" \
+  "Empty playbook when not found."
 
-test_eq "$(playbook app/vim)" "$uws/playbook/app/vim.yml" \
-  "Nested playbook."
+test_eq "$(playbook main)" "$playbooks/main.yml" \
+  "High level playbook."
 
-test_eq "$(playbook roles/role)" "$uws/playbook/role.yml" \
-  "Playbook for a local role."
+test_eq "$(playbook main.yml)" "$playbooks/main.yml" \
+  "High level playbook file."
 
-test_eq "$(playbook roles/namespace.collection.role)" "$uws/playbook/role.yml" \
-  "Playbook for a collection role."
+test_eq "$(playbook app/vim)" "$playbooks/app/vim.yml" \
+  "Nested playbook path."
 
-test_eq "$(playbook $uws/playbook/main.yml)" "$uws/playbook/main.yml" \
-  "Playbook file abs path."
+test_eq "$(playbook roles/role)" "$playbooks/role.yml" \
+  "Playbook for a role from the 'local.uws' collection."
 
-test_eq "$(playbook playbook/main.yml)" "$uws/playbook/main.yml" \
+test_eq "$(playbook roles/namespace.collection.role)" "$playbooks/role.yml" \
+  "Playbook for a role from the specified collection."
+
+test_eq "$(playbook $playbooks/main.yml)" "$playbooks/main.yml" \
+  "Playbook abs path."
+
+test_eq "$(playbook playbooks/main.yml)" "$playbooks/main.yml" \
   "Playbook file relative path."
-
-test_eq "$(playbook main.yml)" "$uws/playbook/main.yml" \
-  "Playbook file."
 
 
 test_eq "$(role play)" "" \
