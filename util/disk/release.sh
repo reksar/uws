@@ -7,13 +7,13 @@
 # * closes LUKS encrypted containers
 
 
-uws="$(cd "$(dirname "$BASH_SOURCE[0]")/.." && pwd)"
-. "$uws/lib/notifications.sh" || exit 1
+uws="$(cd "$(dirname "$BASH_SOURCE[0]")/../.." && pwd)"
 notification_title="[RELEASEDISK]"
+. "$uws/lib/notifications.sh" || exit 1
 
 
 [[ -z ${1:-} ]] && {
-  ERR "Specify a block disk device to release"
+  ERR "Specify a block disk device to release!"
   exit 1
 }
 

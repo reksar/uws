@@ -50,8 +50,6 @@ run a `tests/util/*` executable
 
 **config/** - Configuration files. Store all in one place.
 
-**util/** - General-purpose executable utility scripts.
-
 **lib/** - Library of scripts to be included in other scripts. **NOTE:** strive
 to only **define** common functions here. Make them clear and without the
 side-effects, like user messages.
@@ -69,18 +67,21 @@ side-effects, like user messages.
 
 ## Util
 
-Most of the util scripts are executable and shows the help when running without
-args or with the `-h` arg.
+General-purpose executable utility scripts.
 
-### `util/cryptdisk.sh`
+### `util/disk/`
 
-Encrypt the entire disk or partition with LUKS.
+`encrypt.sh` - encrypt the entire disk or partition with LUKS.
 
-### `util/sysdisk.sh`
+`system.sh` - partitioning the entire specified disk to be used as the system
+disk for Linux.
 
-Partitioning the entire specified disk to be used as the system Linux disk.
+`release.sh` - easely free and release a specified disk.
 
-Allows to install Linux on the partitioned disk next.
+### `util/grub.sh`
+
+GRUB setup on a specified system disk, partitioned using `util/disk/system.sh`
+or similar way.
 
 ### `util/arch/install.sh`
 
@@ -90,7 +91,7 @@ as argument.
 Uses `util/arch/install/settings.sh`. In addition, asks some questions at the
 start of the installation.
 
-### `util/terminal/*`
+### `util/terminal/`
 
 `colortest` - show color palette.
 

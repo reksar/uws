@@ -142,7 +142,7 @@ tweak_python() {
   # Tweak the Python installed in `.pyenv/versions/$version`.
   local version=$1
 
-  is_cygwin && {
+  _is_cygwin && {
     tweak_python_lib_for_cygwin $version && return 0 || return 1
   }
 
@@ -201,7 +201,7 @@ install_python_with_apt_cyg() {
 
 install_system_python() {
   is_exe apt-get && install_python_with_apt_get && return 0
-  is_cygwin && install_python_with_apt_cyg && return 0
+  _is_cygwin && install_python_with_apt_cyg && return 0
   return 1
 }
 

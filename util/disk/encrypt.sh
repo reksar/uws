@@ -10,6 +10,7 @@ notification_title="[CRYPTDISK]"
 # -- Includes -- {{{
 lib="$(cd "$(dirname "$BASH_SOURCE[0]")/../lib" && pwd)"
 . "$lib/notifications.sh" || exit 1
+. "$lib/check.sh" || exit 1
 . "$lib/disk.sh" || exit 1
 . "$lib/misc.sh" || exit 1
 # -- Includes -- }}}
@@ -43,7 +44,7 @@ exit 1
 # -- -- Help -- -- }}}
 
 
-[[ $EUID -ne 0 ]] && {
+_is_root || {
   ERR "Run it as root!"
   exit 1
 }

@@ -138,7 +138,7 @@ install_system_packages() {
   # SEE: https://github.com/pyenv/pyenv/wiki#suggested-build-environment
   # NOTE: The llvm package is optional.
   is_exe apt-get && install_packages_with_apt_get && return 0
-  is_cygwin && install_packages_with_apt_cyg && return 0
+  _is_cygwin && install_packages_with_apt_cyg && return 0
   return 1
 }
 
@@ -200,7 +200,7 @@ add_cygwin_hook() {
 
 tweak_pyenv() {
 
-  is_cygwin && {
+  _is_cygwin && {
     add_cygwin_hook || return 1
   }
 

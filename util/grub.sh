@@ -2,7 +2,7 @@
 
 # GRUB setup on a system disk. Allows hybrid boot with EFI/BIOS.
 #
-# Requires a disk partitioned with `util/sysdisk.sh` or similar way.
+# Requires a disk partitioned with `util/disk/system.sh` or similar way.
 #
 # See https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#Configuring_GRUB_2
 

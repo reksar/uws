@@ -5,7 +5,7 @@ uws=${uws:-$(cd $(dirname $BASH_SOURCE[0]) && cd .. && cd .. && pwd)}
 [[ `type -t ERR` != "function" ]] && . "$uws/lib/log.sh"
 [[ `type -t is_exe` != "function" ]] && . "$uws/lib/check.sh"
 
-if is_sudoer || is_cygwin
+if _is_sudoer || _is_cygwin
 then
   "$1" ${2:-}
 else
