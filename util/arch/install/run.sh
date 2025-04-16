@@ -52,10 +52,23 @@ genfstab -U "$root_mount_point" >> "$root_mount_point/etc/fstab" || exit 1
 
 INFO "Configure."
 
+# NOTE: The GRUB will configured further for EFI boot. Need to ensure the
+# 'efivars' Linux kernel module before chrooting.
+#
+# NOTE: If the Linux kernel was booted without the UEFI support, try to add
+# 'efi=runtime' to kernel params and reboot.
+#
+# See https://wiki.archlinux.org/title/Unified_Extensible_Firmware_Interface
+lsmod | grep efivars || {
+  WARN "Linux kernel was booted without EFI support!"
+  INFO "Loading 'efivars' for the GRUB setup."
+  modprobe efivars
+}
+
 cp -r "$uws" "$root_mount_point/root" || exit 1
 
 # NOTE: For the case when the $dir_name is not original 'uws'. Allows to invoke
-#       a uws script with `arch-chroot`.
+# a uws script with `arch-chroot`.
 dir_name="$(basename "$uws")"
 
 arch-chroot "$root_mount_point" \
