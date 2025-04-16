@@ -49,8 +49,17 @@ INFO "Installing base system to '$root_mount_point'."
 pacstrap -K "$root_mount_point" ${PACKAGES[@]} || exit 1
 genfstab -U "$root_mount_point" >> "$root_mount_point/etc/fstab" || exit 1
 
+
+INFO "Configure."
+
 cp -r "$uws" "$root_mount_point/root" || exit 1
-arch-chroot "$root_mount_point" /root/uws/util/arch/install/configure.sh $disk \
-|| exit 1
+
+# NOTE: For the case when the $dir_name is not original 'uws'. Allows to invoke
+#       a uws script with `arch-chroot`.
+dir_name="$(basename "$uws")"
+
+arch-chroot "$root_mount_point" \
+  /root/$dir_name/util/arch/install/configure.sh $disk || exit 1
+
 
 OK "Done!"
