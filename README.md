@@ -76,7 +76,8 @@ General-purpose executable utility scripts.
 `system.sh` - partitioning the entire specified disk to be used as the system
 disk for Linux.
 
-`release.sh` - easely free and release a specified disk.
+`release.sh` - easely free and release a specified disk when it busy and not
+available for partitioning nad encryption.
 
 ### `util/grub.sh`
 

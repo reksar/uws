@@ -2,12 +2,13 @@
 [X] system role
   * [X] battery info
 [ ] tmux
-  * [X] install tmux
-    * [X] install TPM
+  * [ ] Hotkeys for separation a pane as a window or joining windows to panes
+  * [X] Install tmux
+    * [X] Install TPM
   * [ ] Status bar
-    * [X] battery
-    * [ ] language (keyboard layout)
-    * [ ] update style for window *buttons*
+    * [X] Battery
+    * [ ] Language (keyboard layout)
+    * [ ] Update style for window *buttons*
   * [X] Simplify scrolling: without Prefix
   * [X] Hotkeys
     * [X] Prefix: `Alt+\`
@@ -19,6 +20,8 @@
     * [X] Next / prev pane: `Ctrl+.` / `Alt+,`
     * [X] Move pane: `Ctrl+;` / `Ctrl+'`
     * [X] Resize pane: `Alt+[Arrow]`
+[ ] Git
+  * [ ] Automatically show `status` after `add` or `commit`
 [ ] Hyprland
   * [ ] Kill active window on `Alt+F4` or `Alt+Zoom`
 [X] The main Ansible playbooks are stored in the *local.uws* collection

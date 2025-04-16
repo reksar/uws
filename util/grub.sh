@@ -66,6 +66,8 @@ lsblk --output mountpoint --noheadings /dev/$disk | grep $efi_dir &> /dev/null \
   exit 1
 }
 
+INFO "Setup GRUB to '/dev/$disk' for EFI/BIOS boot."
+
 
 crypt_parts=$(
   lsblk --filter "type=='crypt'" --output pkname --noheadings /dev/$disk \
@@ -75,13 +77,10 @@ crypt_parts=$(
 
 crypt_count=$(echo $crypt_parts | wc -w)
 
-[[ $crypt_count -eq 1 ]] || \
-  WARN "The '$disk' disk has more than 1 encrypted partition!"
-
-
-INFO "Configuring GRUB for EFI/BIOS boot from '/dev/$disk'"
-
 [[ $crypt_count -gt 0 ]] && {
+
+  [[ $crypt_count -gt 1 ]] && \
+    WARN "The '$disk' disk has more than 1 encrypted partition!"
 
   CRYPTODISK=GRUB_ENABLE_CRYPTODISK
   INFO "$CRYPTODISK"
@@ -153,7 +152,15 @@ INFO "Configuring GRUB for EFI/BIOS boot from '/dev/$disk'"
 }
 
 
-grub-install --target=x86_64-efi --efi-directory=$efi_dir --recheck || exit 1
+efivar --list &> /dev/null && {
+  INFO "Install GRUB for EFI boot from '$efi_dir'."
+  grub-install --target=x86_64-efi --efi-directory=$efi_dir --recheck || exit 1
+} || {
+  WARN "EFI is not available in the current Linux kernel mode!"
+}
+
+INFO "Install GRUB for legacy boot from '/dev/$disk'."
 grub-install --target=i386-pc --recheck /dev/$disk || exit 1
+
 grub-mkconfig --output=/boot/grub/grub.cfg || exit 1
 OK "Installed!"

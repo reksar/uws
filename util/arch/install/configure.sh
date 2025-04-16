@@ -30,13 +30,20 @@ echo -e "::1\t\tlocalhost" >> /etc/hosts
 echo -e "127.0.1.1\t$HOSTNAME.localdomain\t$HOSTNAME" >> /etc/hosts
 
 
-INFO "Set password for root"
+INFO "Set password for 'root'"
 passwd
+
+# TODO: Uncomment %sudo group in /etc/suders. 
+# TODO: Check if `sudo` installed.
 INFO "Adding sudo group"
 groupadd sudo
-INFO "Adding user $USER"
+
+INFO "Adding user '$USER' user"
+
+# TODO: Check if 'sudo' group exists.
 useradd -m -s /bin/bash -G users,sudo $USER
-INFO "Set password for $USER"
+
+INFO "Set password for '$USER' user"
 passwd $USER
 
 
