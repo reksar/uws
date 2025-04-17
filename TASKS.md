@@ -19,6 +19,8 @@
     * [X] Next / prev pane: `Ctrl+.` / `Alt+,`
     * [X] Move pane: `Ctrl+;` / `Ctrl+'`
     * [X] Resize pane: `Alt+[Arrow]`
+[ ] git
+  * [ ] Automatically show `status` after `add` or `commit`
 [ ] Hyprland
   * [ ] Kill active window on `Alt+F4` or `Alt+Zoom`
 [X] The main Ansible playbooks are stored in the *local.uws* collection
