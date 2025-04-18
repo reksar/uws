@@ -32,19 +32,22 @@ echo -e "127.0.1.1\t$HOSTNAME.localdomain\t$HOSTNAME" >> /etc/hosts
 
 INFO "Set password for 'root'"
 passwd
-
-# TODO: Uncomment %sudo group in /etc/suders. 
-# TODO: Check if `sudo` installed.
-INFO "Adding sudo group"
-groupadd sudo
-
 INFO "Adding user '$USER' user"
-
-# TODO: Check if 'sudo' group exists.
-useradd -m -s /bin/bash -G users,sudo $USER
-
+useradd -m -s /bin/bash -G users $USER
 INFO "Set password for '$USER' user"
 passwd $USER
+
+which sudo &> /dev/null && {
+
+  INFO "Configure sudo"
+
+  groupadd sudo
+  usermod -a -G sudo $USER
+
+  chmod u+w /etc/sudoers
+  sed -i 's/^#\s*\(%sudo\s\)/\1/' /etc/sudoers
+  chmod u-w /etc/sudoers
+}
 
 
 pacman -Q | grep dhcpcd > /dev/null && {
