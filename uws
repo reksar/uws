@@ -13,6 +13,10 @@ Configure Linux and applications:
 Run tests:
 
   uws test [bash|ansible]
+
+See local Ansible docs:
+
+  uws doc local.uws.<name>
 EOF
 }
 

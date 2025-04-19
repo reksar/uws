@@ -2,40 +2,44 @@
 
 Configures a Linux environment. Some configs work on Cygwin as well.
 
-## Usage
+# Usage
 
-### Setup the Linux environment
+## Help
+
+`./uws {-h|--help}`
+
+## Configure the Linux and applications
 
 `./uws set` - run the main playbook. Same as `./uws set main`.
 
-#### Specify a playbook
+### Specify a playbook
 
 `./uws set <playbook>`
 
 Where the `<playbook>` is a playbook file basename or relative path without the
 exstension.
 
-##### Examples
+#### Examples
 `./uws set app`
 `./uws set app/qemu`
 
-#### Specify a role
+### Specify a role
 
 `./uws set roles/<role>`
 
 Where the `<role>` can be a local role either from `playbook/roles/` or from
 Ansible collections.
 
-##### Examples
+#### Examples
 
 `./uws set roles/hardware` - set the hardware role placed in the `playbook` dir.
 
 `./uws set roles/local.uws.system` - setup the Linux depending on the system
 configuration. Using the role from Ansible collection `local.uws`.
 
-### Run tests
+## Run tests
 
-Test the Ansible collection at `lib/ansible_collections/local/uws`:
+Test the Ansible collection 'local.uws' at `lib/ansible_collections/local/uws`:
 `./uws test ansible`
 
 Test `lib` bash scripts:
@@ -43,6 +47,10 @@ Test `lib` bash scripts:
 
 Test `util` scripts:
 run a `tests/util/*` executable
+
+## See the plugin doc from the local Ansible collection
+
+`./uws doc local.uws.<plugin>`
 
 # Project layout
 
@@ -132,15 +140,7 @@ Copy / edit inplace the system-wide config files.
 
 Make symbolic links to a user config files.
 
-## Ansible playbooks
-
-### Plugin docs
-
-Using the `ansible-doc` for the local `ansible_collections`:
-
-```sh
-. lib/uws/ansible.sh && ensure_ansible && ansible-doc <plugin>
-```
+## Ansible collections
 
 ### Utility message types (glossary)
 
