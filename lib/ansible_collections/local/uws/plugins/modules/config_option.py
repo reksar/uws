@@ -1,11 +1,11 @@
-# NOTE: This is the doc for the related action plugin.
+# This is the doc for the related action plugin.
 
 from __future__ import annotations
 
 
 DOCUMENTATION = r'''
 ---
-module: config_option
+name: config_option
 
 short_description:
     Ensure a config option is unique within the config file.
