@@ -59,3 +59,10 @@ For example, the doc for the `shell` action is placed in
 Instead of using the `ActionBase` ABC, use the `ActionModuleBase` from the
 `local/uws/plugins/util/action.py` and decorate the `run()` method with the
 `@ActionModuleBase.prerun`.
+
+# Filters
+
+[Original filters]
+(https://github.com/ansible/ansible/tree/devel/lib/ansible/plugins/filter)
+
+The main is `core.py`.

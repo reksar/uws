@@ -3,12 +3,12 @@ import pytest
 import ansible_collections.local.uws.tests.util.path_hook
 
 from ansible.errors import AnsibleFilterError
-from ansible_collections.local.uws.tests.util import assert_doc
+from ansible_collections.local.uws.tests.util import is_ansible_doc_available
 from ansible_collections.local.uws.plugins.filter.list2dict import list2dict
 
 
 def test_doc():
-    assert_doc('local.uws.list2dict')
+    assert is_ansible_doc_available('local.uws.list2dict')
 
 
 def test_valid_data():

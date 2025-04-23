@@ -6,8 +6,8 @@
 # which is doing a real dirt within the `sys.path_hooks`, complementing pytest
 # hooks.
 #
-# After all, some imports like `import ansible.plugins.action` inside Ansible
-# unit tests does not work, because all 'ansible.*' imports are intercepted.
+# After all, a regular imports like `import ansible.<...>` in unit tests does
+# not work, because all 'ansible.*' imports are intercepted.
 
 import importlib
 import sys
@@ -55,7 +55,7 @@ def is_ansible_test_path(path):
 def path_hook(path):
     if is_ansible_test_path(path):
         return RegularAnsibleModuleFinder
-    raise ImportError(f"Propagate '{path}' for others.", path=path)
+    raise ImportError(f"Propagate the '{path}' path.", path=path)
 
 
 sys.path_hooks.insert(0, path_hook)

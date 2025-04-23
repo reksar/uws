@@ -2,7 +2,7 @@
 
 DOCUMENTATION = r'''
 ---
-module: list2dict
+name: list2dict
 
 short_description:
     Adds the specified key names to a list items.
