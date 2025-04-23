@@ -1,1 +1,1 @@
-from .assert_doc import assert_doc
+from .doc import is_ansible_doc_available

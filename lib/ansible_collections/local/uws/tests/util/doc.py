@@ -1,27 +1,19 @@
 import os
-import pytest
 import re
 import subprocess
-import ansible_collections.local.uws.tests.util.path_hook
 from pathlib import Path
 
 
-def assert_doc(name):
+def is_ansible_doc_available(name):
     """
-    Assetions to check that the documentation `uws doc <name>` is available.
-
-    Import this in the tests and run it in a test function where these
-    assertions should be checked.
+    Is the documentation `uws doc <name>` available?
     """
-
-    plugin = 'local.uws.list2dict'
 
     # Similar to the shell `ansible-doc $plugin`.
     #
     # 0th arg passed to the `main()` will be ignored, see:
     # `ansible/cli/__init__.py::parse()`
-    #
-    read_doc = f"from ansible.cli.doc import main; main(['', '{plugin}'])"
+    read_doc = f"from ansible.cli.doc import main; main(['', '{name}'])"
 
     # Prepend `sys.path` with these paths to allow the regular imports.
     # Similar to shell `. lib/uws/ansible.sh && ensure_ansible`.
@@ -39,5 +31,5 @@ def assert_doc(name):
         text=True,
     )
 
-    assert result.returncode == 0
-    assert re.match(f"> MODULE.*{plugin}", result.stdout)
+    return result.returncode == 0 \
+        and re.match(f"> MODULE.*{name}", result.stdout)
