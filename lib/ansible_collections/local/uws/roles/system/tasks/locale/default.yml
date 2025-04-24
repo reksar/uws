@@ -1,0 +1,12 @@
+# Set the system locale defaults in according to `settings.locale.default`.
+
+
+# Editing the `/etc/locale.conf` directly instead of using the `localectl` is
+# more general solution.
+- name: "/*/ System locale defaults"
+  local.uws.config_option:
+    file: "/etc/locale.conf"
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop: "{{ settings.locale.default | dict2items }}"
+  become: true

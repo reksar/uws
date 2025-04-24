@@ -1,4 +1,0 @@
----
-dependencies:
-  - role: "locale"
-    tasks_from: "system"

@@ -1,0 +1,64 @@
+# Install all required system locales in according to `settings.locale.list`.
+# NOTE: Only installs missing locales, does not uninstalls any!
+
+
+# NOTE: The 'C' locale is not in this list!
+- name: "/?/ Supported locales"
+  shell: "grep --only-matching '^\\S\\+' /usr/share/i18n/SUPPORTED"
+  register: supported_locales
+  changed_when: false
+
+- name: "/!/ Locale settings are supported"
+  set_fact:
+    unsupported_locales: >-
+      {{
+        supported_locales.stdout_lines
+        | intersect(settings.locale.list)
+        | symmetric_difference(settings.locale.list)
+      }}
+  failed_when: unsupported_locales | length > 0
+
+- name: "/?/ Available locales"
+  shell: "locale --all-locales"
+  register: available_locales
+  changed_when: false
+
+# Transform the format of `available_locales` to the format of
+# `settings.locale.list` or `/etc/locale.gen` to compare these collections.
+- name: "/../ Available locales format"
+  set_fact:
+    available_locales: >-
+      {{
+        available_locales.stdout_lines
+        | map('regex_search', '^(\w+)(\..*){0,1}', '\1', '\2')
+        | map('local.uws.list2dict', keys=['locale', 'suffix'])
+        | map('local.uws.attr_filter', 'suffix', 'upper')
+        | map('local.uws.attr_filter', 'suffix', 'regex_replace',
+            'UTF', 'UTF-')
+        | map('local.uws.attr_filter', 'suffix', 'regex_replace',
+            'KOI8', 'KOI8-')
+        | map('local.uws.attr_filter', 'suffix', 'regex_replace',
+            'EUC', 'EUC-')
+        | map('local.uws.attr_filter', 'suffix', 'regex_replace', 'NONE', '')
+        | map('local.uws.dict2list')
+        | map('join')
+      }}
+
+- name: "/%/ Missing locales"
+  set_fact:
+    missing_locales: >-
+      {{
+        available_locales
+        | intersect(settings.locale.list)
+        | symmetric_difference(settings.locale.list)
+      }}
+
+- name: "/*/ locale.gen"
+  lineinfile:
+    path: "/etc/locale.gen"
+    regexp: "#\\s*{{ item }}\\b(.*)"
+    line: "{{ item }}\\1"
+    backrefs: true
+  loop: "{{ missing_locales }}"
+  become: true
+  notify: "Generate locales"

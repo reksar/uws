@@ -1,13 +1,16 @@
 ---
 - name: "Collect from roles `uws set tasks/<relative path>`"
   hosts: "all"
-  vars_files:
-    - "{{ uws }}/config/uws.yml"
   vars:
     uws_roles: "{{ uws }}/lib/ansible_collections/local/uws/roles"
     tasks_name: "{{ playbook_target | basename }}"
     tasks_path: "{{ playbook_target | dirname }}"
+
   tasks:
+
+  - include_vars:
+      file: "{{ uws }}/config/uws.yml"
+      name: "settings"
 
   - name: "/?/ all roles"
     find:

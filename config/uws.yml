@@ -1,39 +1,52 @@
-# Use `locale -a` format.
+# The main uws settings. These vars should be included as the 'settings' name.
+
+# Locales to be installed in the system.
+# NOTE: Use the format of `/etc/locale.gen`.
 locale:
   list:
-    - C
-    - C.utf8
-    - en_US.utf8
-    - ru_RU.utf8
+    - C.UTF-8
+    - en_US.UTF-8
+    - ru_RU.UTF-8
   default:
-    LANG: C.utf8
-    LC_MESSAGES: C.utf8
+    LANG: C.UTF-8
+    LC_MESSAGES: C.UTF-8
 
 keyboard:
 
   layout:
 
-    # Can be the one of (case insesitive):
+    # Can be one of (case insensitive):
     #  alt+shift
     #  ctrl+shift
     switch: alt+shift
 
-    # Automaticaly convert 'en' layout to 'us'.
-    en_to_us: true
-
-    # A list of keyboard layouts (case insensitive), e.g:
+    # A list of keyboard layouts. Case insensitive.
+    #
+    # If this list is empty, then the `locale.list` will be used to determine
+    # related layouts automatically.
+    #
+    # The default layout is 'us'. It will be installed anyway, even it is not
+    # in list.
+    #
+    # NOTE: The 'us' and 'en' are the same; 'en' will be converted to 'us'.
+    # Both 'en' and 'us' can be found in the `localectl list-keymaps` output,
+    # but only the 'us' exists in `/usr/share/kbd/keymaps/i386/qwerty/`.
+    #
+    # For example, these lists are equal:
+    # - en
     # - us
-    # - ru
+    # - es
     # - ru.utf8
-    # - ru.cp1251
+    # and
+    # - es
+    # - ru.utf8
     #
-    # NOTE: The 'en' is default, so will be ignored in many cases.
+    # NOTE: A virtual console supports switching only 2 keyboard layouts via
+    # keymaps. Since the default 'us' layout is always set, the only 1
+    # additional layout is available. The first non-default item will be picked
+    # from list for this purpose, if exists. So order is important!
     #
-    # NOTE: If the list contains more than 2 items, then only first != 'en'
-    #       item will be used for the console layout.
-    # TODO: Support more than 2 items for console.
-    #
-    # NOTE: If the list is empty (null), then the `locale.list` will be used.
+    # TODO: Support more than 2 layouts for console tmux.
     list:
 
 git:

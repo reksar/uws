@@ -1,3 +1,13 @@
 - name: "Reload console config"
   shell: "systemctl restart systemd-vconsole-setup.service"
   become: true
+
+- name: "Update font cache"
+  shell: "fc-cache --force"
+
+- name: "Generate locales"
+  shell: "locale-gen"
+  become: true
+  register: locale
+  # NOTE: `locale-gen` returns code 0 even if an error occurs.
+  failed_when: "'error' in locale.stdout"
