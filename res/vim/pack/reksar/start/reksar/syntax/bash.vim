@@ -1,7 +1,7 @@
 syn keyword shStatement cat dirname
 
 " Override some shStatement keywords.
-syn keyword shStatementBase exit for in
+syn keyword shStatementBase exit for in declare
 
 syn match shOperator /\(||\|&&\|&>\|1>\|2>\)/
 
@@ -13,7 +13,7 @@ syn match shFunctionName /^\s*\w\+()/
 syn match shParen /()/ contained containedin=shFunctionName
 
 " '$' prefix
-syn match shDerefSign /\$\ze\(\w\|@\|\$\)/
+syn match shDerefSign /\$\ze\(\w\|@\|#\|\$\)/
 \ contained
 \ containedin=shDerefSimple
 

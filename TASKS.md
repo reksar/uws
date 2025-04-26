@@ -2,9 +2,11 @@
 [X] system role
   * [X] battery info
 [ ] Vim
-  * [ ] Syntax highlight
-    * [ ] Bash
-      * [ ] Keyword `declare`
+  * [ ] Color column for Git messages (lesser width)
+  * [X] Syntax highlight
+    * [X] Bash
+      * [X] Keyword `declare`
+      * [X] Variable `$#`.
     * [X] YAML
       * [X] Square brackets in flow string var
 [ ] tmux
