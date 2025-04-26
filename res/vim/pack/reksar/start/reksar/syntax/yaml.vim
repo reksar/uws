@@ -15,7 +15,7 @@ syn region yamlFlowStringVar matchgroup=yamlDoubleBraces start=/{{/ end=/}}/
 \ contains=yamlBool
 \ containedin=yamlFlowString,yamlBlockStr
 
-syn match yamlVarDelimiter /\({\|}\|(\|)\||\|,\|\.\|=\|:\|!\)/
+syn match yamlVarDelimiter /\({\|}\|(\|)\|\[\|\]\||\|,\|\.\|=\|:\|!\)/
 \ containedin=yamlBlockString,yamlFlowStringVar,yamlNodeTag
 
 syn region yamlBlockStr matchgroup=yamlFlowStringDelimiter
