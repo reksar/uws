@@ -1,0 +1,16 @@
+# Install all `res/font/*.ttf` fonts.
+
+
+- include_vars: "ttf.yml"
+
+- include_tasks: "font/install.yml"
+
+- name: "/!/ fontconfig"
+  package:
+    name: "fontconfig"
+  become: true
+
+- debug:
+    msg: "Trigger font cache update"
+  changed_when: font_installation_status.changed
+  notify: "Update font cache"

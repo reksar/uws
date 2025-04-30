@@ -1,0 +1,31 @@
+# Install all `font_glob` fonts from `font_src_dir` to `font_dest_dir`.
+#
+# Required vars to be preset:
+# - font_src_dir
+# - font_dest_dir
+# - font_glob
+#
+# Sets the resulting var:
+# - font_installation_status
+
+
+- name: "/!/ Font destination '{{ font_dest_dir }}'"
+  file:
+    path: "{{ font_dest_dir }}"
+    state: "directory"
+  become: true
+
+- name: "/?/ Missing fonts"
+  shell: >
+      {{ uws }}/util/glob_diff.sh \
+        '{{ font_glob }}' '{{ font_src_dir }}' '{{ font_dest_dir }}'
+  register: missing_fonts
+  changed_when: false
+
+- name: "Install fonts '{{ font_glob }}'"
+  copy:
+    src: "{{ font_src_dir }}/{{ item }}"
+    dest: "{{ font_dest_dir }}/{{ item }}"
+  loop: "{{ missing_fonts.stdout_lines }}"
+  become: true
+  register: font_installation_status

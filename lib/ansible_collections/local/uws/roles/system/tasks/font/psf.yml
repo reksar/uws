@@ -1,0 +1,25 @@
+# Install all `res/font/*.psf` fonts.
+
+
+- include_vars: "psf.yml"
+
+- include_tasks: "font/install.yml"
+
+- name: "Set the default PSF font"
+  block:
+
+  - name: "/!/ Default PSF font file"
+    find:
+      paths: "{{ font_dest_dir }}"
+      patterns: "{{ default_font }}.*"
+      recurse: false
+    register: font
+    failed_when: font.matched != 1
+
+  - name: "Set '{{ default_font }}' console font"
+    local.uws.config_option:
+      file: "{{ console_config }}"
+      option: "FONT"
+      value: "{{ default_font }}"
+    become: true
+    notify: "Reload console config"

@@ -1,0 +1,4 @@
+---
+default_font: "zap-ext-light32"
+font_dest_dir: "/usr/share/kbd/consolefonts"
+font_glob: "*.psf.gz"

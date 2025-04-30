@@ -1,0 +1,3 @@
+---
+font_dest_dir: "/usr/share/fonts/TTF"
+font_glob: "*.ttf"

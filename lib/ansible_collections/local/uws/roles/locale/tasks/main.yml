@@ -1,4 +1,2 @@
-- import_tasks: "font/psf.yml"
-- import_tasks: "font/ttf.yml"
 - import_tasks: "keymap/console.yml"
 - import_tasks: "keymap/hyprland.yml"

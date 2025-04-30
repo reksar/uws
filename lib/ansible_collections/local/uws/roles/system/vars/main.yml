@@ -1,0 +1,3 @@
+---
+font_src_dir: "{{ uws }}/res/font"
+console_config: "/etc/vconsole.conf"
