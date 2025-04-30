@@ -4,7 +4,7 @@ import doctest
 import sys
 from pathlib import Path
 
-uws = Path(__file__).parent.parent.parent
+uws = Path(__file__).parent.parent.parent.parent
 util = f"{uws}/util"
 
 sys.path.insert(0, util)

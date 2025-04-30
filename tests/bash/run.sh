@@ -1,7 +1,7 @@
 #!/bin/bash
 
-tests_root=$(cd $(dirname $BASH_SOURCE[0]) && pwd)
-all_test_files=$(find "$tests_root" -name "test*.sh")
+tests_root="$(cd $(dirname $BASH_SOURCE[0]) && pwd)"
+all_test_files="$(find "$tests_root" -name "test*.sh")"
 
 
 unset test_files

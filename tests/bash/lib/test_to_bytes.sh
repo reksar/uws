@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-lib="$(cd "$(dirname "$BASH_SOURCE[0]")/../../lib" && pwd)"
+lib="$(cd "$(dirname "$BASH_SOURCE[0]")/../../../lib" && pwd)"
 . "$lib/test.sh"
 . "$lib/units.sh"
 
