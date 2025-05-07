@@ -32,19 +32,24 @@ keyboard:
     # Both 'en' and 'us' can be found in the `localectl list-keymaps` output,
     # but only the 'us' exists in `/usr/share/kbd/keymaps/i386/qwerty/`.
     #
+    # NOTE: The UTF-8 is the default, so the '.utf8' suffix is not required!
+    #
     # For example, these lists are equal:
+    #
     # - en
     # - us
     # - es
     # - ru.utf8
-    # and
-    # - es
-    # - ru.utf8
     #
-    # NOTE: A virtual console supports switching only 2 keyboard layouts via
+    # and
+    #
+    # - es
+    # - ru
+    #
+    # NOTE: A virtual console supports switching of only 2 keyboard layouts via
     # keymaps. Since the default 'us' layout is always set, the only 1
-    # additional layout is available. The first non-default item will be picked
-    # from list for this purpose, if exists. So order is important!
+    # additional layout is available. The first non-default list item will be
+    # picked for this purpose, if exists. So list items order is important!
     #
     # TODO: Support more than 2 layouts for console tmux.
     list:

@@ -1,0 +1,156 @@
+# Set the default 'us' keymap for virtual console obviously. Set the extra
+# keymap if a matched found.
+
+
+- include_vars: "keymap.yml"
+
+# NOTE: The console supports only 1 extra keyboard layout. Can be empty.
+- name: "Determine the console extra keyboard layout"
+  block:
+
+  - set_fact:
+      layouts: >
+        {{
+          settings.keyboard.layout.list or (
+            settings.locale.list
+            | map('regex_replace', '^\w+_', '')
+            | map('regex_replace', '-', '')
+            | map('lower')
+          )
+        }}
+
+  - set_fact:
+      extra_layouts: >
+        {{
+          layouts
+          | map('regex_replace', '\.utf8', '')
+          | map('regex_replace', 'en', 'us')
+          | reject('equalto', 'c')
+          | reject('equalto', 'us')
+        }}
+
+  - set_fact:
+      extra_layout: >-
+        {{
+          (extra_layouts | length > 0) | ternary(extra_layouts | first, '')
+        }}
+
+- name: "Determine the extra keymap"
+  block:
+
+  # Presets are in the `vars/keymap.yml`.
+  - name: "Set the extra keymap preset"
+    block:
+
+    - set_fact:
+        extra_keymap: "{{ extra_layout and keymap.layouts.get(extra_layout) }}"
+
+    - set_fact:
+        extra_keymap: >-
+          {{
+            extra_keymap and extra_keymap.get(settings.keyboard.layout.switch)
+          }}
+
+  # Used when there is no preset.
+  - name: "Heuristic search for the extra keymap"
+    when: extra_layout and not extra_keymap
+    block:
+
+    # See https://wiki.archlinux.org/title/Linux_console/Keyboard_configuration#Layout_switching
+    - name: "/?/ Keymaps with the layout switch feature"
+      shell: "find '{{ keymap.dir }}' -exec zgrep -l 'AltGr_Lock' '{}' ';'"
+      register: found_keymaps
+      changed_when: false
+
+    - name: "/%/ Keymaps by layout"
+      set_fact:
+        matched_keymaps: >
+          {{
+            found_keymaps.stdout_lines
+            | select('match', '.*/\w*' + extra_layout)
+          }}
+
+    - name: "/%/ Keymaps by Alt/Ctrl leader"
+      vars:
+        # Regexp to search in a keymap file. Searches the `Alt` or `Ctrl` key
+        # used to switch the layout.
+        leader_re: '\(alt\|control\)\s\+keycode\s\+42\s*=\s*AltGr_Lock'
+      block:
+
+      - name: "/?/ Alt/Ctrl keycode 42"
+        shell: "zgrep '{{ leader_re }}' '{{ item }}'"
+        loop: "{{ matched_keymaps }}"
+        register: allowed_keymaps
+        failed_when: false
+        changed_when: false
+
+      - name: "/%/ Matched keymap"
+        set_fact:
+          allowed_keymap: >-
+            {{
+              (
+                allowed_keymaps.results
+                | rejectattr('stdout', 'equalto', '')
+                | first
+              )
+              | default('')
+            }}
+
+      - name: "/%/ Extra keymap"
+        set_fact:
+          extra_keymap: "{{ allowed_keymap and allowed_keymap['item'] }}"
+
+- set_fact:
+    keymap_toggle: "{{ extra_keymap | basename | split('.') | first }}"
+
+- name: "/*/ Default keymap"
+  when: not keymap_toggle
+  block:
+
+  - name: "Set the default console keymap"
+    local.uws.config_option:
+      file: "{{ vconsole_config }}"
+      option: "KEYMAP"
+      value: "{{ keymap.default }}"
+    become: true
+    notify: Reload console config
+
+  - name: "Unset the console keymap toggle"
+    local.uws.config_option:
+      file: "{{ vconsole_config }}"
+      option: "KEYMAP_TOGGLE"
+    become: true
+    notify: Reload console config
+
+- name: "/*/ Toggle keymap"
+  when: keymap_toggle
+  block:
+
+  - name: "Trying to `loadkeys` for both keymaps"
+    shell: "loadkeys {{ keymap.default }} {{ keymap_toggle }}"
+    become: true
+    register: loadkeys
+    changed_when: loadkeys.rc == 0
+    failed_when: false
+
+  - name: "/./ Non-default console keymap"
+    when: loadkeys.rc != 0
+    set_fact:
+      keymap_options:
+        - { name: 'KEYMAP', keymap: "{{ keymap_toggle }}" }
+
+  - name: "/./ Console keymap toggle"
+    when: loadkeys.rc == 0
+    set_fact:
+      keymap_options:
+        - { name: 'KEYMAP', keymap: "{{ keymap.default }}" }
+        - { name: 'KEYMAP_TOGGLE', keymap: "{{ keymap_toggle }}" }
+
+  - name: "Set the console keymap toggle"
+    local.uws.config_option:
+      file: "{{ vconsole_config }}"
+      option: "{{ item.name }}"
+      value: "{{ item.keymap }}"
+    loop: "{{ keymap_options }}"
+    become: true
+    notify: Reload console config

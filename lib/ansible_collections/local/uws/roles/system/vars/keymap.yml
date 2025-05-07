@@ -1,0 +1,22 @@
+---
+keymap:
+
+  default: "us"
+
+  dir: "/usr/share/kbd/keymaps/i386/qwerty"
+
+  # If a layout is set in `config/uws.yml` but not exists in this list, then
+  # a heuristic method will be used to select a keymap file.
+  #
+  # layouts:
+  #   <keyboard layout>:
+  #     <layout switch>: <keymap>
+  layouts:
+    ru:
+      alt+shift: "ruwin_alt_sh-UTF-8.map.gz"
+      ctrl+shift: "ru.map.gz"
+    ru.cp1251:
+      alt+shift: "ru_win.map.gz"
+      ctrl+shift: "ruwin_ct_sh-CP1251.map.gz"
+
+vconsole_config: "/etc/vconsole.conf"
