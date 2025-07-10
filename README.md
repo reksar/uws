@@ -2,6 +2,8 @@
 
 Configures a Linux environment. Some configs work on Cygwin as well.
 
+Some configs are depends on the hardware setup, that must be done first.
+
 # Usage
 
 ## Help
@@ -85,7 +87,7 @@ General-purpose executable utility scripts.
 disk for Linux.
 
 `release.sh` - easely free and release a specified disk when it busy and not
-available for partitioning nad encryption.
+available for partitioning and encryption.
 
 ### `util/grub.sh`
 

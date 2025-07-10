@@ -33,12 +33,6 @@
         - base-devel
     become: true
 
-  # TODO: Check if it is needed.
-  - name: "/!/ brightnessctl"
-    package:
-      name: brightnessctl
-    become: true
-
   # TODO: Add to GUI packages.
   - name: "/!/ Image packages"
     package:

@@ -31,7 +31,6 @@
 + /extra/os/x86_64/awesome-*
 + /extra/os/x86_64/blender-[0-9]*
 + /extra/os/x86_64/bluez-*
-+ /extra/os/x86_64/brightnessctl-[0-9]*
 + /extra/os/x86_64/broadcom-wl-*
 + /extra/os/x86_64/busybox-[0-9]*
 + /extra/os/x86_64/cmake-[0-9]*
