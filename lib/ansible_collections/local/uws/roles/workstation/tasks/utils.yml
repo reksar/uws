@@ -1,3 +1,4 @@
+# Install some CLI utils
 - package:
     name:
       - "strace"

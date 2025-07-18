@@ -1,0 +1,31 @@
+- name: "/!/ Network Manager"
+  package:
+    name:
+      - "iwd"
+      - "networkmanager"
+      - "networkmanager-pptp"
+      - "networkmanager-l2tp"
+      - "networkmanager-openvpn"
+  become: true
+
+- name: "/*/ Network Manager"
+  copy:
+    src: "NetworkManager.conf"
+    dest: "/etc/NetworkManager/NetworkManager.conf"
+  become: true
+
+# TODO: Only if needed
+- name: "Enable Network Manager service"
+  systemd:
+    name: "NetworkManager.service"
+    enabled: true
+    state: "restarted"
+  become: true
+
+# TODO: Check that system GUI is available
+- name: "/!/ Network Manager GUI"
+  package:
+    name:
+      - "nm-connection-editor"
+      - "network-manager-applet"
+  become: true
