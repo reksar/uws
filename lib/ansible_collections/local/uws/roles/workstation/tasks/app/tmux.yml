@@ -16,7 +16,7 @@
 - name: "Battery status"
 
   vars:
-    battery_status: "#(battery) | "
+    battery_status: "󰁹#(battery) | "
 
   block:
 
