@@ -50,7 +50,7 @@ Test `lib` bash scripts:
 Test `util` scripts:
 run a `tests/util/*` executable
 
-## See the plugin doc from the local Ansible collection
+## See the doc for a `<plugin>` in the local Ansible collection
 
 `./uws doc local.uws.<plugin>`
 

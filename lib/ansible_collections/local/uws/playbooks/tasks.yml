@@ -12,24 +12,26 @@
       file: "{{ uws }}/config/uws.yml"
       name: "settings"
 
-  - name: "/?/ all roles"
-    find:
-      path: "{{ uws_roles }}"
-      file_type: "directory"
-    register: all_roles
+  # Find all directories and links to a directory
+  - name: "/?/ all uws/roles"
+    shell: >
+      find '{{ uws_roles }}' -mindepth 1 -maxdepth 1 \
+        \( -type d -o \( -type l -exec test -d {} \; \) \) -print
+    changed_when: false
+    register: found_roles
 
   - set_fact:
-      search_dirs: >-
+      tasks_dirs: >-
         {{
-          all_roles.files
-          | map(attribute='path')
+          found_roles.stdout_lines
           | map('regex_replace', '^(.*)$', '\1/tasks/' + tasks_path)
         }}
 
   - name: "/?/ tasks"
     find:
-      paths: "{{ search_dirs }}"
+      paths: "{{ tasks_dirs }}"
       pattern: "{{ tasks_name }}.yml"
+      hidden: true
     register: found_tasks
 
   - set_fact:
