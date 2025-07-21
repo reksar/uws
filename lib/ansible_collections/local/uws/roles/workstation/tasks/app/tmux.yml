@@ -13,17 +13,12 @@
     depth: 1
 
 
-- name: "Configure battery status"
+- name: "Battery status"
 
   vars:
     battery_status: "#(battery) | "
 
   block:
-
-  - name: "Configure battery"
-    import_role:
-      name: "local.uws.system"
-      tasks_from: "battery"
 
   - name: "/?/ battery util"
     stat:
@@ -35,8 +30,6 @@
 
 
 - name: "/!/ tmux config"
-  vars:
-    language: "TODO:lang | "
   template:
     src: "{{ uws }}/config/tmux.conf"
     dest: "{{ ansible_env.HOME }}/.tmux.conf"
