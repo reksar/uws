@@ -1,0 +1,3 @@
+[submodule "res/my.vim"]
+	path = res/my.vim
+	url = https://github.com/reksar/my.vim

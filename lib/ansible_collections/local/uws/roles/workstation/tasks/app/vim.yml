@@ -1,0 +1,16 @@
+- name: "/!/ Vim package"
+  package:
+    name: "vim"
+  become: true
+
+- name: "/!/ ~/.vim"
+  synchronize:
+    src: "{{ uws }}/res/my.vim/"
+    dest: "{{ ansible_env.HOME }}/.vim"
+    recursive: true
+    delete: true
+
+- name: "/!/ ~/.vimrc"
+  copy:
+    src: "{{ uws }}/res/my.vim/vimrc"
+    dest: "{{ ansible_env.HOME }}/.vimrc"
