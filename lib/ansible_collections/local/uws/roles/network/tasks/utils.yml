@@ -1,0 +1,11 @@
+- name: "/!/ Network CLI utils"
+  package:
+    name:
+      - "dnsutils"
+      - "gnu-netcat"
+      - "ipcalc"
+      - "nmap"
+      - "tcpdump"
+      - "traceroute"
+      - "whois"
+  become: true
