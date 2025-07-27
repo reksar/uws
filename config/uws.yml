@@ -1,5 +1,11 @@
 # The main uws settings. These vars should be included as the 'settings' name.
 
+# Empty or:
+#   * Hyprland (not implemented)
+#
+# NOTE: Now this is just a stub for waybar.
+desktop: "Hyprland"
+
 # Locales to be installed in the system.
 # NOTE: Use the format of `/etc/locale.gen`.
 locale:

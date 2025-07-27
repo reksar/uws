@@ -1,0 +1,7 @@
+- name: "Update waybar deps"
+  shell: "pacman --sync --refresh --noconfirm gcc gcc-libs"
+  become: true
+  notify: "Start waybar"
+
+- name: "Start waybar"
+  shell: "waybar &"
