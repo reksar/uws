@@ -1,7 +1,11 @@
-- name: "Update waybar deps"
-  shell: "pacman --sync --refresh --noconfirm gcc gcc-libs"
-  become: true
+- name: "Restart waybar"
+  shell: "killall waybar"
+  register: kill
+  failed_when: kill.rc > 0 and ('no process found' not in kill.stderr)
   notify: "Start waybar"
 
 - name: "Start waybar"
-  shell: "waybar &"
+  vars:
+    cfg: "{{ waybar.config_dir }}/{{ waybar.config_name }}"
+    css: "{{ waybar.config_dir }}/{{ waybar.style_name }}"
+  shell: "nohup waybar --config '{{ cfg }}' --style '{{ css }}' &"

@@ -1,0 +1,37 @@
+# NOTE: Expected Hyprland to be running.
+
+- include_vars: "waybar.yml"
+
+- name: "/!/ waybar package"
+  package:
+    name: "waybar"
+  become: true
+  register: waybar_status
+
+- name: "Update waybar package deps"
+  when: waybar_status.changed
+  shell: "pacman --sync --refresh --noconfirm gcc gcc-libs"
+  become: true
+
+- name: "/>/ waybar config"
+  loop:
+    - "{{ waybar.config_name }}"
+    - "{{ waybar.style_name }}"
+  template:
+    src: "waybar/hyprland.{{ item }}"
+    dest: "{{ waybar.config_dir }}/{{ item }}"
+  register: config_status
+
+- debug:
+    msg: "waybar status changed"
+  changed_when: waybar_status.changed or config_status.changed
+  notify: "Restart waybar"
+
+- name: "/*/ Add waybar to Hyprland"
+  vars:
+    cfg: "{{ waybar.config_dir }}/{{ waybar.config_name }}"
+    css: "{{ waybar.config_dir }}/{{ waybar.style_name}}"
+  lineinfile:
+    path: "{{ XDG_CONFIG_HOME }}/hypr/hyprland.conf"
+    regexp: "exec-once\\s*=\\s*waybar"
+    line: "exec-once = waybar -c '{{ cfg }}' -s '{{ css }}'"
