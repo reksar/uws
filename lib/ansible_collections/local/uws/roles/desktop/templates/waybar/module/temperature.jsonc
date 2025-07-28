@@ -1,0 +1,5 @@
+"custom/temperature": {
+  "interval": 7,
+  "exec": "<< waybar.config_dir >>/util/temperature.sh",
+  "format": "{text}°C"
+}

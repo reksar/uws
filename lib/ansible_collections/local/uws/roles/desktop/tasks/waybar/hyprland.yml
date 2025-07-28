@@ -13,13 +13,45 @@
   shell: "pacman --sync --refresh --noconfirm gcc gcc-libs"
   become: true
 
+- name: "/?/ temperature CLI"
+  stat:
+    path: "/usr/local/bin/temperature"
+  register: temperature_cli
+
+- name: "/>/ temperature util"
+  when: temperature_cli.stat.exists
+  copy:
+    src: "waybar/temperature.sh"
+    dest: "{{ waybar.config_dir }}/util/"
+    mode: "u=rwx,g=rx,o=rx"
+
 - name: "/>/ waybar config"
+  vars:
+    temperature: >-
+      {{
+        temperature_cli.stat.exists
+        | ternary('custom/temperature', 'temperature')
+      }}
+    temperature_module: >-
+      {{
+        lookup(
+          'template',
+          'waybar/module/'
+            + temperature_cli.stat.exists
+              | ternary('temperature', 'temperature_default')
+            + '.jsonc',
+          variable_start_string="<<",
+          variable_end_string=">>",
+        )
+      }}
   loop:
     - "{{ waybar.config_name }}"
     - "{{ waybar.style_name }}"
   template:
     src: "waybar/hyprland.{{ item }}"
     dest: "{{ waybar.config_dir }}/{{ item }}"
+    variable_start_string: "<<"
+    variable_end_string: ">>"
   register: config_status
 
 - debug:

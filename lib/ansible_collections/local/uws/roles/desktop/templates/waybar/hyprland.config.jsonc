@@ -10,25 +10,27 @@
   // Gaps between modules, px
   "spacing": 4,
 
-  // Choose the order of the modules
   "modules-left": [
-    "hyprland/workspaces",
+    "hyprland/workspaces"
   ],
+
   "modules-center": [
     "hyprland/window"
   ],
+
   "modules-right": [
-    "pulseaudio",
     "cpu",
     "memory",
-    "temperature",
-    "keyboard-state",
+    "<< temperature >>",
     "battery",
+    "pulseaudio",
+    "keyboard-state",
     "hyprland/language",
     "clock",
     "tray",
     "custom/power"
   ],
+
   "keyboard-state": {
     "numlock": true,
     "capslock": true,
@@ -38,6 +40,7 @@
       "unlocked": ""
     }
   },
+
   "tray": {
     // "icon-size": 21,
     "spacing": 10,
@@ -46,22 +49,23 @@
     //   "TelegramDesktop": "$HOME/.local/share/icons/hicolor/16x16/apps/telegram.png"
     // }
   },
+
   "clock": {
     "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
     "format-alt": "{:%d.%m.%Y}"
   },
+
   "cpu": {
     "format": " {usage}%",
     "tooltip": true
   },
+
   "memory": {
     "format": " {}%"
   },
-  "temperature": {
-    "critical-threshold": 70,
-    "format": "{icon}{temperatureC}°C",
-    "format-icons": ["", "", ""]
-  },
+
+  << temperature_module >>,
+
   "battery": {
     "states": {
       "warning": 30,
@@ -74,6 +78,7 @@
     "format-alt": "{time} {icon}",
     "format-icons": ["󰁺", "󰁼", "󰁾", "󰂀", "󰂂"]
   },
+
   "pulseaudio": {
     // "scroll-step": 1, // %, can be a float
     "format": "{volume}% {icon} {format_source}",
@@ -93,6 +98,7 @@
     },
     "on-click": "pavucontrol"
   },
+
   "custom/power": {
     "format" : "⏻ ",
     "tooltip": false,
