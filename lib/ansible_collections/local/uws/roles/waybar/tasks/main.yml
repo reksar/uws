@@ -1,2 +1,2 @@
-- import_tasks: "waybar/hyprland.yml"
+- import_tasks: "hyprland.yml"
   when: settings.desktop == 'Hyprland'

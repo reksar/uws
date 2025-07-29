@@ -1,13 +1,12 @@
 # NOTE: Expected Hyprland to be running.
 
-- include_vars: "waybar.yml"
-
 - name: "/!/ waybar package"
   package:
     name: "waybar"
   become: true
   register: waybar_status
 
+# For the case when waybar installed on a non-fresh system.
 - name: "Update waybar package deps"
   when: waybar_status.changed
   shell: "pacman --sync --refresh --noconfirm gcc gcc-libs"
@@ -18,12 +17,13 @@
     path: "/usr/local/bin/temperature"
   register: temperature_cli
 
-- name: "/>/ temperature util"
+- name: "/>/ waybar temperature script"
   when: temperature_cli.stat.exists
-  copy:
-    src: "waybar/temperature.sh"
-    dest: "{{ waybar.config_dir }}/util/"
+  template:
+    src: "script/temperature.sh"
+    dest: "{{ config_dir }}/script/"
     mode: "u=rwx,g=rx,o=rx"
+  register: temperature_script_status
 
 - name: "/>/ waybar config"
   vars:
@@ -36,7 +36,7 @@
       {{
         lookup(
           'template',
-          'waybar/module/'
+          'module/'
             + temperature_cli.stat.exists
               | ternary('temperature', 'temperature_default')
             + '.jsonc',
@@ -44,25 +44,32 @@
           variable_end_string=">>",
         )
       }}
-  loop:
-    - "{{ waybar.config_name }}"
-    - "{{ waybar.style_name }}"
   template:
-    src: "waybar/hyprland.{{ item }}"
-    dest: "{{ waybar.config_dir }}/{{ item }}"
+    src: "hyprland.{{ config_name }}"
+    dest: "{{ config_dir }}/{{ config_name }}"
     variable_start_string: "<<"
     variable_end_string: ">>"
   register: config_status
 
+- name: "/>/ waybar style"
+  copy:
+    src: "hyprland.{{ style_name }}"
+    dest: "{{ config_dir }}/{{ style_name }}"
+  register: style_status
+
 - debug:
-    msg: "waybar status changed"
-  changed_when: waybar_status.changed or config_status.changed
+    msg: "Handle waybar status"
+  changed_when: >
+    waybar_status.changed
+      or config_status.changed
+      or style_status.changed
+      or temperature_script_status.changed
   notify: "Restart waybar"
 
 - name: "/*/ Add waybar to Hyprland"
   vars:
-    cfg: "{{ waybar.config_dir }}/{{ waybar.config_name }}"
-    css: "{{ waybar.config_dir }}/{{ waybar.style_name}}"
+    cfg: "{{ config_dir }}/{{ config_name }}"
+    css: "{{ config_dir }}/{{ style_name}}"
   lineinfile:
     path: "{{ XDG_CONFIG_HOME }}/hypr/hyprland.conf"
     regexp: "exec-once\\s*=\\s*waybar"

@@ -14,25 +14,25 @@
     dest: "{{ ansible_env.HOME }}/.tmux/plugins/tpm"
     depth: 1
 
-- name: "/?/ battery status util"
-  stat:
-    path: "/usr/local/bin/battery"
-  register: battery_util
-
-- name: "/?/ temperature status util"
+- name: "/?/ temperature CLI"
   stat:
     path: "/usr/local/bin/temperature"
-  register: temperature_util
+  register: temperature_cli
+
+- name: "/?/ battery CLI"
+  stat:
+    path: "/usr/local/bin/battery"
+  register: battery_cli
 
 - name: "/!/ tmux config"
   vars:
     battery: >-
       {{
-        battery_util.stat.exists | ternary(battery_status, '')
+        battery_cli.stat.exists | ternary(battery_status, '')
       }}
     temperature: >-
       {{
-        temperature_util.stat.exists | ternary(temperature_status, '')
+        temperature_cli.stat.exists | ternary(temperature_status, '')
       }}
   template:
     src: "{{ uws }}/config/tmux.conf"

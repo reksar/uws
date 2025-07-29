@@ -6,6 +6,6 @@
 
 - name: "Start waybar"
   vars:
-    cfg: "{{ waybar.config_dir }}/{{ waybar.config_name }}"
-    css: "{{ waybar.config_dir }}/{{ waybar.style_name }}"
+    cfg: "{{ config_dir }}/{{ config_name }}"
+    css: "{{ config_dir }}/{{ style_name }}"
   shell: "nohup waybar --config '{{ cfg }}' --style '{{ css }}' &"

@@ -60,6 +60,11 @@ keyboard:
     # TODO: Support more than 2 layouts for console tmux.
     list:
 
+monitoring:
+  temperature:
+    critical: 70  # °C
+    check_interval: 7  # seconds
+
 git:
   user:
     # TODO: Use the Ansible vault

@@ -1,5 +1,5 @@
 "temperature": {
-  "critical-threshold": 70,
+  "critical-threshold": << settings.monitoring.temperature.check_interval >>,
   "format": "{icon}{temperatureC}°C",
   "format-icons": ["", "", ""]
 }

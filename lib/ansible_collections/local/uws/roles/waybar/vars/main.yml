@@ -1,0 +1,3 @@
+config_dir: "{{ XDG_CONFIG_HOME }}/waybar"
+config_name: "config.jsonc"
+style_name: "style.css"

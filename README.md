@@ -54,6 +54,11 @@ run a `tests/util/*` executable
 
 `./uws doc local.uws.<plugin>`
 
+# Notes
+
+All executables that should be available in `$PATH`, should be installed to the
+`/usr/local/bin` in according with *FHS*.
+
 # Project layout
 
 **uws** - Entry point.

@@ -1,0 +1,5 @@
+"custom/temperature": {
+  "interval": << settings.monitoring.temperature.check_interval >>,
+  "exec": "<< config_dir >>/script/temperature.sh",
+  "format": "{text}°C"
+}
