@@ -1,0 +1,54 @@
+- name: "/>/ temperature notify"
+  template:
+    src: "temperature.sh"
+    dest: "/opt/dunst/bin/"
+    mode: "u=rwx,g=rx,o=rx"
+  register: script
+
+- name: "/>/ temperature systemd service"
+  copy:
+    src: "temperature.service"
+    dest: "/etc/systemd/user/"
+  register: service
+
+- name: "/>/ temperature systemd timer"
+  template:
+    src: "temperature.timer"
+    dest: "/etc/systemd/user/"
+  register: timer
+
+# The 'temperature.timer' triggers the 'temperature.service', so only timer is
+# needed to be installed with systemd; and the service config has no
+# '[Install]'.
+- name: "/*/ systemd temperature notifications"
+  when: script.changed or service.changed or timer.changed
+  block:
+
+  # Enable timer in 'global' scope, i.e. for all users. The 'system' scope is
+  # not suitable, because notifications needs for an user env, such as $DISPLAY
+  # and $DBUS_SESSION_BUS_ADDRESS.
+  - name: "Enable temperature notify-timer"
+    systemd:
+      name: "temperature.timer"
+      scope: "global"
+      enabled: true
+    become: true
+
+  # The magic Ansible var `ansible_user_id` is not an ID - this is a name!
+  - name: "/?/ Current UID"
+    shell: "id --user {{ ansible_user_id }}"
+    register: id
+
+  - name: "Reload temperature notify-timer"
+    vars:
+      uid: "{{ id.stdout | int }}"
+    systemd:
+      name: "temperature.timer"
+      scope: "user"
+      state: "reloaded"
+      daemon_reload: true
+    environment:
+      XDG_RUNTIME_DIR: "/run/user/{{ uid }}"
+      DBUS_SESSION_BUS_ADDRESS: "unix:path=/run/user/{{ uid }}/bus"
+    become: true
+    become_user: "{{ ansible_user_id }}"

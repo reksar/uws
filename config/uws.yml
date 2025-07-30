@@ -63,7 +63,7 @@ keyboard:
 monitoring:
   temperature:
     critical: 70  # °C
-    check_interval: 7  # seconds
+    check_interval: 15  # seconds
 
 git:
   user:

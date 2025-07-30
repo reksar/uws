@@ -1,0 +1,6 @@
+[Unit]
+Description=Notify on critical hardware temperature
+
+[Service]
+Type=oneshot
+ExecStart=/opt/dunst/bin/temperature.sh
