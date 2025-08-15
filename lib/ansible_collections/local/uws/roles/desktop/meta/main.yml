@@ -1,4 +1,5 @@
 ---
 dependencies:
-  - role: "waybar"
   - role: "dunst"
+  - role: "qemu"
+  - role: "waybar"

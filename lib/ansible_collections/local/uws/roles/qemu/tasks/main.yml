@@ -1,0 +1,11 @@
+- name: "Install QEMU"
+  package:
+    name:
+      - "qemu-desktop"
+  become: true
+
+- name: "/>/ qemu runner"
+  copy:
+    src: "qemu.py"
+    dest: "{{ ansible_env.HOME }}/.local/bin/qemu"
+    mode: "u=rwx,g=rx,o=rx"
