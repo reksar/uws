@@ -54,7 +54,7 @@ test_eq "$(playbook_file main)" "$playbooks/main.yml" \
 test_eq "$(playbook_file main.yml)" "$playbooks/main.yml" \
   "High level playbook file."
 
-test_eq "$(playbook_file app/vim)" "$playbooks/app/vim.yml" \
+test_eq "$(playbook_file app/ranger)" "$playbooks/app/ranger.yml" \
   "Nested playbook path."
 
 test_eq "$(playbook_file roles/role)" "$playbooks/roles.yml" \
