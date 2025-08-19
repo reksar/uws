@@ -3,7 +3,9 @@
 
 usage() {
 cat << EOF
-Configure Linux and applications:
+Ansible playbooks and roles are located in 'lib/ansible_collections'.
+
+Configure Linux with Ansible:
 
   uws set {playbook}
   uws set roles/<role>
@@ -14,7 +16,7 @@ Run tests:
 
   uws test [bash|ansible]
 
-See local Ansible docs:
+See docs for local Ansible modules:
 
   uws doc local.uws.<name>
 EOF
@@ -23,11 +25,11 @@ EOF
 
 uws="$(cd $(dirname $BASH_SOURCE[0]) && pwd)"
 exe="$uws/util/uws/${1:-}.sh"
-option="${2:-}"
 
 [[ ! -f "$exe" ]] && {
   usage
   exit 1
 }
 
-"$exe" "$option"
+shift
+"$exe" $@
