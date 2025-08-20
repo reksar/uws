@@ -1,0 +1,3 @@
+bashrc_auto:
+  name: ".bashrc.auto"
+  note: "# Do not edit this automatically generated file!"

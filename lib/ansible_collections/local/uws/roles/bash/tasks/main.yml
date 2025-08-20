@@ -1,0 +1,20 @@
+- name: "/>/ bash dotfiles"
+  copy:
+    src: "{{ item }}"
+    dest: "{{ ansible_env.HOME }}/.{{ item }}"
+  loop:
+    - "bashrc"
+    - "bash_aliases"
+    - "bash_profile"
+
+- name: "/!/ bashrc auto config"
+  copy:
+    dest: "{{ ansible_env.HOME }}/{{ bashrc_auto.name }}"
+    content: ""
+    force: false
+
+- name: "/>/ bashrc auto config note"
+  lineinfile:
+    path: "{{ ansible_env.HOME }}/{{ bashrc_auto.name }}"
+    line: "{{ bashrc_auto.note }}"
+    insertbefore: "BOF"
