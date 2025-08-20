@@ -14,7 +14,7 @@ Configure Linux with Ansible:
 
 Run tests:
 
-  uws test [bash|ansible]
+  uws test {sh|py|ansible}
 
 See docs for local Ansible modules:
 

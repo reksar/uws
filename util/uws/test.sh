@@ -5,22 +5,35 @@ option="${1:-}"
 
 . "$uws/lib/uws/ansible.sh"
 
+
+run_ansible_tests() {
+  ensure_ansible || return 1
+  ensure_pytest || return 1
+  cd "$uws/lib/ansible_collections/local/uws" \
+    && ansible-test units --target-python default \
+    && ansible-test integration \
+    && return 0
+  return 1
+}
+
+
 case $option in
 
-  bash)
-    $uws/tests/bash/run.sh
+  sh)
+    $uws/tests/sh/run.sh && exit 0
+    ;;
+
+  py)
+    $uws/tests/py/run.sh && exit 0
     ;;
 
   ansible)
-    ensure_ansible || exit 1
-    ensure_pytest || exit 1
-    cd "$uws/lib/ansible_collections/local/uws" \
-      && ansible-test units --target-python default \
-      && ansible-test integration
+    run_ansible_tests && exit 0
     ;;
 
   *)
-    # TODO: Run all tests when no option passed.
-    WARN "Specify test option: bash or ansible."
+    $uws/tests/sh/run.sh && $uws/tests/py/run.sh && run_ansible_tests && exit 0
     ;;
 esac
+
+exit 1
