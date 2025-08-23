@@ -154,6 +154,16 @@ class ArgParser(argparse.ArgumentParser):
             ),
         )
 
+        self.add_argument(
+            '-share',
+            metavar="path:tag",
+            help=(
+                "Allows to mount the host system absolute `path` on the " +
+                "guest system using a mount `tag` as " +
+                "`mount -t 9p -o trans=virtio <tag> <mountpoint>`. " +
+                "The `tag` is also used as the FS device ID."
+            ),
+        )
 
     def separate(self):
         args, argv = self.parse_known_args()
@@ -205,32 +215,53 @@ class OptionAdapter:
     @staticmethod
     def adapt(name, value):
         """
-        The main method of this class.
+        The main method of this class. Returns tuple of strings or ''.
 
-        >>> OptionAdapter.adapt("unknown_option", "some value")
-        ('-unknown_option', 'some value')
-        >>> OptionAdapter.adapt("unknown_option", ("some", "values"))
-        ('-unknown_option', 'some', '-unknown_option', 'values')
+        Some options not existent in adapter:
+        >>> OptionAdapter.adapt("some_option", "some value")
+        ('-some_option', 'some value')
+        >>> OptionAdapter.adapt("some_option", ("some", "values"))
+        ('-some_option', 'some', '-some_option', 'values')
+
+        # Options to be adapted:
         >>> OptionAdapter.adapt("ram", "2G")
         ('-m', '2G')
         >>> OptionAdapter.adapt("accel", "kvm")
         ('-accel', 'kvm')
         >>> OptionAdapter.adapt("accel", "no")
         ''
+        >>> OptionAdapter.adapt("share", "path:tag")
+        ('-fsdev', 'local,id=tag,path=path,security_model=mapped', '-device', 'virtio-9p-pci,fsdev=tag,mount_tag=tag')
         """
+
         regular = OptionAdapter.to_regular(name, value)
-        return (regular and OptionAdapter.to_shell(*regular)) or ""
+
+        if type(regular) is not tuple:
+            return ""
+
+        pairs = regular if type(regular[0]) is tuple else (regular,)
+
+        shell_pairs = starmap(OptionAdapter.to_shell, pairs)
+        return tuple(chain.from_iterable(shell_pairs))
 
 
     @staticmethod
     def to_regular(name, value):
         """
-        >>> OptionAdapter.to_regular("unknown_option", "some value")
-        ('unknown_option', 'some value')
-        >>> OptionAdapter.to_regular("unknown_option", ("some", "values"))
-        ('unknown_option', ('some', 'values'))
+        If the option does not need to be adapted, then pass it as is:
+        >>> OptionAdapter.to_regular("some_option", "some value")
+        ('some_option', 'some value')
+        >>> OptionAdapter.to_regular("some_option", ("some", "values"))
+        ('some_option', ('some', 'values'))
+
+        Otherwise, convert an option to be adapted, to a regular QEMU option,
+        e.g. the `ram` option will be converted to the regular QEMU `m` option.
         >>> OptionAdapter.to_regular("ram", "2G")
         ('m', '2G')
+
+        Some options may be converted to a bunch of regular QEMU options, e.g.
+        >>> OptionAdapter.to_regular("share", "path:tag")
+        (('fsdev', 'local,id=tag,path=path,security_model=mapped'), ('device', 'virtio-9p-pci,fsdev=tag,mount_tag=tag'))
         """
         default = lambda _: (name, value)
         adapter = getattr(OptionAdapter, name, default)
@@ -244,6 +275,8 @@ class OptionAdapter:
         ('-name', 'value')
         >>> OptionAdapter.to_shell("name", ("value1", "value2"))
         ('-name', 'value1', '-name', 'value2')
+        >>> OptionAdapter.to_shell("fsdev", "local,id=x,security_model=mapped")
+        ('-fsdev', 'local,id=x,security_model=mapped')
         """
         assert type(value) in (str, bool, list, tuple), type(value)
         values = type(value) in (str, bool) and (value,) or value
@@ -295,6 +328,36 @@ class OptionAdapter:
     @staticmethod
     def bios(value):
         return Bios.adapt(value)
+
+
+    @staticmethod
+    def share(value: str):
+        """
+        >>> OptionAdapter.share("path:tag")
+        (('fsdev', 'local,id=tag,path=path,security_model=mapped'), ('device', 'virtio-9p-pci,fsdev=tag,mount_tag=tag'))
+
+        >>> OptionAdapter.share("path/without/tag:")
+        Traceback (most recent call last):
+        ...
+        ValueError: Invalid '-share' value.
+
+        >>> OptionAdapter.share(":tag_only")
+        Traceback (most recent call last):
+        ...
+        ValueError: Invalid '-share' value.
+        """
+
+        path, tag = value.split(':')
+
+        if not (path and tag):
+            raise ValueError("Invalid '-share' value.")
+
+        fsdev = tag
+
+        return (
+            ("fsdev", f"local,id={fsdev},path={path},security_model=mapped"),
+            ("device", f"virtio-9p-pci,fsdev={fsdev},mount_tag={tag}"),
+        )
 
 
 class Middleware:
