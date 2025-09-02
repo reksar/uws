@@ -1,0 +1,11 @@
+- name: "/!/ Hyprland"
+  package:
+    name: "hyprland"
+  become: true
+
+- name: "/!/ hyprland.conf"
+  copy:
+    src: "{{ uws }}/config/hyprland.conf"
+    dest: "{{ XDG_CONFIG_HOME }}/hypr/hyprland.conf"
+
+- import_tasks: "keymap.yml"

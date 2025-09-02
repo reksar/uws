@@ -1,0 +1,5 @@
+- name: Install packages for NTFS support
+  package:
+    name:
+      - "ntfs-3g"
+  become: true

@@ -1,0 +1,5 @@
+---
+dependencies:
+  - role: "wayland"
+  - role: "dunst"
+  - role: "waybar"

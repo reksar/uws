@@ -1,9 +1,0 @@
-- hosts: localhost
-  tasks:
-
-  - name: Install packages for NTFS support
-    package:
-      state: present
-      name:
-        - ntfs-3g
-    become: true

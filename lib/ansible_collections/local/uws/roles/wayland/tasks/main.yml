@@ -1,0 +1,8 @@
+- name: "/!/ Wayland"
+  package:
+    name:
+      - "wayland"
+  become: true
+
+- import_tasks: "app/foot.yml"
+- import_tasks: "app/colorpick.yml"

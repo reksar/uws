@@ -1,5 +1,5 @@
 ---
 dependencies:
-  - role: "dunst"
+  - role: "workstation"
+  - role: "hyprland"
   - role: "qemu"
-  - role: "waybar"

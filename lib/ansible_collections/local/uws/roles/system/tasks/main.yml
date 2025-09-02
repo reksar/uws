@@ -1,5 +1,0 @@
-- import_tasks: "utils.yml"
-- import_tasks: "locale/install.yml"
-- import_tasks: "locale/default.yml"
-- import_tasks: "font/psf.yml"
-- import_tasks: "font/ttf.yml"

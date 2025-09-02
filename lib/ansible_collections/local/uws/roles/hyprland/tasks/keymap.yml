@@ -1,5 +1,4 @@
 # TODO: Run only if the Hyprland installed.
-# TODO: Move to the hyprland role.
 
 - include_vars:
     file: "keyboard.yml"

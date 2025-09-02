@@ -54,26 +54,3 @@
 
   - debug:
       msg: "TODO: colorpick"
-
-
-- name: "/!/ foot terminal"
-
-  vars:
-    config_dir: "{{ XDG_CONFIG_HOME }}/foot"
-
-  block:
-
-  - name: "/!/ foot terminal package"
-    package:
-      name: "foot"
-    become: true
-
-  - name: "/!/ foot config dir"
-    file:
-      path: "{{ config_dir }}"
-      state: "directory"
-
-  - name: "/!/ {{ config_dir }}/foot.ini"
-    copy:
-      src: "{{ uws }}/config/foot.ini"
-      dest: "{{ config_dir }}/foot.ini"
