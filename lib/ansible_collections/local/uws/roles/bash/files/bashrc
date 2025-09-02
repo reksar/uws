@@ -1,7 +1,82 @@
 # If not running interactively, don't do anything.
 [[ $- != *i* ]] && return
 
-PS1='[\u@\h \W]\$ '
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# Disable terminal freezing with Ctrl+S / Ctrl+Q.
+stty -ixon
+
+# Check the window size after each command and, if necessary, update the values
+# of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# Make `less` more friendly for non-text input files, see lesspipe(1).
+[[ -x /usr/bin/lesspipe ]] && eval "$(SHELL=/bin/sh lesspipe)"
+
+
+[[ $(tput colors) -ge 8 ]] && is_term_colored=1
+
+
+colored_bash_prompt() {
+
+  # Must be first!
+  local last_rc=$?
+
+  local BLUE='\[\e[34m\]'
+  local YELLOW='\[\e[33m\]'
+  local MAGENTA='\[\e[35m\]'
+  local NONE='\[\e[0m\]'
+
+  local host_path="$BLUE[$NONE\u$BLUE@$NONE\h$BLUE:$NONE\w$BLUE]$NONE"
+
+  if [[ $EUID == 0 ]]
+  then
+    local prompt="$MAGENTA#$NONE"
+  else
+    local prompt="$YELLOW\$$NONE"
+  fi
+
+  if [[ $last_rc -ne 0 ]]
+  then
+    local err="${MAGENTA}E${last_rc}${NONE} "
+  else
+    local err=""
+  fi
+
+  if [[ $(tty) == /dev/pts/* ]]
+  then
+    local git_branch_sign=
+  else
+    local git_branch_sign=*
+  fi
+
+  local git_branch=$(
+    git branch 2>/dev/null | sed -e '/^[^*]/d' -e "s/*/$git_branch_sign/"
+  )
+
+  if [[ -n $VIRTUAL_ENV ]]
+  then
+    local python_venv="($(basename \"$VIRTUAL_ENV\"))"
+  else
+    local python_venv=""
+  fi
+
+  local extra="$git_branch$python_venv"
+
+  PS1="${err:+$err\n}$host_path${extra:+ $extra }$prompt "
+}
+
+
+if [[ $is_term_colored == 1 ]]
+then
+  PROMPT_COMMAND=colored_bash_prompt
+else
+  PS1="[\u@\h] \w $ "
+fi
+
+
+unset is_term_colored
 
 [[ -f ~/.bash_aliases ]] && . ~/.bash_aliases
 [[ -f ~/.bashrc.auto ]] && . ~/.bashrc.auto

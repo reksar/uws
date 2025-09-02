@@ -1,5 +1,12 @@
 # Install some CLI utils
 - package:
     name:
+
       - "strace"
+
+      # The unified interface for all archives
+      - "atool"
+      # requirements:
+      - "7zip"
+
   become: true
