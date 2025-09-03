@@ -7,10 +7,16 @@ Ansible playbooks and roles are located in 'lib/ansible_collections'.
 
 Configure Linux with Ansible:
 
-  uws set {playbook}
-  uws set roles/<role>
-  uws set roles/<namespace>.<collection>.<role>
-  uws set tasks/<relative path within a role>
+  uws set [target] {<user>@<host>:<port> {--private-key=<path>}}
+
+  The required [target] can be one of:
+  * <playbook>
+  * roles/<role>
+  * roles/<namespace>.<collection>.<role>
+  * tasks/<relative path within a role>
+
+  If the second arg is passed, runs via SSH. If no '--private-key' is provided,
+  uses the password for auth.
 
 Run tests:
 
