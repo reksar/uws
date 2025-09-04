@@ -1,12 +1,12 @@
 # Install all `font_glob` fonts from `font_src_dir` to `font_dest_dir`.
 #
-# Required vars to be preset:
-# - font_src_dir
-# - font_dest_dir
-# - font_glob
+# Input vars:
+# * font_src_dir
+# * font_dest_dir
+# * font_glob
 #
-# Sets the resulting var:
-# - font_installation_status
+# Output vars:
+# * font_installation_status
 
 
 - name: "/!/ Font destination '{{ font_dest_dir }}'"
@@ -15,17 +15,47 @@
     state: "directory"
   become: true
 
-- name: "/?/ Missing fonts"
-  shell: >
-      {{ uws }}/util/glob_diff.sh \
-        '{{ font_glob }}' '{{ font_src_dir }}' '{{ font_dest_dir }}'
-  register: missing_fonts
-  changed_when: false
+
+- name: "/?/ Source fonts '{{ font_glob }}'"
+  vars:
+    ansible_connection: "local"
+  find:
+    paths: "{{ font_src_dir }}"
+    patterns: "{{ font_glob }}"
+  register: src_names
+  delegate_to: localhost
+
+- name: "/%/ Source fonts"
+  set_fact:
+    src_names: >-
+      {{
+        src_names.files | map(attribute='path') | map('basename')
+      }}
+
+
+- name: "/?/ Installed fonts '{{ font_glob }}'"
+  find:
+    paths: "{{ font_dest_dir }}"
+    patterns: "{{ font_glob }}"
+  register: dest_names
+
+- name: "/%/ Installed fonts"
+  set_fact:
+    dest_names: >-
+      {{
+        dest_names.files | map(attribute='path') | map('basename')
+      }}
+
+
+- name: "/%/ Missing fonts"
+  set_fact:
+    missing_names: "{{ src_names | difference(dest_names) }}"
+
 
 - name: "Install fonts '{{ font_glob }}'"
   copy:
     src: "{{ font_src_dir }}/{{ item }}"
     dest: "{{ font_dest_dir }}/{{ item }}"
-  loop: "{{ missing_fonts.stdout_lines }}"
+  loop: "{{ missing_names }}"
   become: true
   register: font_installation_status
