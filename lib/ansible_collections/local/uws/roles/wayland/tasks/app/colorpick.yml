@@ -1,12 +1,4 @@
-- name: "Common Wayland packages"
-  package:
-    name:
-      - "xdg-user-dirs"
-      - "wl-clipboard"
-  become: true
-
-
-- name: "Packages for a screen grabbing"
+- name: "/!/ Packages for a screen grabbing"
   package:
     name:
       - "grim"
