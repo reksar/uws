@@ -1,2 +1,26 @@
-- import_tasks: "hyprland.yml"
-  when: settings.desktop == 'Hyprland'
+- name: "/!/ waybar package"
+  package:
+    name: "waybar"
+  become: true
+  register: waybar_status
+
+# For the case when waybar installed on a non-fresh system.
+- name: "Update waybar package deps"
+  when: waybar_status.changed
+  shell: "pacman --sync --refresh --noconfirm gcc gcc-libs"
+  become: true
+
+- name: "/?/ temperature CLI"
+  stat:
+    path: "/usr/local/bin/temperature"
+  register: temperature_cli
+
+- name: "/>/ waybar temperature script"
+  when: temperature_cli.stat.exists
+  template:
+    src: "script/temperature.sh"
+    dest: "{{ config_dir }}/script/"
+    mode: "u=rwx,g=rx,o=rx"
+  register: temperature_script_status
+
+- import_tasks: "{{ settings.desktop }}"
