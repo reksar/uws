@@ -5,6 +5,7 @@ import os
 import re
 import stat
 import subprocess
+import sys
 from functools import cache
 from functools import lru_cache
 from functools import partial
@@ -20,6 +21,8 @@ from operator import contains
 from operator import itemgetter
 from operator import methodcaller as method
 from pathlib import Path
+
+sys.dont_write_bytecode = True
 
 item_0 = itemgetter(0)
 item_1 = itemgetter(1)

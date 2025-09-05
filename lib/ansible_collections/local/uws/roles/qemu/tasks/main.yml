@@ -7,5 +7,6 @@
 - name: "/>/ qemu runner"
   copy:
     src: "qemu.py"
-    dest: "{{ ansible_env.HOME }}/.local/bin/qemu"
+    dest: "/usr/local/bin/qemu"
     mode: "u=rwx,g=rx,o=rx"
+  become: true
