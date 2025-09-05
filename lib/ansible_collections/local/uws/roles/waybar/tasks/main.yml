@@ -23,4 +23,4 @@
     mode: "u=rwx,g=rx,o=rx"
   register: temperature_script_status
 
-- import_tasks: "{{ settings.desktop }}"
+- import_tasks: "{{ settings.desktop }}.yml"
