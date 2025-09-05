@@ -1,0 +1,6 @@
+- name: "/!/ Niri packages"
+  package:
+    name:
+      - "niri"
+      - "xwayland-satellite"
+  become: true

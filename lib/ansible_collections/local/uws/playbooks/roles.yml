@@ -1,11 +1,7 @@
 ---
-- name: "Arbitrary `uws set roles/<role>`"
+- name: "Set an arbitrary Ansible role"
   hosts: "all"
-  tasks:
-
-    - include_vars:
-        file: "{{ uws }}/config/uws.yml"
-        name: "settings"
-
-    - import_role:
-        name: "{{ playbook_target }}"
+  vars_files:
+    - "{{ uws }}/config/uws.yml"
+  roles:
+    - "{{ playbook_target }}"

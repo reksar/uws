@@ -1,5 +1,5 @@
 ---
 dependencies:
   - role: "workstation"
-  - role: "hyprland"
+  - role: "{{ settings.desktop }}"
   - role: "qemu"

@@ -1,74 +1,73 @@
-# The main uws settings. These vars should be included as the 'settings' name.
+settings:
 
-# Empty or:
-#   * Hyprland (not implemented)
-#
-# NOTE: Now this is just a stub for waybar.
-desktop: "Hyprland"
+  # Select:
+  #   * niri
+  #   * hyprland
+  desktop: "niri"
 
-# Locales to be installed in the system.
-# NOTE: Use the format of `/etc/locale.gen`.
-locale:
-  list:
-    - C.UTF-8
-    - en_US.UTF-8
-    - ru_RU.UTF-8
-  default:
-    LANG: C.UTF-8
-    LC_MESSAGES: C.UTF-8
-
-keyboard:
-
-  layout:
-
-    # Can be one of (case insensitive):
-    #  alt+shift
-    #  ctrl+shift
-    switch: alt+shift
-
-    # A list of keyboard layouts. Case insensitive.
-    #
-    # If this list is empty, then the `locale.list` will be used to determine
-    # related layouts automatically.
-    #
-    # The default layout is 'us'. It will be installed anyway, even it is not
-    # in list.
-    #
-    # NOTE: The 'us' and 'en' are the same; 'en' will be converted to 'us'.
-    # Both 'en' and 'us' can be found in the `localectl list-keymaps` output,
-    # but only the 'us' exists in `/usr/share/kbd/keymaps/i386/qwerty/`.
-    #
-    # NOTE: The UTF-8 is the default, so the '.utf8' suffix is not required!
-    #
-    # For example, these lists are equal:
-    #
-    # - en
-    # - us
-    # - es
-    # - ru.utf8
-    #
-    # and
-    #
-    # - es
-    # - ru
-    #
-    # NOTE: A virtual console supports switching of only 2 keyboard layouts via
-    # keymaps. Since the default 'us' layout is always set, the only 1
-    # additional layout is available. The first non-default list item will be
-    # picked for this purpose, if exists. So list items order is important!
-    #
-    # TODO: Support more than 2 layouts for console tmux.
+  # Locales to be installed in the system.
+  # NOTE: Use the format of `/etc/locale.gen`.
+  locale:
     list:
+      - C.UTF-8
+      - en_US.UTF-8
+      - ru_RU.UTF-8
+    default:
+      LANG: C.UTF-8
+      LC_MESSAGES: C.UTF-8
 
-monitoring:
-  temperature:
-    critical: 70  # °C
-    check_interval: 15  # seconds
+  keyboard:
 
-git:
-  user:
-    # TODO: Use the Ansible vault
-    name: reksarka
-    email: reksarka@gmail.com
-  core:
-    editor: vim
+    layout:
+
+      # Can be one of (case insensitive):
+      #  alt+shift
+      #  ctrl+shift
+      switch: alt+shift
+
+      # A list of keyboard layouts. Case insensitive.
+      #
+      # If this list is empty, then the `locale.list` will be used to determine
+      # related layouts automatically.
+      #
+      # The default layout is 'us'. It will be installed anyway, even it is not
+      # in list.
+      #
+      # NOTE: The 'us' and 'en' are the same; 'en' will be converted to 'us'.
+      # Both 'en' and 'us' can be found in the `localectl list-keymaps` output,
+      # but only the 'us' exists in `/usr/share/kbd/keymaps/i386/qwerty/`.
+      #
+      # NOTE: The UTF-8 is the default, so the '.utf8' suffix is not required!
+      #
+      # For example, these lists are equal:
+      #
+      # - en
+      # - us
+      # - es
+      # - ru.utf8
+      #
+      # and
+      #
+      # - es
+      # - ru
+      #
+      # NOTE: A virtual console supports switching of only 2 keyboard layouts
+      # via keymaps. Since the default 'us' layout is always set, the only 1
+      # additional layout is available. The first non-default list item will be
+      # picked for this purpose, if exists. So list items order is important!
+      #
+      # TODO: Support more than 2 layouts for console tmux.
+      list:
+
+  monitoring:
+    temperature:
+      critical: 70  # °C
+      check_interval: 15  # seconds
+
+  git:
+    user:
+      # TODO: Use the Ansible vault
+      name: reksarka
+      email: reksarka@gmail.com
+    core:
+      editor: vim

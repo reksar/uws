@@ -1,11 +1,7 @@
 ---
 - name: "Default uws tasks"
   hosts: "all"
-  tasks:
-
-  - include_vars:
-      file: "{{ uws }}/config/uws.yml"
-      name: "settings"
-
-  - include_role:
-      name: "local.uws.desktop"
+  vars_files:
+    - "{{ uws }}/config/uws.yml"
+  roles:
+    - "local.uws.desktop"
