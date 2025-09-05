@@ -12,27 +12,20 @@ configure_ansible() {
 
   INFO "Configuring Ansible with env vars."
 
-  venv_python="$(ls $uws/venv/lib)"
-  venv_site="$uws/venv/$venv_python/site-packages"
+  local venv_python="$(ls $uws/venv/lib)"
+  local venv_site="$uws/venv/$venv_python/site-packages"
   export ANSIBLE_HOME="$venv_site/ansible"
 
-  ansible_collections="$ANSIBLE_HOME/collections"
-  lib="$uws/lib"
+  local ansible_collections="$ANSIBLE_HOME/collections"
+  local lib="$uws/lib"
   export ANSIBLE_COLLECTIONS_PATH="$ansible_collections:$lib"
 
-  #local_uws="$lib/ansible_collections/local/uws"
+  local uws_collection="$lib/ansible_collections/local/uws"
 
-  #ansible_modules="$ANSIBLE_HOME/plugins/modules"
-  #uws_modules="$local_uws/plugins/modules"
-  #export ANSIBLE_LIBRARY="$ansible_modules:$uws_modules"
-
-  #ansible_module_utils="$ANSIBLE_HOME/plugins/module_utils"
-  #uws_module_utils="$local_uws/plugins/module_utils"
-  #export ANSIBLE_MODULE_UTILS="$ansible_module_utils:$uws_module_utils"
-
-  #ansible_actions="$ANSIBLE_HOME/plugins/action"
-  #collection_actions="$local_uws/plugins/action"
-  #export ANSIBLE_ACTION_PLUGINS="$ansible_actions:$collection_actions"
+  local default_roles_paths="$ANSIBLE_HOME/roles:/usr/share/ansible/roles"
+  local default_roles_paths+=":/etc/ansible/roles"
+  local uws_roles_path="$uws_collection/roles"
+  export ANSIBLE_ROLES_PATH="$uws_roles_path:$default_roles_paths"
 }
 
 
