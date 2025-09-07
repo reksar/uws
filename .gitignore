@@ -2,5 +2,6 @@ venv
 __pycache__
 
 lib/ansible_collections/**/tests/output/
+lib/ansible_collections/**/tests/integration/inventory
 
 res/vim/.netrwhist
