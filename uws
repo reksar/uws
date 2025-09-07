@@ -3,28 +3,31 @@
 
 usage() {
 cat << EOF
-Ansible playbooks and roles are located in 'lib/ansible_collections'.
-
 Configure Linux with Ansible:
 
   uws set [target] {<user>@<host>:<port> {--private-key=<path>}}
 
-  The required [target] can be one of:
-  * <playbook>
-  * roles/<role>
-  * roles/<namespace>.<collection>.<role>
-  * tasks/<relative path within a role>
+  The required [target] arg can be:
+    * <playbook>
+    * roles/<role>
+    * roles/<namespace>.<collection>.<role>
+    * tasks/<relative path within a role>
 
-  If the second arg is passed, runs via SSH. If no '--private-key' is provided,
-  uses the password for auth.
+  If the optional second arg is passed, runs via SSH. If no '--private-key' is
+  provided as the third arg, uses the password for auth.
 
 Run tests:
 
   uws test {sh|py|ansible}
 
-See docs for local Ansible modules:
+Local Ansible docs:
+  List plugins:
+    uws doc -l
+    uws doc -l local.uws
+  Show a local <plugin> doc:
+    uws doc local.uws.<plugin>
 
-  uws doc local.uws.<name>
+Ansible playbooks and roles are located in 'lib/ansible_collections'.
 EOF
 }
 

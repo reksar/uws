@@ -39,20 +39,35 @@ Ansible collections.
 `./uws set roles/local.uws.system` - setup the Linux depending on the system
 configuration. Using the role from Ansible collection `local.uws`.
 
+## Ansible docs
+
+The `uws doc` is the wrapper for the local `ansible-doc`, so you can pass a
+standard Ansible doc arguments.
+
+### Examples
+
+`./uws doc -l` - list all plugins.
+
+`./uws doc -l local.uws` - list local plugins.
+
+`./uws doc local.uws.config_option` - show docs for the specified local plugin.
+
 ## Run tests
 
-Test the Ansible collection 'local.uws' at `lib/ansible_collections/local/uws`:
+Run tests and exit with code **0** if tests are passed, **1** otherwise.
+`./uws test {sh|py|ansible}`
+
+Run all tests:
+`./uws test`
+
+Test the 'local.uws' Ansible collection at `lib/ansible_collections/local/uws`:
 `./uws test ansible`
 
-Test `lib` bash scripts:
-`./uws test bash`
+Test `lib` or `util` bash scripts:
+`./uws test sh`
 
-Test `util` scripts:
-run a `tests/util/*` executable
-
-## See the doc for a `<plugin>` in the local Ansible collection
-
-`./uws doc local.uws.<plugin>`
+Test Python scripts:
+`./uws test py`
 
 # Notes
 
