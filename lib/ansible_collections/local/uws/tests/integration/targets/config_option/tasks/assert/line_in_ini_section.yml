@@ -1,0 +1,18 @@
+# Assert that the specified `line` `exist` or not in the INI `section` of the
+# `test_config` file.
+#
+# Used vars:
+#   section: str
+#   line: str
+#   exist: bool
+#   test_config: str
+#   msg: str
+
+- assert:
+    that: >
+      lookup('file', test_config)
+      | regex_findall(
+          '^\s*\['+section+'\]\s*\n(?:(?!^\s*\[).*\n)*?'+line,
+          multiline=true)
+      | length | bool == exist
+    fail_msg: "{{ msg }}"

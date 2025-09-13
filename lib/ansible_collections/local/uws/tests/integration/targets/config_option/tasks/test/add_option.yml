@@ -1,0 +1,81 @@
+# Add the 'PAGER' option to 'bashrc'.
+
+- import_tasks: "util/prepare_test_config.yml"
+  vars:
+    config_name: "bashrc"
+
+- import_tasks: "assert/line.yml"
+  vars:
+    line: '^\s*(export\s+){0,1}(PAGER=)'
+    amount: "0"
+    msg: "The 'PAGER' option must not be set in 'bashrc'"
+
+- name: "Set 'PAGER' to 'less'"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    option: "PAGER"
+    value: "less"
+
+- import_tasks: "assert/line.yml"
+  vars:
+    line: '^\s*PAGER=less\b'
+    amount: "1"
+    msg: "The 'PAGER' option must be set to 'less'"
+
+
+# Add the 'animation' option to the existing [display] INI section and set it
+# to 'true'.
+
+- import_tasks: "util/prepare_test_config.yml"
+  vars:
+    config_name: "valid.ini"
+
+- import_tasks: "assert/line.yml"
+  vars:
+    line: '^\s*animation\b'
+    amount: "0"
+    msg: "There must not be 'animation' option"
+
+- name: "Add the 'animation' option to the existing [display] INI section"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    section: "display"
+    option: "animation"
+    value: "true"
+
+- import_tasks: "assert/line_in_ini_section.yml"
+  vars:
+    section: "display"
+    line: '^\s*animation=true\b'
+    exist: true
+    msg: "The 'animation' must be set to 'true' in the [display] INI section"
+
+
+# Add the 'update' option to the newly added [gallery] section and set it to
+# 'weekly'.
+
+- import_tasks: "assert/line.yml"
+  vars:
+    line: '^\s*\[gallery\]'
+    amount: "0"
+    msg: "The [gallery] INI section must not exist"
+
+- import_tasks: "assert/line.yml"
+  vars:
+    line: '^\s*update\b'
+    amount: "0"
+    msg: "The 'update' option must not exist"
+
+- name: "Add the [gallery] INI section, then set 'update' option to 'weekly'"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    section: "gallery"
+    option: "update"
+    value: "weekly"
+
+- import_tasks: "assert/line_in_ini_section.yml"
+  vars:
+    section: "gallery"
+    line: '^\s*update=weekly\b'
+    exist: true
+    msg: "The [gallery] must be 'update'd 'weekly'"

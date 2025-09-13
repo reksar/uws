@@ -1,0 +1,32 @@
+# Assert that the `test_config` contains the expected `amount` of `line`
+# entries.
+#
+# Used vars:
+#   line: str
+#     Regex to find a line in the `test_config`.
+#   amount: str 
+#     Expected amount of `line` entries: '0', '1', 'any', 'several'.
+#   test_config: str
+#     Test config file path.
+#   msg: str
+#     Message on fail assertion.
+
+- set_fact:
+    line_count: >-
+      {{
+        lookup('file', test_config)
+        | regex_findall(line, multiline=true)
+        | length
+      }}
+
+- assert:
+    that: >
+      {{
+        {
+          '0': (line_count | int == 0),
+          '1': (line_count | int == 1),
+          'any': (line_count | int > 0),
+          'several': (line_count | int > 1),
+        }[amount]
+      }}
+    fail_msg: "{{ msg }}"

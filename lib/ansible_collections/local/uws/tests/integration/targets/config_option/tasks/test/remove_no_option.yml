@@ -1,0 +1,87 @@
+# Try to remove the 'PS1' option from bashrc config. The config contains only
+# the commented 'PS1' option, so there is nothing to remove and the config
+# should be not changed during this test.
+
+- import_tasks: "util/prepare_test_config.yml"
+  vars:
+    config_name: "bashrc"
+
+- import_tasks: "assert/line.yml"
+  vars:
+    line: '^\s*#\s*PS1='
+    amount: "any"
+    msg: "There must be a commented 'PS1' option."
+
+- name: "Remove not existing 'PS1' option from bashrc"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    option: "PS1"
+  register: result
+
+- assert:
+    that:
+      - not result.changed
+      - not result.failed
+    fail_msg: "The config must not be changed"
+
+
+# Specifying a section does not affect the result.
+
+- name: "Remove not existing 'PS1' option from not existing section in bashrc"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    option: "PS1"
+    section: "section"
+  register: result
+
+- assert:
+    that:
+      - not result.changed
+      - not result.failed
+    fail_msg: "The config must not be changed"
+
+
+- import_tasks: "util/prepare_test_config.yml"
+  vars:
+    config_name: "valid.ini"
+
+
+- name: "Remove not existing 'name' option from INI file"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    option: "name"
+  register: result
+
+- assert:
+    that:
+      - not result.changed
+      - not result.failed
+    fail_msg: "The config must not be changed"
+
+
+- name: "Remove not existing 'name' option from not existing INI section"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    option: "name"
+    section: "section"
+  register: result
+
+- assert:
+    that:
+      - not result.changed
+      - not result.failed
+    fail_msg: "The config must not be changed"
+
+
+- name: "Remove not existing 'name' option from existing INI section"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    option: "name"
+    section: "application"
+  register: result
+
+- assert:
+    that:
+      - not result.changed
+      - not result.failed
+    fail_msg: "The config must not be changed"

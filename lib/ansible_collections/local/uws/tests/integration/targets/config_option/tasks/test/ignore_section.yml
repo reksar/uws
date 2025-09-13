@@ -1,0 +1,31 @@
+# Set the 'daily' 'update' option without specifying an INI section. This will
+# be set it for the [display] section, because all sections will be ignored and
+# the option will just be appended to the end of file.
+
+- import_tasks: "util/prepare_test_config.yml"
+  vars:
+    config_name: "valid.ini"
+
+- import_tasks: "assert/line.yml"
+  vars:
+    line: '^\s*update='
+    amount: "0"
+    msg: "The 'update' option must not be set"
+
+# All sections should be ignored and the file format is considered as the plain
+# text lines of "key=value" pairs.
+- name: "Set the 'daily' 'update' option without specifying a section"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    option: "update"
+    value: "daily"
+
+# All sections should be ignored and the 'update' should be appended to EOF.
+# The last section is [display], so, in terms of INI format, the [display]
+# should contain the 'update' option.
+- import_tasks: "assert/line_in_ini_section.yml"
+  vars:
+    section: "display"
+    line: '^\s*update=daily\b'
+    exist: true
+    msg: "The 'update' option must be set for [display]"

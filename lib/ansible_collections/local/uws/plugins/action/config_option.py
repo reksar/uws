@@ -3,7 +3,12 @@
 from __future__ import annotations
 
 import re
-from ansible_collections.local.uws.plugins.util.action import ActionModuleBase
+
+from ansible_collections.local.uws.plugins.util.action import (
+    ActionModuleBase,
+    STATUS_NOT_CHANGED,
+    is_status_ok,
+)
 
 
 class ActionModule(ActionModuleBase):
@@ -11,45 +16,174 @@ class ActionModule(ActionModuleBase):
     @ActionModuleBase.prerun
     def run(self, status):
 
-        file = self.arg('file')
-        value = self.arg('value', None)
-        option = self.arg('option')
+        self.setup()
 
-        # Separator between the option name and value:
-        separator = '='
+        status = self.ensure_section()
+        if not is_status_ok(status):
+            return status
+
+        return self.ensure_option()
+
+
+    def setup(self):
+
+        self.file = self.arg('file')
+        self.value = self.arg('value', None)
+        self.option = self.arg('option')
+        self.section = self.arg('section', '')
+
+        # Separator between the `option` name and `value`.
+        #
+        # NOTE: No spaces around the separator.
+        self.separator = '='
 
         # An oneline commet starts with this prefix:
-        comment = '#'
+        #
+        # TODO: Allow it after the option value in the same line.
+        self.comment = '#'
 
-        # Regex for the `option` name and value pair.
-        # NOTE: No spaces between the `option` and `separator`.
-        regex = f"^\\s*(?!{comment}\\s*)({option}){separator}(.*)"
+        re_opt = re.escape(self.option)
+        re_sep = re.escape(self.separator)
+        re_val = re.escape(self.value or '')
 
-        pattern = re.compile(regex, flags=re.MULTILINE)
-        txt = self.run_lookup_plugin('file', [file])[0]
-        entries = pattern.findall(txt)
+        # The specified `option` with any value.
+        self.re_option = rf'^\s*({re_opt}){re_sep}.*'
 
-        if int(value is not None) < len(entries):
-            status = self.replace(file, regex)
-            if status['rc'] != 0:
-                return status
+        # The specified `option` with the specified `value`.
+        self.re_option_value = rf'^\s*({re_opt}{re_sep}{re_val}\b)'
 
-        if value is not None:
-            status = self.lineinfile(file, f"{option}{separator}{value}")
+        self.re_section = rf'^\s*(\[{re.escape(self.section)}\])'
 
-        return status
+        # Any line that is not starts with '['.
+        re_not_section = r'(?:(?!^\s*\[).*\n)'
+
+        # The specified `option` with any value inside the specified `section`.
+        self.re_option_in_section = (
+            rf'{self.re_section}\s*\n{re_not_section}*?{self.re_option}'
+        )
 
 
-    def replace(self, file, regex):
+    def ensure_section(self):
+
+        if not self.section or self.entry_count(self.re_section) == 1:
+            return STATUS_NOT_CHANGED
+
+        # TODO: Remove all related options when removing the section.
+        status = self.remove(self.re_section)
+        if not is_status_ok(status):
+            return status
+
+        return self.write(f"[{self.section}]")
+
+
+    def ensure_option(self):
+
+        status = self.remove_excess_options()
+        if not is_status_ok(status) or self.value is None:
+            return status
+
+        # Here we got 0 or 1 option entry.
+
+        with_value_count = self.entry_count(self.re_option_value)
+        assert with_value_count in (0, 1)
+
+        in_section_count = self.entry_count(self.re_option_in_section)
+        assert in_section_count in (0, 1)
+
+        is_already_set = with_value_count and not self.section
+
+        is_already_set_in_section = (
+            self.section and in_section_count and with_value_count
+        )
+
+        if is_already_set or is_already_set_in_section:
+            return status
+
+        # Here we got 0 or 1 `option` entry that is not set, i.e. its `value`
+        # differs from the specified one.
+
+        status = self.remove(self.re_option)
+        if not is_status_ok(status):
+            return status
+
+        new_option_value = f"{self.option}{self.separator}{self.value}"
+        return self.write(new_option_value, bool(self.section))
+
+
+    def remove_excess_options(self):
+        """
+        WARN: Don't always remove all existing entries to maintain idempotency!
+        """
+
+        # Count entries of the specified `option` name.
+        total_count = self.entry_count(self.re_option)
+
+        # Count entries of the specified `option` with the specified `value`.
+        with_value_count = self.entry_count(self.re_option_value)
+
+        # Count entries of the specified `option` name with any value inside
+        # the specified INI `section`.
+        #
+        # NOTE: If there are several `option` name entries within the specified
+        # `section`, the count will be 1 anyway. The count can be > 1 when
+        # there are several sections with the same name are exists and contains
+        # the `option`.
+        in_section_count = self.entry_count(self.re_option_in_section)
+
+        # When `value` is not specified but the `section` is, it is needed to
+        # remove only the `option` from the specified section, but all other
+        # `option` entries must not be changed.
+        #
+        # TODO: Do not change entries outside the `section`.
+        is_need_to_unset_in_section = (
+            self.value is None and self.section and in_section_count
+        )
+
+        # When `value` and `section` are not specified, it is needed to remove
+        # all the `option` entries.
+        is_need_to_unset = (
+            self.value is None and not self.section and total_count
+        )
+
+        # When there are several `option` entries.
+        #
+        # TODO: Take into acctount the section.
+        has_option_duplicates = total_count > 1
+
+        # When there are several `option` and `value` duplicates.
+        has_entire_duplicates = self.value is not None and with_value_count > 1
+
+        is_need_to_remove = any((
+            is_need_to_unset_in_section,
+            is_need_to_unset,
+            has_option_duplicates,
+            has_entire_duplicates,
+        ))
+
+        return (
+            self.remove(self.re_option) if is_need_to_remove
+            else STATUS_NOT_CHANGED
+        )
+
+
+    def remove(self, regex):
         return self.run_module('replace', {
-            'path': file,
+            'path': self.file,
             'regexp': regex,
             'replace': '',
         })
 
-    def lineinfile(self, file, line):
+
+    def write(self, line, use_section=False):
         return self.run_module('lineinfile', {
-            'path': file,
+            'path': self.file,
             'line': line,
+            'insertafter': (use_section and self.re_section) or 'EOF',
         })
 
+
+    def entry_count(self, regex):
+        pattern = re.compile(regex, flags=re.MULTILINE)
+        txt = self.run_lookup_plugin('file', [self.file])[0]
+        entries = pattern.findall(txt)
+        return len(entries)

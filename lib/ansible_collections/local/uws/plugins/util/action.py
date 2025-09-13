@@ -2,6 +2,32 @@ import functools
 from ansible.plugins.action import ActionBase
 
 
+STATUS_NOT_CHANGED = {
+    'msg': 'Not changed.',
+    'rc': 0,
+    'changed': False,
+    'failed': False,
+}
+
+
+def is_status_ok(status):
+    """
+    The `status` is a dict, that can be empty or have some fields. Most common
+    fields are:
+        * msg: str
+        * failed: bool
+        * changed: bool (can be ommited when failed)
+        * invocation: dict (args passed to an action)
+        * rc: int
+        * diff: list[dict,...]
+        * _ansible_parsed: bool (WTF?)
+
+    NOTE: I did not find any docs for the `status` and these fields are
+    empirically explored.
+    """
+    return not (status.get('failed', False) and status.get('rc', 0))
+
+
 class PluginMixin:
 
     def run_module(self, module: str, args: dict):
@@ -41,6 +67,11 @@ class PluginMixin:
 class ActionModuleBase(ActionBase, PluginMixin):
 
     def prerun(run):
+        """
+        Wraps the `run` function of an Ansible action to do some Ansible shit
+        before. The `run` function accepts the initial `status`, passed by
+        Ansible, and returns it changed/unchanged or replaced.
+        """
         @functools.wraps(run)
         def ansible_shit(self, tmp=None, task_vars=None):
             self.tmp = tmp
@@ -49,7 +80,7 @@ class ActionModuleBase(ActionBase, PluginMixin):
             return run(self, status)
         return ansible_shit
 
-    
+
     @property
     def arg(self):
         return self._task.args.get

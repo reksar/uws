@@ -1,0 +1,55 @@
+# Set the 'TERM' option to the same value, that is already set. The config file
+# should not be changed. This is the idempotency test.
+
+- import_tasks: "util/prepare_test_config.yml"
+  vars:
+    config_name: "bashrc"
+
+- import_tasks: "assert/line.yml"
+  vars:
+    line: '^\s*export TERM=xterm-color\b'
+    amount: "1"
+    msg: "The 'TERM' option must be set initially"
+
+- name: "Set the 'TERM' option to the value that is already set"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    option: "export TERM"
+    value: "xterm-color"
+  register: result
+
+- assert:
+    that:
+      - not result.changed
+      - not result.failed
+    fail_msg: "The config must not be changed"
+
+
+# Set the 'port' option in the [database] INI section to the same value, that
+# is already set. The config file should not be changed. This is the
+# idempotency test.
+
+- import_tasks: "util/prepare_test_config.yml"
+  vars:
+    config_name: "valid.ini"
+
+- import_tasks: "assert/line_in_ini_section.yml"
+  vars:
+    section: "database"
+    line: '^\s*port=5432\b'
+    exist: true
+    msg: "The 'port' option must be set initially in the [database] section"
+
+- name: "Set the [database] 'port' option to the same value"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    section: "database"
+    option: "port"
+    value: "5432"
+  register: result
+
+- assert:
+    that:
+      - not result.changed
+      - not result.failed
+    fail_msg: "The config must not be changed"

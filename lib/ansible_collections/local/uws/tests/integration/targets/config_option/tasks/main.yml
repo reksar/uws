@@ -1,18 +1,24 @@
 # Remove not existing option.
-- import_tasks: "remove_no_option.yml"
+- import_tasks: "test/remove_no_option.yml"
 
 # Remove all option entries, excluding the commented lines.
-- import_tasks: "remove_option.yml"
-
-# Like previous, but adds the new option entry after removing all old entries.
-- import_tasks: "replace_option.yml"
+- import_tasks: "test/remove_option.yml"
 
 # Add option that is not exists yet.
-- import_tasks: "add_option.yml"
+- import_tasks: "test/add_option.yml"
 
-# Add option that is not set, but there is commented one.
-- import_tasks: "add_uncommented_option.yml"
+# Change an existing option value.
+- import_tasks: "test/change_option.yml"
 
-# Test idempotence: the file should not be changed when trying to set the same
+# Set an option that exists in config file, but is commented.
+- import_tasks: "test/uncomment_option.yml"
+
+# Idempotence test: the file should not be changed when trying to set the same
 # option value.
-- import_tasks: "set_the_same_option.yml"
+- import_tasks: "test/set_the_same_option.yml"
+
+# Change option value with specifyind a new INI section.
+- import_tasks: "test/move_between_sections.yml"
+
+# Add the option to INI file without specifying a section.
+- import_tasks: "test/ignore_section.yml"

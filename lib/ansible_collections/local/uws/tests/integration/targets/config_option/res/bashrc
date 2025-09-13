@@ -1,4 +1,5 @@
-# The bashrc format is not INI, but the similar.
+# The bashrc format is the plain text lines of "key=value" pairs. Like the INI
+# format, but without sections.
 
 
 export TERM=xterm-color

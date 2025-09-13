@@ -1,0 +1,70 @@
+# Move the 'dark' 'theme' option from [application] to [display] INI section.
+
+- import_tasks: "util/prepare_test_config.yml"
+  vars:
+    config_name: "valid.ini"
+
+- import_tasks: "assert/line_in_ini_section.yml"
+  vars:
+    section: "application"
+    line: '^\s*theme=dark\b'
+    exist: true
+    msg: "The [application] 'theme' must be 'dark'"
+
+# The option value should not be chaged and without the 'section' argument will
+# we would get the behavior like in the 'set_the_same_option.yml' tests. But
+# specifying the another section will move the option to.
+- name: "Move the 'dark' 'theme' from [application] to [display] INI section"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    section: "display"
+    option: "theme"
+    value: "dark"
+
+- import_tasks: "assert/line_in_ini_section.yml"
+  vars:
+    section: "display"
+    line: '^\s*theme=dark\b'
+    exist: true
+    msg: "The [display] 'theme' must be 'dark'"
+
+- import_tasks: "assert/line.yml"
+  vars:
+    line: '^\s*theme='
+    amount: "1"
+    msg: "There is only one 'theme' must be set"
+
+
+# Move the 'theme' option from [application] to [display] INI section and
+# change it value to 'light'.
+
+- import_tasks: "util/prepare_test_config.yml"
+  vars:
+    config_name: "valid.ini"
+
+- import_tasks: "assert/line_in_ini_section.yml"
+  vars:
+    section: "application"
+    line: '^\s*theme=dark\b'
+    exist: true
+    msg: "The [application] 'theme' must be 'dark'"
+
+- name: "Move the 'theme' from [application] to [display] and set to 'light'"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    section: "display"
+    option: "theme"
+    value: "light"
+
+- import_tasks: "assert/line_in_ini_section.yml"
+  vars:
+    section: "display"
+    line: '^\s*theme=light\b'
+    exist: true
+    msg: "The [display] 'theme' must be 'light'"
+
+- import_tasks: "assert/line.yml"
+  vars:
+    line: '^\s*theme='
+    amount: "1"
+    msg: "There is only one 'theme' must be set"

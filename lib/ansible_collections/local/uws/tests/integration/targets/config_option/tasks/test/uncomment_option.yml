@@ -1,0 +1,42 @@
+# Set the 'PS1' option in 'bashrc' when there is only commented one. In this
+# case the commented will be ignored as if there is no 'PS1' exists.
+
+- import_tasks: "util/prepare_test_config.yml"
+  vars:
+    config_name: "bashrc"
+
+- import_tasks: "assert/line.yml"
+  vars:
+    line: '^\s*PS1='
+    amount: "0"
+    msg: "The 'PS1' option must not be set"
+
+- import_tasks: "assert/line.yml"
+  vars:
+    line: '^\s*#\s*PS1='
+    amount: "any"
+    msg: "There must be a commented 'PS1' option"
+
+- name: "Set the 'PS1' option in 'bashrc'"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    option: "PS1"
+    value: "'[\\u@\\h \\W]\\$ '"
+
+- import_tasks: "assert/line.yml"
+  vars:
+    line: ^PS1='\[\\u@\\h \\W.*\$ '
+    amount: "1"
+    msg: "The 'PS1' option must be set"
+
+- import_tasks: "assert/line.yml"
+  vars:
+    line: '^\s*PS1='
+    amount: "1"
+    msg: "The only one 'PS1' option must be"
+
+- import_tasks: "assert/line.yml"
+  vars:
+    line: '^\s*#\s*PS1='
+    amount: "any"
+    msg: "The commented 'PS1' option must be still here"

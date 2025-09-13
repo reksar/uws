@@ -1,0 +1,205 @@
+# Remove all 'll' aliases from bashrc, excluding the commented lines.
+
+- import_tasks: "util/prepare_test_config.yml"
+  vars:
+    config_name: "bashrc"
+
+# NOTE: Counting the 'll' aliases may seem tricky, bacause there are several
+# alias options are set and there are several commented aliases exists.
+
+- set_fact:
+    ll_alias: "(^|\\n)\\s*alias ll="
+    ll_commented: "(^|\\n)\\s*#\\s*alias ll="
+
+- set_fact:
+    config: "{{ lookup('file', test_config) }}"
+
+- set_fact:
+    ll_alias_initial_count: >
+      {{
+        config | regex_findall(ll_alias) | length
+      }}
+    ll_commented_initial_count: >
+      {{
+        config | regex_findall(ll_commented) | length
+      }}
+
+- assert:
+    that:
+      - ll_alias_initial_count | int > 1
+    fail_msg: "There must be several initial aliases"
+
+- assert:
+    that:
+      - ll_commented_initial_count | int > 1
+    fail_msg: "There must be several initial commented aliases"
+
+
+- name: "Remove all uncommented aliases"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    option: "alias ll"
+
+
+- set_fact:
+    config: "{{ lookup('file', test_config) }}"
+
+- set_fact:
+    ll_alias_count: >
+      {{
+        config | regex_findall(ll_alias) | length
+      }}
+    ll_commented_count: >
+      {{
+        config | regex_findall(ll_commented) | length
+      }}
+
+- assert:
+    that:
+      - ll_alias_count | int == 0
+    fail_msg: "There must be no aliases"
+
+- assert:
+    that:
+      - ll_commented_initial_count == ll_commented_count
+    fail_msg: "All the commented aliases must still here"
+
+
+# Remove the 'user' option from the [database] INI section. But the commented
+# option should still there.
+
+- import_tasks: "util/prepare_test_config.yml"
+  vars:
+    config_name: "valid.ini"
+
+- import_tasks: "assert/line_in_ini_section.yml"
+  vars:
+    section: "database"
+    line: '^\s*#\s*user='
+    exist: true
+    msg: "There must be commented 'user' option in [database] INI section"
+
+- import_tasks: "assert/line_in_ini_section.yml"
+  vars:
+    section: "database"
+    line: '^\s*user='
+    exist: true
+    msg: "There must be 'user' option value in [database] INI section"
+
+- name: "Remove the 'user' option from the [database] INI section"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    option: "user"
+    section: "database"
+
+- import_tasks: "assert/line_in_ini_section.yml"
+  vars:
+    section: "database"
+    line: '^\s*#\s*user='
+    exist: true
+    msg: "Commented 'user' option must still in [database] INI section"
+
+- import_tasks: "assert/line_in_ini_section.yml"
+  vars:
+    section: "database"
+    line: '^\s*user='
+    exist: false
+    msg: "The 'user' option value must be removed from [database] INI section"
+
+# The config option must be unique within the file, so there are no more 'user'
+# options should be in the entire 'valid.ini' after removing.
+- import_tasks: "assert/line.yml"
+  vars:
+    line: '^\s*user='
+    amount: "0"
+    msg: "The INI file must not have the 'user' option"
+
+
+# Remove the not existing 'name' option from the [display] INI section. There
+# is no 'name' option in the INI file, so it should not be changed.
+
+- import_tasks: "util/prepare_test_config.yml"
+  vars:
+    config_name: "valid.ini"
+
+- import_tasks: "assert/line.yml"
+  vars:
+    line: '^\s*name='
+    amount: "0"
+    msg: "There must not be 'name' options in the INI file"
+
+- name: "Remove 'name' from [display] INI section (do not contains a 'name')"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    option: "name"
+    section: "display"
+  register: result
+
+- assert:
+    that:
+      - not result.changed
+      - not result.failed
+    fail_msg: "The config must not be changed"
+
+
+# Remove the existing 'server' option from the another INI section, that does
+# not contains it. The [application] section is specified as the action
+# argument, but the 'server' is set in the [database] section. The INI file
+# should not be changed, if it is valid and contains only one 'server' entry.
+
+- import_tasks: "assert/line_in_ini_section.yml"
+  vars:
+    section: "application"
+    line: "server="
+    exist: false
+    msg: "There must not be 'server' option in the [application] INI section"
+
+- import_tasks: "assert/line_in_ini_section.yml"
+  vars:
+    section: "database"
+    line: "server="
+    exist: true
+    msg: "There must be 'server' option in the [database] INI section"
+
+- name: "Remove 'server' from not related [application] INI section"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    option: "server"
+    section: "application"
+  register: result
+
+- assert:
+    that:
+      - not result.changed
+      - not result.failed
+    fail_msg: "The config must not be changed"
+
+
+# Remove the 'name' option from the [application] section of invalid INI file.
+# A specified INI section will be ignored, because there are several 'name'
+# options exists in the file in different sections. All the 'name' entries will
+# be removed.
+
+- import_tasks: "util/prepare_test_config.yml"
+  vars:
+    config_name: "invalid.ini"
+
+- import_tasks: "assert/line.yml"
+  vars:
+    line: '^\s*name='
+    amount: "several"
+    msg: "There must be several 'name' options in the INI file"
+
+# The 'name' will be removed not only from the [application] INI section, but
+# from the entire file, because there are several 'name' entries are exists.
+- name: "Remove 'name' from [application] section"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    option: "name"
+    section: "application"
+
+- import_tasks: "assert/line.yml"
+  vars:
+    line: '^\s*name='
+    amount: "0"
+    msg: "There must not be 'name' option in the INI file"

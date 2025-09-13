@@ -1,8 +1,9 @@
 # Set a new `ll` alias when there are multiple already set. All old `ll` alias
 # entries will be removed before the new entry will be added.
 
-- import_tasks: "prepare_test_config.yml"
-
+- import_tasks: "util/prepare_test_config.yml"
+  vars:
+    config_name: "bashrc"
 
 - set_fact:
     ll_alias: "^\\s*alias ll="
@@ -70,3 +71,36 @@
     that:
       - ll_commented_initial_count == ll_commented_count
 
+
+# Change the 'user' option in the [database] section of INI file.
+
+- import_tasks: "util/prepare_test_config.yml"
+  vars:
+    config_name: "valid.ini"
+
+- import_tasks: "assert/line_in_ini_section.yml"
+  vars:
+    section: "database"
+    line: '^\s*user=app_user'
+    exist: true
+    msg: "The [database] 'user' must be initially set to 'app_user'"
+
+- name: "Change the [database] 'user' to 'root'"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    section: "database"
+    option: "user"
+    value: "root"
+
+- import_tasks: "assert/line_in_ini_section.yml"
+  vars:
+    section: "database"
+    line: '^\s*user=root\b'
+    exist: true
+    msg: "The [database] 'user' must be set to 'root'"
+
+- import_tasks: "assert/line.yml"
+  vars:
+    line: '^\s*user='
+    amount: "1"
+    msg: "The only one 'user' option must be set"
