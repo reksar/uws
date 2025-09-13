@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import re
 
+from base64 import b64decode
+
 from ansible_collections.local.uws.plugins.util.action import (
     ActionModuleBase,
     STATUS_NOT_CHANGED,
@@ -184,6 +186,23 @@ class ActionModule(ActionModuleBase):
 
     def entry_count(self, regex):
         pattern = re.compile(regex, flags=re.MULTILINE)
-        txt = self.run_lookup_plugin('file', [self.file])[0]
-        entries = pattern.findall(txt)
+        entries = pattern.findall(self.config_text())
         return len(entries)
+
+
+    def config_text(self):
+
+        # The file lookup only works on local host.
+        if 'local' in self._connection.ansible_aliases:
+            return self.run_lookup_plugin('file', [self.file])[0]
+
+        # WARN: The result is not a standard module execution status!
+        result = self.run_module('slurp', {'src': self.file})
+
+        if not 'content' in result:
+            raise LookupError(f"Cannot read the remote file '{self.file}'.")
+
+        if result.get('encoding') != 'base64':
+            raise ValueError(f"Cannot decode the remote file '{self.file}'.")
+
+        return b64decode(result['content']).decode('utf-8')
