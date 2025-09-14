@@ -54,26 +54,31 @@ EXAMPLES = r'''
     option: alias ll
 
 # Instead of previous example, the "alias ll=" will be added.
-# TODO. Not implemented yet!
-- name: Add alias with the empty value
+- name: Add the `ll` alias with the empty value
   local.uws.config_option:
     file: ~/.bash_aliases
     option: alias ll
     value: ""
 
 # The "alias ll='ls -l --color=auto'" line will be added.
-- name: Add bash alias `ll`
+- name: Add the `ll` alias
   local.uws.config_option:
     file: ~/.bash_aliases
     option: alias ll
     value: "'ls -l --color=auto'"
 
-- name: Add the name 'John Doe' to [owner] section.
+- name: Add the "option=''" to 'some.conf' file
   local.uws.config_option:
-    file: example.ini
-    section: owner
-    option: name
-    value: John Doe
+    file: some.conf
+    option: option
+    value: "''"
+
+- name: Add the 'db_user=root' to [database] INI section
+  local.uws.config_option:
+    file: valid.ini
+    section: database
+    option: db_name
+    value: root
 '''
 
 RETURN = r'''#'''

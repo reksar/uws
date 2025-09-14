@@ -1,0 +1,44 @@
+# Add the 'LESS=' to bashrc.
+
+- import_tasks: "util/prepare_test_config.yml"
+  vars:
+    config_name: "bashrc"
+
+- import_tasks: "assert/line.yml"
+  vars:
+    line: '^\s*LESS\b'
+    amount: "0"
+    msg: "There must not be LESS var"
+
+- name: "Add the empty (unset) LESS var in bashrc"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    option: "LESS"
+    value: ""
+
+- import_tasks: "assert/line.yml"
+  vars:
+    line: '^\s*LESS=\s*$'
+    amount: "1"
+    msg: "There must be 'LESS=' in bashrc"
+
+
+# Add the "option=''" to bashrc.
+
+- import_tasks: "assert/line.yml"
+  vars:
+    line: '^\s*option\b'
+    amount: "0"
+    msg: "There must not be option"
+
+- name: "Add the 'option' with the empty string value"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    option: "option"
+    value: "''"
+
+- import_tasks: "assert/line.yml"
+  vars:
+    line: "^\\s*option=''"
+    amount: "1"
+    msg: "There must be option=''"

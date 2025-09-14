@@ -7,6 +7,10 @@
 # Add option that is not exists yet.
 - import_tasks: "test/add_option.yml"
 
+# Instead of removing the option with the specified name, add (or change) the
+# empty value.
+- import_tasks: "test/add_empty_value.yml"
+
 # Change an existing option value.
 - import_tasks: "test/change_option.yml"
 
