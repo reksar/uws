@@ -1,0 +1,49 @@
+- name: "/!/ SDDM (Simple Desktop Display Manager) packages"
+  package:
+    name:
+
+      - "sddm"
+
+      # SDDM requires a TTF font package and can not be automatically installed
+      # without the selecting one.
+      - "{{ settings.ttf }}"
+
+      # Required by the Sugar Candy theme
+      - "qt5-graphicaleffects"
+      - "qt5-quickcontrols2"
+      - "qt5-svg"
+
+  become: true
+
+# The config file usually does not exist after installing SDDM.
+- name: "/?/ SDDM config"
+  stat:
+    path: "{{ config.main }}"
+  register: config_file
+
+- name: "/!/ SDDM config"
+  when: not config_file.stat.exists
+  copy:
+    src: "{{ config.default }}"
+    dest: "{{ config.main }}"
+    remote_src: "{{ ansible_connection != 'local' }}"
+  become: true
+
+# WARN: Now only Wayland desktops are used: Hyprland and Niri. If a X11 desktop
+# will be supported by uws in future, the `value` here must be dynamic.
+- name: "/!/ SDDM display server"
+  local.uws.config_option:
+    file: "{{ config.main }}"
+    section: "General"
+    option: "DisplayServer"
+    value: "wayland"
+  become: true
+
+- import_tasks: "theme.yml"
+
+- name: "Enable SDDM service"
+  systemd:
+    name: "sddm"
+    state: "started"
+    enabled: true
+  become: true

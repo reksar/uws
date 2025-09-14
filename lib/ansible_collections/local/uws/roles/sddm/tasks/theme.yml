@@ -1,0 +1,40 @@
+- name: "/>/ Theme files"
+  block:
+
+  - name: "/!/ SDDM themes dir"
+    file:
+      path: "{{ themes }}"
+      state: "directory"
+    become: true
+
+  # Copy only the required files.
+  #
+  # WARN: If another theme will be added in future, these items may differ.
+  - name: "/>/ SDDM theme"
+    loop:
+      - "Assets/"
+      - "Backgrounds/"
+      - "Components/"
+      - "Main.qml"
+      - "theme.conf"
+      - "metadata.desktop"
+    copy:
+      src: "files/{{ theme }}/{{ item }}"
+      dest: "{{ themes }}/{{ theme }}/{{ item }}"
+    become: true
+
+- name: "/*/ SDDM theme dir"
+  local.uws.config_option:
+    file: "{{ config.main }}"
+    section: "Theme"
+    option: "ThemeDir"
+    value: "{{ themes }}"
+  become: true
+
+- name: "/*/ SDDM theme"
+  local.uws.config_option:
+    file: "{{ config.main }}"
+    section: "Theme"
+    option: "Current"
+    value: "{{ theme }}"
+  become: true

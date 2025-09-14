@@ -3,7 +3,7 @@ settings:
   # Select:
   #   * niri
   #   * hyprland
-  desktop: "niri"
+  desktop: niri
 
   # Locales to be installed in the system.
   # NOTE: Use the format of `/etc/locale.gen`.
@@ -58,6 +58,9 @@ settings:
       #
       # TODO: Support more than 2 layouts for console tmux.
       list:
+
+  # Default TTF font system package.
+  ttf: noto-fonts
 
   monitoring:
     temperature:

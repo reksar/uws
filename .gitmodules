@@ -1,3 +1,6 @@
 [submodule "res/my.vim"]
 	path = res/my.vim
 	url = https://github.com/reksar/my.vim
+[submodule "lib/ansible_collections/local/uws/roles/sddm/files/sugar-candy"]
+	path = lib/ansible_collections/local/uws/roles/sddm/files/sugar-candy
+	url = https://framagit.org/MarianArlt/sddm-sugar-candy.git

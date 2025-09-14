@@ -1,0 +1,10 @@
+theme: "sugar-candy"
+themes: "/usr/share/sddm/themes"
+
+config:
+
+  # NOTE: There may be 'sddm.conf.d/*', so this is the main config file.
+  main: "/etc/sddm.conf"
+
+  # This is the default config sample. Can be used as the `main` config.
+  default: "/usr/lib/sddm/sddm.conf.d/default.conf"

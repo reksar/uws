@@ -1,0 +1,6 @@
+- name: "/!/ Common packages for desktop"
+  package:
+    name:
+      - "{{ settings.ttf }}"
+      - "firefox"
+  become: true

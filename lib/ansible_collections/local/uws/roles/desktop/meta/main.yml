@@ -1,5 +1,6 @@
 ---
 dependencies:
   - role: "workstation"
+  - role: "sddm"
   - role: "{{ settings.desktop }}"
   - role: "qemu"
