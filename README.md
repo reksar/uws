@@ -1,73 +1,64 @@
-# UNIX workspace
+# Unix workspace
 
-Configures a Linux environment. Some configs work on Cygwin as well.
+Many users use a dotfiles repo to store their settings for Unix. Here is the
+next evolutionary step of their solution: automation with Ansible.
 
-Some configs are depends on the hardware setup, that must be done first.
+The main purpose is to configure an Arch Linux desktop (or laptop, or even
+tablet) for personal use. But it is possible to use a separate Ansible role to
+configure a separate part of an Unix system.
+
+Some configs work on Cygwin as well.
+
+Some configs are depends on the hardware configuration, that must be done first.
 
 # Usage
 
-## Help
+## Examples
 
-`./uws {-h|--help}`
+```bash
+# Show help:
+./uws
 
-## Configure the Linux and applications
+# Setup the desktop (default target):
+./uws set
 
-`./uws set` - run the main playbook. Same as `./uws set main`.
+# Setup the workstation (configure system without a GUI):
+./uws set roles/workstation
 
-### Specify a playbook
+# Configure bash on the remote host via SSH:
+./uws set roles/bash admin@10.10.1.1:2222
 
-`./uws set <playbook>`
+# Run tasks from the 'tasks/app/vim.yml' file found in all roles in 'local.uws'
+# namespace:
+./uws set tasks/app/vim
 
-Where the `<playbook>` is a playbook file basename or relative path without the
-exstension.
+# Local alias for ansible-doc:
+./uws doc -h
 
-#### Examples
-`./uws set app`
-`./uws set app/qemu`
+# List all Ansible plugins:
+./uws doc -l
 
-### Specify a role
+# List Ansible local plugins:
+./uws doc -l local.uws
 
-`./uws set roles/<role>`
+# Show help for the 'local.uws.config_option' Ansible plugin:
+./uws doc local.uws.config_option
 
-Where the `<role>` can be a local role either from `playbook/roles/` or from
-Ansible collections.
+# Run all tests:
+./uws test
 
-#### Examples
+# Run tests for the Python util scripts:
+./uws test py
 
-`./uws set roles/hardware` - set the hardware role placed in the `playbook` dir.
+# Run tests for bash utils:
+./uws test sh
 
-`./uws set roles/local.uws.system` - setup the Linux depending on the system
-configuration. Using the role from Ansible collection `local.uws`.
+# Test (unit and integration) the 'local.uws' Ansible collection:
+./uws test ansible
+```
 
-## Ansible docs
-
-The `uws doc` is the wrapper for the local `ansible-doc`, so you can pass a
-standard Ansible doc arguments.
-
-### Examples
-
-`./uws doc -l` - list all plugins.
-
-`./uws doc -l local.uws` - list local plugins.
-
-`./uws doc local.uws.config_option` - show docs for the specified local plugin.
-
-## Run tests
-
-Run tests and exit with code **0** if tests are passed, **1** otherwise.
-`./uws test {sh|py|ansible}`
-
-Run all tests:
-`./uws test`
-
-Test the 'local.uws' Ansible collection at `lib/ansible_collections/local/uws`:
-`./uws test ansible`
-
-Test `lib` or `util` bash scripts:
-`./uws test sh`
-
-Test Python scripts:
-`./uws test py`
+Global settings for playbooks and roles: `config/uws.yml`. Other settings are
+stored in a role 'vars/'.
 
 # Notes
 
@@ -166,7 +157,7 @@ Make symbolic links to a user config files.
 
 ### Utility message types (glossary)
 
-Prefixes of a `- name:` values for Ansible tasks.
+Prefix in the Ansible task `- name:` value:
 
 **/!/** - Ensure. If something needs to be done, try to do it. Fail otherwise.
 
