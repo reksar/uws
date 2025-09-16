@@ -48,9 +48,9 @@ colored_bash_prompt() {
 
   if [[ $last_rc -ne 0 ]]
   then
-    local err="${MAGENTA}E${last_rc}${NONE} "
+    local rc="${MAGENTA}RC${last_rc}${NONE} "
   else
-    local err=""
+    local rc=""
   fi
 
   local git_branch=$(
@@ -65,7 +65,7 @@ colored_bash_prompt() {
 
   local extra="$git_branch$py_venv"
 
-  PS1="${err:+$err\n}$host_path${extra:+$extra} $prompt "
+  PS1="${rc:+$rc\n}$host_path${extra:+$extra} $prompt "
 }
 
 
