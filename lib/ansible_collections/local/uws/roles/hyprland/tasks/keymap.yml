@@ -1,32 +1,37 @@
-# TODO: Run only if the Hyprland installed.
-
-- include_vars:
-    file: "keyboard.yml"
+- set_fact:
+    # The `keyboard.layouts.list`. Or generate list using the `locale.list`:
+    #   * take '<xx>_<YY>' or '<xx>_<YY>.<CP>'
+    #   * map -> '<xx>' or '<xx>.<CP>'
+    #   * map '<xx>' -> '<xx>.utf8' so all values became '<xx>.<CP>'
+    #   * replace 'en' to 'us'
+    keyboard_layouts: >-
+      {{
+        settings.keyboard.layout.list or (
+          settings.locale.list
+          | map('regex_search', '^\w+_\w+(\..*){0,1}')
+          | reject('==', None)
+          | map('regex_replace', '_\w+', '')
+          | map('regex_replace', '^(\w+)$', '\1.utf8')
+          | map('lower')
+          | map('regex_replace', '^en\.', 'us.')
+          | unique
+        )
+      }}
 
 - set_fact:
-    config:
-      file: "{{ uws }}/config/hyprland.conf"
-      indent: "  "
+    # For example, 'us,ru'.
+    kb_layout: >-
+      {{
+        keyboard_layouts | map('regex_replace', '\..*', '') | join(',')
+      }}
 
 - set_fact:
-    kb_layout: "{{ layouts | map('regex_replace', '\\..*', '') | join(',') }}"
+    # For example, if `settings.keyboard.layout.switch` == 'Alt+Shift', then
+    # `switch` == 'alt_shift'.
+    switch: >-
+      {{
+        settings.keyboard.layout.switch | lower | regex_replace('\+', '_')
+      }}
 
-# For example, if the uws setting `keyboard.layout.switch == 'Alt+Shift'`,
-# then here we get 'alt_shift'.
-- set_fact:
-    switch: "{{ keyboard.layout.switch | lower | regex_replace('\\+', '_') }}"
-
-# TODO: What if some other options are already set by this?
 - set_fact:
     kb_options: "grp:{{ switch }}_toggle"
-
-# FIXME: Write the direct config
-- name: "/*/ Hyprland keyboard settings"
-  lineinfile:
-    path: "{{ config.file }}"
-    regexp: "^\\s*{{ item.name }}\\s*=.*"
-    line: "{{ config.indent + item.name }} = {{ item.value }}"
-    insertafter: "input {"
-  loop:
-    - {'name': 'kb_layout', 'value': "{{ kb_layout }}"}
-    - {'name': 'kb_options', 'value': "{{ kb_options }}"}

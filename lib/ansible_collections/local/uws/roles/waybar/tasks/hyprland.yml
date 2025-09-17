@@ -1,5 +1,3 @@
-# NOTE: Expected Hyprland to be running.
-
 - name: "/>/ waybar config"
   vars:
     temperature: >-
@@ -40,12 +38,3 @@
       or style_status.changed
       or temperature_script_status.changed
   notify: "Restart waybar"
-
-- name: "/*/ Add waybar to Hyprland"
-  vars:
-    cfg: "{{ config_dir }}/{{ config_name }}"
-    css: "{{ config_dir }}/{{ style_name}}"
-  lineinfile:
-    path: "{{ XDG_CONFIG_HOME }}/hypr/hyprland.conf"
-    regexp: "exec-once\\s*=\\s*waybar"
-    line: "exec-once = waybar -c '{{ cfg }}' -s '{{ css }}'"

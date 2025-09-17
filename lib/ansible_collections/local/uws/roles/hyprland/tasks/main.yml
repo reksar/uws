@@ -3,9 +3,16 @@
     name: "hyprland"
   become: true
 
-- name: "/!/ hyprland.conf"
-  copy:
-    src: "{{ uws }}/config/hyprland.conf"
-    dest: "{{ XDG_CONFIG_HOME }}/hypr/hyprland.conf"
+# WARN: All imports below are required to set vars used in the template of the
+# Hyprland config!
 
 - import_tasks: "keymap.yml"
+
+- include_vars:
+    file: "{{ role_path }}/../waybar/vars/main.yml"
+    name: "waybar"
+
+- name: "/!/ hyprland.conf"
+  template:
+    src: "hyprland.conf"
+    dest: "{{ XDG_CONFIG_HOME }}/hypr/hyprland.conf"

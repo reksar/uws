@@ -1,9 +1,13 @@
 settings:
 
-  # Select:
-  #   * niri
-  #   * hyprland
-  desktop: niri
+  desktop:
+
+    # Select a Desktop Environment:
+    #   * niri
+    #   * hyprland
+    de: hyprland
+
+    terminal: foot
 
   # Locales to be installed in the system.
   # NOTE: Use the format of `/etc/locale.gen`.

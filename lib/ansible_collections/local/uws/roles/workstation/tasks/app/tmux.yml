@@ -24,7 +24,7 @@
     path: "/usr/local/bin/battery"
   register: battery_cli
 
-- name: "/!/ tmux config"
+- name: "/>/ tmux config"
   vars:
     battery: >-
       {{

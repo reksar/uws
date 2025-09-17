@@ -6,7 +6,7 @@
       - "xdg-user-dirs"
   become: true
 
-- import_tasks: "app/foot.yml"
+- import_tasks: "app/{{ settings.desktop.terminal }}.yml"
 
 # FIXME: `make` fails due to the 'convert' dependency
 #- import_tasks: "app/colorpick.yml"

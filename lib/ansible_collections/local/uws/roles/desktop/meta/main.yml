@@ -2,5 +2,5 @@
 dependencies:
   - role: "workstation"
   - role: "sddm"
-  - role: "{{ settings.desktop }}"
+  - role: "{{ settings.desktop.de }}"
   - role: "qemu"
