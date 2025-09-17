@@ -28,7 +28,7 @@
     "hyprland/language",
     "clock",
     "tray",
-    "custom/power"
+    "custom/apps"
   ],
 
   "keyboard-state": {
@@ -99,16 +99,10 @@
     "on-click": "pavucontrol"
   },
 
-  "custom/power": {
-    "format" : "⏻ ",
-    "tooltip": false,
-		"menu": "on-click",
-		"menu-file": "$HOME/.config/waybar/power_menu.xml", // Menu file in resources folder
-		"menu-actions": {
-			"shutdown": "shutdown",
-			"reboot": "reboot",
-			"suspend": "systemctl suspend",
-			"hibernate": "systemctl hibernate"
-		}
+  "custom/apps": {
+    "format" : " ",
+    "tooltip": true,
+    "tooltip-format": "App Launcher",
+    "on-click": "rofi -show drun"
   }
 }
