@@ -361,6 +361,8 @@ binds {
   // hotkeys.
   Mod+Shift+Slash { show-hotkey-overlay; }
 
+  Mod+R hotkey-overlay-title="App Launcher" { spawn "rofi -show drun"; }
+
   Mod+T hotkey-overlay-title="Open Terminal" {
     spawn "<< settings.desktop.terminal >>";
   }

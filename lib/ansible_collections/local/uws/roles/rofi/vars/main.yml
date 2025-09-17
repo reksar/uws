@@ -1,0 +1,1 @@
+config_dir: "{{ XDG_CONFIG_HOME }}/rofi" 

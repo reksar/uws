@@ -1,0 +1,17 @@
+- name: "Install Rofi"
+  package:
+    name: "rofi-wayland"
+  become: true
+
+- name: "/!/ Rofi config dir"
+  file:
+    path: "{{ config_dir }}/themes"
+    state: "directory"
+
+- name: "/>/ Rofi config"
+  loop:
+    - {'file': 'config.rasi', 'dest': ''}
+    - {'file': 'theme.rasi', 'dest': 'themes/'}
+  copy:
+    src: "files/{{ item.file }}"
+    dest: "{{ config_dir }}/{{ item.dest }}"
