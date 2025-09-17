@@ -5,7 +5,7 @@ settings:
     # Select a Desktop Environment:
     #   * niri
     #   * hyprland
-    de: hyprland
+    de: niri
 
     terminal: foot
 

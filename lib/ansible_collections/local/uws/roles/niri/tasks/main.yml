@@ -4,3 +4,11 @@
       - "niri"
       - "xwayland-satellite"
   become: true
+
+- name: "/>/ Niri config"
+  template:
+    src: "config.kdl"
+    dest: "{{ XDG_CONFIG_HOME }}/niri/"
+    variable_start_string: "<<"
+    variable_end_string: ">>"
+  notify: "Reload Niri config"
