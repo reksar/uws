@@ -1,2 +1,3 @@
+# TODO: `niri -- --replace` when running in Niri locally.
 - name: "Reload Niri config"
-  shell: "niri validate && niri -- --replace"
+  shell: "niri validate"
