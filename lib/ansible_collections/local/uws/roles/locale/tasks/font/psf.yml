@@ -1,8 +1,6 @@
 # Install all `res/font/*.psf` fonts.
 
-
 - include_vars: "psf.yml"
-
 - include_tasks: "font/install.yml"
 
 - name: "Set the default PSF font"

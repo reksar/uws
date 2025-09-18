@@ -9,5 +9,5 @@
   shell: "locale-gen"
   become: true
   register: locale
-  # NOTE: `locale-gen` returns code 0 even if an error occurs.
+  # WARN: The `locale-gen` always returns the code 0, even on error.
   failed_when: "'error' in locale.stdout"

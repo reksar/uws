@@ -1,3 +1,19 @@
 ---
+
+# For installing the local 'res/font/' TTFs.
 font_dest_dir: "/usr/share/fonts/TTF"
 font_glob: "*.ttf"
+
+fontconfig_dir: "{{ XDG_CONFIG_HOME }}/fontconfig/conf.d"
+
+ttf_packages:
+
+  - "noto-fonts"
+
+  # Fallback fonts for icons and emoji.
+  # WARN: Changing this list requiers changing the related '99-fallback.conf'.
+  - "noto-fonts-emoji"
+  - "ttf-font-awesome"
+  - "ttf-nerd-fonts-symbols"
+  - "ttf-nerd-fonts-symbols-common"
+  - "ttf-nerd-fonts-symbols-mono"

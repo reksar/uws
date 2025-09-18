@@ -3,8 +3,11 @@ settings:
   desktop:
 
     # Select a Desktop Environment:
+    #   * false (setup the console workstation)
     #   * niri
     #   * hyprland
+    #
+    # TODO: Do not setup the desktop when 'false'.
     de: niri
 
     terminal: foot
@@ -62,9 +65,6 @@ settings:
       #
       # TODO: Support more than 2 layouts for console tmux.
       list:
-
-  # Default TTF font system package.
-  ttf: noto-fonts
 
   monitoring:
     temperature:

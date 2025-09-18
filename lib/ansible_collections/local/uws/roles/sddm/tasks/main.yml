@@ -4,9 +4,8 @@
 
       - "sddm"
 
-      # SDDM requires a TTF font package and can not be automatically installed
-      # without the selecting one.
-      - "{{ settings.ttf }}"
+      # SDDM cannot be automatically installed without selecting a TTF package.
+      - "noto-fonts"
 
       # Required by the Sugar Candy theme
       - "qt5-graphicaleffects"

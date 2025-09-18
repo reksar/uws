@@ -1,16 +1,32 @@
 # Install all `res/font/*.ttf` fonts.
-
+# Install additional system packages with TTF fonts.
+# Configure the fonts fallback for icons support.
 
 - include_vars: "ttf.yml"
-
 - include_tasks: "font/install.yml"
 
-- name: "/!/ fontconfig"
+- name: "Install TTF system packages"
+  loop: "{{ ttf_packages }}"
+  package:
+    name: "{{ item }}"
+  become: true
+
+- name: "/!/ fontconfig package"
   package:
     name: "fontconfig"
   become: true
 
+- name: "/!/ fontconfig dir"
+  file:
+    path: "{{ fontconfig_dir }}"
+    state: "directory"
+
+- name: "/>/ fontconfig of fallback fonts for icons"
+  copy:
+    src: "99-fallback.conf"
+    dest: "{{ fontconfig_dir }}/"
+
 - debug:
-    msg: "Trigger font cache update"
+    msg: "Font cache update"
   changed_when: font_installation_status.changed
   notify: "Update font cache"

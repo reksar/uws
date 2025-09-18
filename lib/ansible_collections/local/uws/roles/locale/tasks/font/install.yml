@@ -1,4 +1,5 @@
-# Install all `font_glob` fonts from `font_src_dir` to `font_dest_dir`.
+# Install fonts from 'res/font/': all `font_glob` fonts from `font_src_dir` to
+# `font_dest_dir`.
 #
 # Input vars:
 # * font_src_dir
