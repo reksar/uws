@@ -7,23 +7,17 @@
       - "networkmanager-l2tp"
       - "networkmanager-openvpn"
   become: true
+  notify: "Restart the Network Manager service"
 
 - name: "/*/ Network Manager"
   copy:
     src: "NetworkManager.conf"
     dest: "/etc/NetworkManager/NetworkManager.conf"
   become: true
+  notify: "Restart the Network Manager service"
 
-# TODO: Only if needed
-- name: "Enable Network Manager service"
-  systemd:
-    name: "NetworkManager.service"
-    enabled: true
-    state: "restarted"
-  become: true
-
-# TODO: Check that system GUI is available
 - name: "/!/ Network Manager GUI"
+  when: settings.desktop.de
   package:
     name:
       - "nm-connection-editor"
