@@ -15,8 +15,9 @@
     shell: >
       find '{{ uws_roles }}' -mindepth 1 -maxdepth 1 \
         \( -type d -o \( -type l -exec test -d {} \; \) \) -print
-    changed_when: false
     register: found_roles
+    changed_when: false
+    connection: "local"
 
   - set_fact:
       tasks_dirs: >-
@@ -31,6 +32,7 @@
       pattern: "{{ tasks_name }}.yml"
       hidden: true
     register: found_tasks
+    connection: "local"
 
   - set_fact:
       task_files: "{{ found_tasks.files | map(attribute='path') }}"
