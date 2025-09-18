@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Update some font resources. Iteratively runs the 'util/font/<font>/Makefile'
+# for each <font> dir name from $FONTS. This will update font files in
+# $destination.
+
 FONTS="terminus input"
 
 uws="$(cd "$(dirname "$BASH_SOURCE[0]")/../.." && pwd)"

@@ -48,7 +48,7 @@ system_site=$(python -c "import site; print(site.getsitepackages()[0])") \
 || exit 2
 
 [[ -d "$system_site" ]] || {
-  ERR "Pythos\'s site '$system_site' does not exists!"
+  ERR "Python\'s site '$system_site' does not exists!"
   exit 2
 }
 

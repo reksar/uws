@@ -20,7 +20,7 @@ PATCHER := $(PATCHER_DIR)/font-patcher
 
 
 # NOTE: The builtin var $(CURDIR) should be the destination for the Input
-#       $(TTF_NAMES), while the $(UTILDIR) is the dir of the current Makefile.
+# $(TTF_NAMES), while the $(UTILDIR) is the dir of the current Makefile.
 UTILDIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 # Cut the last slash.
 UTILDIR := $(UTILDIR:/=)
@@ -32,6 +32,7 @@ INFO := source "$(UTILDIR)/../../../lib/notifications.sh" \
 
 install: $(TTF_NAMES)
 
+# Patch the specified TTF files with the Nerd patcher.
 $(TTF_NAMES): $(TTF_SOURCE_FILES) $(PATCHER)
 	if [ ! -f "$@" ] ;\
 	then \
@@ -48,7 +49,7 @@ $(TTF_NAMES): $(TTF_SOURCE_FILES) $(PATCHER)
 	fi
 
 # NOTE: Font files are released before they are zipped, so this rule is always
-#       runs and `test "$@" -ot "$<"` is true.
+# runs and `test "$@" -ot "$<"` is true.
 $(TTF_SOURCE_FILES) &: input.zip
 	for ttf in $(TTF_SOURCE_FILES); \
 	do \
