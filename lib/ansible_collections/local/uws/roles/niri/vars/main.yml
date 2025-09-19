@@ -1,0 +1,2 @@
+config_dir: "{{ ansible_env.HOME }}/.config/niri"
+share_dir: "{{ ansible_env.HOME }}/.local/share/niri"

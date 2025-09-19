@@ -1,3 +1,6 @@
+# Set vars to be used by another roles for keyboard setup.
+
+
 - set_fact:
     # The `keyboard.layouts.list`. Or generate list using the `locale.list`:
     #   * take '<xx>_<YY>' or '<xx>_<YY>.<CP>'

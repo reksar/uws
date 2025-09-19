@@ -3,10 +3,10 @@
     name: "hyprland"
   become: true
 
-# WARN: All imports below are required to set vars used in the template of the
-# Hyprland config!
+# WARN: All imports below are required to set vars for the Hyprland config
+# template!
 
-- import_tasks: "keymap.yml"
+- import_tasks: "{{ role_path }}/../locale/tasks/keymap/desktop.yml"
 
 - include_vars:
     file: "{{ role_path }}/../waybar/vars/main.yml"
