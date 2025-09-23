@@ -2,5 +2,6 @@
 dependencies:
   - role: "base"
   - role: "bash"
-  - role: "network"
+  - role: "git"
   - role: "locale"
+  - role: "network"

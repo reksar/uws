@@ -1,0 +1,12 @@
+[user]
+name = {{ settings.user.name }}
+email = {{ settings.user.email }}
+
+[core]
+editor = vim
+
+[alias]
+s = "!git -c color.status=always status --short --renames --branch \
+    | sort -rk1,1"
+a = add --verbose
+r = reset --no-quiet

@@ -1,5 +1,9 @@
 settings:
 
+  user:
+    name: reksarka
+    email: reksarka@gmail.com
+
   desktop:
 
     # Select a Desktop Environment:
@@ -70,11 +74,3 @@ settings:
     temperature:
       critical: 70  # °C
       check_interval: 15  # seconds
-
-  git:
-    user:
-      # TODO: Use the Ansible vault
-      name: reksarka
-      email: reksarka@gmail.com
-    core:
-      editor: vim

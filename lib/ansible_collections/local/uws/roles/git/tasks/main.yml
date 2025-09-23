@@ -1,0 +1,10 @@
+- name: "/!/ Git"
+  package:
+    name:
+      - "git"
+  become: true
+
+- name: "/>/ .gitconfig"
+  template:
+    src: "gitconfig"
+    dest: "{{ ansible_env.HOME }}/.gitconfig"
