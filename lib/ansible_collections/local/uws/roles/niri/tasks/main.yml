@@ -1,11 +1,11 @@
 - name: "/!/ Niri packages"
   package:
     name:
+
       - "niri"
       - "xwayland-satellite"
 
-      # Niri allows the JSON output format. This util is used in some shell
-      # scripts to parse it.
+      # To parse some Niri output.
       - "jq"
 
   become: true
@@ -20,7 +20,8 @@
 
 - name: "/>/ Niri scripts"
   loop:
-    - "niri-focus-window.sh"
+    - "app-window.sh"
+    - "cycle-window.sh"
   copy:
     src: "{{ item }}"
     dest: "{{ share_dir }}/"
@@ -28,10 +29,17 @@
 
 - import_tasks: "{{ role_path }}/../locale/tasks/keymap/desktop.yml"
 
+- name: "/>/ App windows config"
+  template:
+    src: "app_windows"
+    dest: "{{ config_dir }}/"
+
 - name: "/>/ Niri config"
   template:
     src: "config.kdl"
     dest: "{{ config_dir }}/"
     variable_start_string: "<<"
     variable_end_string: ">>"
+    block_start_string: "<%"
+    block_end_string: "%>"
   notify: "Reload Niri config"

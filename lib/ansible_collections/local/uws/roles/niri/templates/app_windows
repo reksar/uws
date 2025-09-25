@@ -1,0 +1,3 @@
+{% for app in app_windows %}
+{{ app.id }}:{{ app.cmd }}
+{% endfor %}

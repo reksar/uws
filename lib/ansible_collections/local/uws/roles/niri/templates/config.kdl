@@ -304,10 +304,10 @@ binds {
   Mod+Tab { focus-workspace-previous; }
 
   Alt+Tab cooldown-ms=150 {
-    spawn "<< share_dir >>/niri-focus-window.sh" "next";
+    spawn "<< share_dir >>/cycle-window.sh" "next";
   }
   Alt+Shift+Tab cooldown-ms=150 {
-    spawn "<< share_dir >>/niri-focus-window.sh" "prev";
+    spawn "<< share_dir >>/cycle-window.sh" "prev";
   }
 
   Mod+Minus { set-column-width "-10%"; }
@@ -384,9 +384,10 @@ binds {
     spawn "rofi" "-show" "drun";
   }
 
-  Mod+T hotkey-overlay-title="Open Terminal" {
-    spawn "<< settings.desktop.terminal >>";
-  }
+  // Associate the key binding with the unique app window.
+  <% for app in app_windows %>
+  << app.bind >> { spawn "<< share_dir >>/app-window.sh" "<< app.id >>"; }
+  <% endfor %>
 
   // Open/close the Overview: a zoomed-out view of workspaces and windows.
   // You can also move the mouse into the top-left hot corner or do the

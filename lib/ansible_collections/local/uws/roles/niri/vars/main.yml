@@ -1,2 +1,14 @@
 config_dir: "{{ ansible_env.HOME }}/.config/niri"
 share_dir: "{{ ansible_env.HOME }}/.local/share/niri"
+
+app_windows:
+  - {
+      'id': "{{ settings.desktop.terminal }}",
+      'cmd': "{{ settings.desktop.terminal }}",
+      'bind': 'Mod+T hotkey-overlay-title="Terminal" cooldown-ms=150',
+    }
+  - {
+      'id': 'firefox',
+      'cmd': 'firefox',
+      'bind': 'Mod+B hotkey-overlay-title="Browser" cooldown-ms=150',
+    }
