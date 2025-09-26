@@ -1,0 +1,2 @@
+firefox_dir: "{{ ansible_env.HOME }}/.mozilla/firefox"
+set_theme: false

@@ -1,0 +1,8 @@
+- name: "/!/ Firefox"
+  package:
+    name:
+      - "firefox"
+  become: true
+
+- import_tasks: "theme.yml"
+  when: set_theme

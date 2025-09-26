@@ -1,0 +1,60 @@
+- name: "/?/ Firefox profile"
+  script: "profile.sh"
+  changed_when: false
+  register: _
+
+- set_fact:
+    profile: "{{ _.stdout | trim }}"
+
+
+# A theme files should be in the 'chrome/' dir inside the Firefox profile.
+#
+# The `toolkit.legacyUserProfileCustomizations.stylesheets` Firefox option must
+# be `true` to support the 'userChrome.css'
+#
+# The 'user.js' is used to set some Firefox options (like mentioned above) when
+# the Firefox starting. This file must be in the profile dir.
+- name: "/?/ Firefox theme files"
+  loop:
+    - "chrome/userChrome.css"
+    - "chrome/userContent.css"
+    - "user.js"
+  stat:
+    path: "{{ firefox_dir }}/{{ profile }}/{{ item }}"
+  register: _
+
+- set_fact:
+    theme_exists: "{{ _.results | map(attribute='stat.exists') is all }}"
+
+
+- name: "Install Firefox theme"
+  when: profile and not theme_exists
+  vars:
+    url: "https://github.com/ashish-kus/MiniSthetic_Firefox"
+    tmp: "/tmp/firefox-theme"
+  block:
+
+  - name: "/v/ Firefox theme repo"
+    git:
+      repo: "{{ url }}"
+      dest: "{{ tmp }}"
+      depth: 1
+
+  - name: "/>/ Firefox theme"
+    loop:
+      - "userChrome.css"
+      - "userContent.css"
+      - "styles"
+    copy:
+      src: "{{ tmp }}/{{ item }}"
+      dest: "{{ firefox_dir }}/{{ profile }}/chrome/"
+
+  - name: "/x/ Firefox theme repo"
+    file:
+      path: "{{ tmp }}"
+      state: "absent"
+
+  - name: "/>/ Firefox JS"
+    copy:
+      src: "user.js"
+      dest: "{{ firefox_dir }}/{{ profile }}/"
