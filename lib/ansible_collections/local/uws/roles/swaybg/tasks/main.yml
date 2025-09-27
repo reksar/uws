@@ -1,0 +1,12 @@
+- name: "/!/ swaybg"
+  package:
+    name:
+      - "swaybg"
+  become: true
+
+- name: "/>/ wallpaper util"
+  copy:
+    src: "wallpaper.sh"
+    dest: "/usr/local/bin/wallpaper"
+    mode: "u=rwx,g=rx,o=rx"
+  become: true

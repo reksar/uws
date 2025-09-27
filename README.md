@@ -60,7 +60,12 @@ Some configs are depends on the hardware configuration, that must be done first.
 Global settings for playbooks and roles: `config/uws.yml`. Other settings are
 stored in a role 'vars/'.
 
-# Notes
+# CLI tools
+
+The `wallpaper` to set an arbitrary wallpaper file or pick one (by name or
+randomly) from `~/.local/share/wallpapers/`.
+
+## Notes
 
 All executables that should be available in `$PATH`, should be installed to the
 `/usr/local/bin` in according with *FHS*.

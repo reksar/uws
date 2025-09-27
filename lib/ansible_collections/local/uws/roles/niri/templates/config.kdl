@@ -213,7 +213,7 @@ layout {
 // NOTE: Running niri as a session supports xdg-desktop-autostart, which may be
 // more convenient to use.
 spawn-at-startup "waybar"
-spawn-sh-at-startup "swaybg --image << config_dir >>/wallpaper.jpg"
+spawn-at-startup "wallpaper"
 
 hotkey-overlay {
   // Uncomment this line to disable the "Important Hotkeys" pop-up at startup.

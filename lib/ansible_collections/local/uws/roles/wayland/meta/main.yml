@@ -2,3 +2,4 @@
 dependencies:
   - role: "dunst"
   - role: "rofi"
+  - role: "swaybg"
