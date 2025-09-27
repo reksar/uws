@@ -1,3 +1,2 @@
 - import_tasks: "utils.yml"
-- import_tasks: "app/tmux.yml"
-- import_tasks: "app/vim.yml"
+- import_tasks: "vim.yml"

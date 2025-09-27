@@ -1,2 +1,2 @@
-battery_status: "󰁹#(battery)% | "
+battery_status: "󰂄#(battery)% | "
 temperature_status: "#(temperature)°C | "

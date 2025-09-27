@@ -1,4 +1,4 @@
-- name: "/?/ tmux running"
+- name: "Running tmux"
   shell: "tmux info"
   register: tmux_info
   changed_when: tmux_info.rc == 0

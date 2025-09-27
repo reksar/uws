@@ -5,3 +5,4 @@ dependencies:
   - role: "git"
   - role: "locale"
   - role: "network"
+  - role: "tmux"
