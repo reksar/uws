@@ -6,7 +6,14 @@ email = {{ settings.user.email }}
 editor = vim
 
 [alias]
-s = "!git -c color.status=always status --short --renames --branch \
-    | sort -rk1,1"
-a = add --verbose
-r = reset --no-quiet
+
+s = "!git status --long -u no;\
+git -c color.status=always status --short --renames -uall | sort -rk1,1"
+
+l = log --graph --date=short --pretty=format:'\
+%C(yellow)%h%C(reset) %ad %C(green)%s%C(reset) %C(yellow)%d%C(reset) [%an]'
+
+reset = reset --no-quiet
+add = add --verbose
+add-deleted = "!git ls-files --deleted | xargs git add --verbose"
+add-modified = "!git ls-files --modified | xargs git add --verbose"
