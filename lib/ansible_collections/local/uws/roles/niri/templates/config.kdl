@@ -153,16 +153,8 @@ layout {
 
   // Similar to the focus ring, but always visible.
   border {
-
     // If you enable the border, you probably want to disable the focus ring.
     off
-
-    width 4
-    active-color "#ffc87f"
-    inactive-color "#505050"
-
-    // Color of the border around windows that request your attention.
-    urgent-color "#9b0000"
   }
 
   // You can enable drop shadows for windows.
@@ -203,10 +195,10 @@ layout {
   }
 
   struts {
-    left -12
-    right -12
-    top -12
-    bottom -12
+    left -14
+    right -14
+    top -14
+    bottom -14
   }
 }
 
