@@ -21,7 +21,7 @@
 - name: "/>/ Niri scripts"
   loop:
     - "app-window.sh"
-    - "cycle-window.sh"
+    - "focus-next-window.sh"
   copy:
     src: "{{ item }}"
     dest: "{{ share_dir }}/"

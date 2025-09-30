@@ -280,10 +280,18 @@ binds {
 
   Mod+H { focus-column-left; }
   Mod+L { focus-column-right; }
+
+  // Move focused window to the left/right column.
   Mod+Shift+Comma { consume-or-expel-window-left; }
   Mod+Shift+Period { consume-or-expel-window-right; }
-  Mod+Comma { focus-column-left; }
-  Mod+Period { focus-column-right; }
+
+  // Cycle window focus in the current workspace.
+  Mod+Comma cooldown-ms=150 {
+    spawn "<< share_dir >>/focus-next-window.sh" "back";
+  }
+  Mod+Period cooldown-ms=150 {
+    spawn "<< share_dir >>/focus-next-window.sh";
+  }
 
   Mod+J { focus-window-down; }
   Mod+K { focus-window-up; }
@@ -294,13 +302,6 @@ binds {
   Mod+Ctrl+Period { move-column-right; }
 
   Mod+Tab { focus-workspace-previous; }
-
-  Alt+Tab cooldown-ms=150 {
-    spawn "<< share_dir >>/cycle-window.sh" "next";
-  }
-  Alt+Shift+Tab cooldown-ms=150 {
-    spawn "<< share_dir >>/cycle-window.sh" "prev";
-  }
 
   Mod+Minus { set-column-width "-10%"; }
   Mod+Equal { set-column-width "+10%"; }
