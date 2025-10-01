@@ -1,7 +1,11 @@
-# Install some CLI utils
-- package:
+# NOTE: Mind the 'meta/main' dependencies.
+- name: "/!/ System packages for console workstation"
+  package:
     name:
 
+      - "base-devel"
+
+      # Useful CLI utils
       - "patch"
       - "sshfs"
       - "strace"

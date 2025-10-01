@@ -2,7 +2,7 @@
 dependencies:
   - role: "base"
   - role: "bash"
-  - role: "git"
   - role: "locale"
   - role: "network"
+  - role: "git"
   - role: "tmux"

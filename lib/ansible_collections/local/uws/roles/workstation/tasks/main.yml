@@ -1,2 +1,5 @@
-- import_tasks: "utils.yml"
+- import_tasks: "packages.yml"
 - import_tasks: "vim.yml"
+
+- import_tasks: "yay.yml"
+  when: ansible_os_family == 'Archlinux'

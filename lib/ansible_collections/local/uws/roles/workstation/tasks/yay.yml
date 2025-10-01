@@ -1,0 +1,28 @@
+- name: "/?/ Yay"
+  shell: "yay --version"
+  changed_when: false
+  failed_when: false
+  register: yay
+
+- set_fact:
+    yay_tmp: "/tmp/yay"
+
+- name: "/v/ Yay repo"
+  when: yay.rc != 0
+  git:
+    repo: "https://aur.archlinux.org/yay-bin.git"
+    dest: "{{ yay_tmp }}"
+    depth: 1
+  register: repo
+
+# TODO: Do not ask the sudo pass here.
+- name: "Build and install Yay"
+  when: repo.changed
+  shell:
+    cmd: "makepkg --syncdeps --install --noconfirm"
+    chdir: "{{ yay_tmp }}"
+
+- name: "/x/ Yay repo"
+  file:
+    path: "{{ yay_tmp }}"
+    state: "absent"
