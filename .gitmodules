@@ -4,3 +4,6 @@
 [submodule "lib/ansible_collections/local/uws/roles/sddm/files/sugar-candy"]
 	path = lib/ansible_collections/local/uws/roles/sddm/files/sugar-candy
 	url = https://framagit.org/MarianArlt/sddm-sugar-candy.git
+[submodule "lib/ansible_collections/kewlfft/aur"]
+	path = lib/ansible_collections/kewlfft/aur
+	url = https://github.com/kewlfft/ansible-aur
