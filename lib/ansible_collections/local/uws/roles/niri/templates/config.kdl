@@ -261,10 +261,16 @@ binds {
   // 'Mod' is the special modifier equal to 'Super' when running on a TTY, and
   // to 'Alt' when running as a winit window.
 
+  Mod+J { focus-window-down; }
+  Mod+K { focus-window-up; }
+  Mod+Shift+J { move-window-down; }
+  Mod+Shift+K { move-window-up; }
+
   Mod+H { focus-column-left; }
   Mod+L { focus-column-right; }
+  Mod+Shift+H { move-column-left; }
+  Mod+Shift+L { move-column-right; }
 
-  // Move focused window to the left/right column.
   Mod+Shift+Comma { consume-or-expel-window-left; }
   Mod+Shift+Period { consume-or-expel-window-right; }
 
@@ -275,14 +281,6 @@ binds {
   Mod+Period cooldown-ms=150 {
     spawn "<< share_dir >>/focus-next-window.sh";
   }
-
-  Mod+J { focus-window-down; }
-  Mod+K { focus-window-up; }
-  Mod+Shift+J { move-window-down; }
-  Mod+Shift+K { move-window-up; }
-
-  Mod+Ctrl+Comma { move-column-left; }
-  Mod+Ctrl+Period { move-column-right; }
 
   Mod+Tab { focus-workspace-previous; }
 
