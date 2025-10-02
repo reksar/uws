@@ -1,3 +1,4 @@
+alias services='systemctl list-units --type=service --all'
 alias ls='ls --color=auto --group-directories-first'
 alias ll='ls -lah --color=auto --group-directories-first'
 alias grep='grep --color=auto'
