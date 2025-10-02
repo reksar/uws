@@ -1,0 +1,37 @@
+- name: "/!/ input-remapper"
+  when: ansible_os_family != 'Archlinux'
+  package:
+    name: "input-remapper"
+  become: true
+
+- name: "/!/ input-remapper"
+  when: ansible_os_family == 'Archlinux'
+  kewlfft.aur.aur:
+    name: "input-remapper"
+    use: "yay"
+
+- name: "/*/ input-remapper service"
+  systemd:
+    name: "input-remapper"
+    state: "started"
+    enabled: true
+  become: true
+
+# Ensure that the remapper recognizes the device (grep returns RC1 otherwise).
+- name: "/?/ input-remapper device"
+  shell: "input-remapper-control --list-devices | grep '{{ device }}'"
+  become: true
+  changed_when: false
+
+- name: "/!/ remapper preset dir"
+  file:
+    path: "{{ remapper.presets_dir }}"
+    state: "directory"
+
+- name: "/>/ input-remapper preset"
+  template:
+    src: "{{ remapper.preset }}.json"
+    dest: "{{ remapper.presets_dir }}/"
+    variable_start_string: "<<"
+    variable_end_string: ">>"
+  notify: "Reload input-remapper"

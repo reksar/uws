@@ -1,0 +1,4 @@
+- import_tasks: "search.yml"
+
+- import_tasks: "remap.yml"
+  when: device

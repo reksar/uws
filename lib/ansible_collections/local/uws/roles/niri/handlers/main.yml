@@ -1,3 +1,11 @@
 # TODO: `niri -- --replace` when running in Niri locally.
 - name: "Reload Niri config"
   shell: "niri validate"
+
+- name: "Reload input-remapper"
+  shell: >
+    input-remapper-control \
+      --command start \
+      --device "{{ device }}" \
+      --preset "{{ remapper.preset }}"
+  become: true

@@ -29,6 +29,8 @@
 
 - import_tasks: "{{ role_path }}/../locale/tasks/keymap/desktop.yml"
 
+- import_tasks: "touchscreen/main.yml"
+
 - name: "/>/ App windows config"
   template:
     src: "app_windows"

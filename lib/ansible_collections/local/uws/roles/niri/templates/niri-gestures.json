@@ -1,0 +1,22 @@
+{
+  "device": "<< device >>",
+  "preset": "<< remapper.preset >>",
+  "mappings": [
+    {
+      "input": "SWIPE_LEFT 3",
+      "output": "COMMAND niri msg action focus-column-left"
+    },
+    {
+      "input": "SWIPE_RIGHT 3",
+      "output": "COMMAND niri msg action focus-column-right"
+    },
+    {
+      "input": "SWIPE_UP 3",
+      "output": "COMMAND niri msg action focus-window-up"
+    },
+    {
+      "input": "SWIPE_DOWN 3",
+      "output": "COMMAND niri msg action focus-window-down"
+    }
+  ]
+}

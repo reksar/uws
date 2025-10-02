@@ -12,3 +12,14 @@ app_windows:
       'cmd': 'firefox',
       'bind': 'Mod+B hotkey-overlay-title="Browser" cooldown-ms=150',
     }
+
+# To remap 3- and 4-finger gestures, because the Niri does not supports them.
+touchscreen:
+  # A regex to search a touchscreen device. Just set the device if you know it.
+  # Set to empty str or any value interpreted as bool false, if you want to
+  # disable the touchscreen remapping.
+  device: "(?i)touchscreen"
+
+remapper:
+  presets_dir: "{{ ansible_env.HOME }}/.config/input-remapper-2/presets"
+  preset: "niri-gestures"

@@ -1,0 +1,17 @@
+- name: "/?/ devices"
+  shell: 'libinput list-devices | grep -Po "Device:\s*\K.*"'
+  become: true
+  changed_when: false
+  register: devices
+
+- set_fact:
+    device: >-
+      {{
+        (
+          devices.stdout_lines
+          | map('regex_search', touchscreen.device)
+          | reject('none')
+          or ['']
+        )
+        | first
+      }}
