@@ -120,7 +120,7 @@ layout {
   center-focused-column "never"
 
   // Default width of the new window.
-  default-column-width { proportion 0.5; }
+  default-column-width { proportion 1.0; }
 
   // If you leave the brackets empty, the windows themselves will decide their
   // initial width.
