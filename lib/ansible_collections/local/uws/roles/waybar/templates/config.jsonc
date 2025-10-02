@@ -11,11 +11,11 @@
   "spacing": 4,
 
   "modules-left": [
-    "hyprland/workspaces"
+    "<< settings.desktop.de >>/workspaces"
   ],
 
   "modules-center": [
-    "hyprland/window"
+    "<< settings.desktop.de >>/window"
   ],
 
   "modules-right": [
@@ -25,10 +25,10 @@
     "battery",
     "pulseaudio",
     "keyboard-state",
-    "hyprland/language",
+    "<< settings.desktop.de >>/language",
     "clock",
     "tray",
-    "custom/apps"
+    "custom/app-launcher"
   ],
 
   "keyboard-state": {
@@ -43,7 +43,7 @@
 
   "tray": {
     // "icon-size": 21,
-    "spacing": 10,
+    "spacing": 10
     // "icons": {
     //   "blueman": "bluetooth",
     //   "TelegramDesktop": "$HOME/.local/share/icons/hicolor/16x16/apps/telegram.png"
@@ -63,8 +63,6 @@
   "memory": {
     "format": " {}%"
   },
-
-  << temperature_module >>,
 
   "battery": {
     "states": {
@@ -99,10 +97,12 @@
     "on-click": "pavucontrol"
   },
 
-  "custom/apps": {
+  "custom/app-launcher": {
     "format" : " ",
     "tooltip": true,
     "tooltip-format": "App Launcher",
     "on-click": "rofi -show drun"
-  }
+  },
+
+  <% include temperature_module %>
 }
