@@ -22,6 +22,9 @@ Detach: `Prefix+D`
 Rename current session: `Prefix+$`
 Switch layout: `Prefix+Space`
 
+[See how to bind an UTF-8 character over 8-bit:]
+(https://superuser.com/questions/517836/tmux-trying-to-bind-utf8-key)
+
 # Useful commands
 Switch layout: `next-layout`
 Create new session: `new` or `new -s <name>`
