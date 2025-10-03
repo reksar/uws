@@ -37,4 +37,4 @@
       }}
 
 - set_fact:
-    kb_options: "grp:{{ switch }}_toggle"
+    kb_options: "ctrl:nocaps,grp:{{ switch }}_toggle"
