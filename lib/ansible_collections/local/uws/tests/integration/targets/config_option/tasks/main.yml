@@ -26,3 +26,6 @@
 
 # Add the option to INI file without specifying a section.
 - import_tasks: "test/ignore_section.yml"
+
+# Create the config file if not exists.
+- import_tasks: "test/nonexistent_file.yml"

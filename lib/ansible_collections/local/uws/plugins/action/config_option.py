@@ -2,15 +2,11 @@
 
 from __future__ import annotations
 
+import os
 import re
-
+import ansible_collections.local.uws.plugins.util.status as action_status
 from base64 import b64decode
-
-from ansible_collections.local.uws.plugins.util.action import (
-    ActionModuleBase,
-    STATUS_NOT_CHANGED,
-    is_status_ok,
-)
+from ansible_collections.local.uws.plugins.util.action import ActionModuleBase
 
 
 class ActionModule(ActionModuleBase):
@@ -20,8 +16,12 @@ class ActionModule(ActionModuleBase):
 
         self.setup()
 
+        status = self.ensure_file()
+        if status:
+            return status
+
         status = self.ensure_section()
-        if not is_status_ok(status):
+        if not action_status.is_ok(status):
             return status
 
         return self.ensure_option()
@@ -35,12 +35,10 @@ class ActionModule(ActionModuleBase):
         self.section = self.arg('section', '')
 
         # Separator between the `option` name and `value`.
-        #
         # NOTE: No spaces around the separator.
         self.separator = '='
 
-        # An oneline commet starts with this prefix:
-        #
+        # An oneline commet in the config file should start with this prefix.
         # TODO: Allow it after the option value in the same line.
         self.comment = '#'
 
@@ -68,11 +66,11 @@ class ActionModule(ActionModuleBase):
     def ensure_section(self):
 
         if not self.section or self.entry_count(self.re_section) == 1:
-            return STATUS_NOT_CHANGED
+            return action_status.not_changed()
 
         # TODO: Remove all related options when removing the section.
         status = self.remove(self.re_section)
-        if not is_status_ok(status):
+        if not action_status.is_ok(status):
             return status
 
         return self.write(f"[{self.section}]")
@@ -81,7 +79,7 @@ class ActionModule(ActionModuleBase):
     def ensure_option(self):
 
         status = self.remove_excess_options()
-        if not is_status_ok(status) or self.value is None:
+        if not action_status.is_ok(status) or self.value is None:
             return status
 
         # Here we got 0 or 1 option entry.
@@ -105,7 +103,7 @@ class ActionModule(ActionModuleBase):
         # differs from the specified one.
 
         status = self.remove(self.re_option)
-        if not is_status_ok(status):
+        if not action_status.is_ok(status):
             return status
 
         new_option_value = f"{self.option}{self.separator}{self.value}"
@@ -164,7 +162,7 @@ class ActionModule(ActionModuleBase):
 
         return (
             self.remove(self.re_option) if is_need_to_remove
-            else STATUS_NOT_CHANGED
+            else action_status.not_changed()
         )
 
 
@@ -206,3 +204,19 @@ class ActionModule(ActionModuleBase):
             raise ValueError(f"Cannot decode the remote file '{self.file}'.")
 
         return b64decode(result['content']).decode('utf-8')
+
+
+    def ensure_file(self):
+        if os.path.exists(self.file):
+            if os.path.isdir(self.file):
+                return action_status.fail('Got a dir instead of a file!')
+        else:
+
+            if self.value is None:
+                return action_status.not_changed()
+
+            try:
+                os.makedirs(os.path.dirname(self.file), exist_ok=True)
+                open(self.file, 'x').close()
+            except Exception as e:
+                return action_status.fail(repr(e))

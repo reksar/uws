@@ -1,0 +1,113 @@
+# The config file should be created if does not exists.
+
+- set_fact:
+    test_config: "{{ playbook_dir }}/test.conf"
+
+- stat:
+    path: "{{ test_config }}"
+  register: file
+
+- assert:
+    that: not file.stat.exists
+    fail_msg: "Config file should not be exist"
+
+- name: "Write an option to the not existing config file"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    option: "x"
+    value: "y"
+
+- stat:
+    path: "{{ test_config }}"
+  register: file
+
+- assert:
+    that: file.stat.exists
+    fail_msg: "Config file should be exist"
+
+
+# Like the above test, but tests also that the intermediate dir will be
+# created too.
+
+- set_fact:
+    test_dir: "{{ playbook_dir }}/a dir"
+
+- stat:
+    path: "{{ test_dir }}"
+  register: dir
+
+- assert:
+    that: not dir.stat.exists
+    fail_msg: "Test dir should not be exist"
+
+- set_fact:
+    test_config: "{{ test_dir }}/test.conf"
+
+- name: "Write an option to the not existing path"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    option: "x"
+    value: "y"
+
+- stat:
+    path: "{{ test_config }}"
+  register: file
+
+- assert:
+    that: file.stat.exists
+    fail_msg: "Config file should be exist"
+
+
+# Removing an option from not existing file should do nothing.
+
+- set_fact:
+    test_config: "{{ playbook_dir }}/never.conf"
+
+- stat:
+    path: "{{ test_config }}"
+  register: file
+
+- assert:
+    that: not file.stat.exists
+    fail_msg: "The never.conf should be never exist!"
+
+- name: "Remove an option from the not existing file"
+  local.uws.config_option:
+    file: "{{ test_config }}"
+    option: "option"
+  register: status
+
+- assert:
+    that: not (status.changed or status.failed)
+    fail_msg: "The action should do nothing!"
+
+- stat:
+    path: "{{ test_config }}"
+  register: file
+
+- assert:
+    that: not file.stat.exists
+    fail_msg: "The never.conf should be never exist!"
+
+
+# Failed when the file is directory.
+
+- set_fact:
+    test_dir: "{{ playbook_dir }}/conf.d"
+
+- name: "Create test dir"
+  file:
+    path: "{{ test_dir }}"
+    state: "directory"
+
+- name: "Write an option to the dir instead of file"
+  local.uws.config_option:
+    file: "{{ test_dir }}"
+    option: "x"
+    value: "y"
+  ignore_errors: true
+  register: status
+
+- assert:
+    that: status.failed
+    fail_msg: "Should be failed on writing the dir"
