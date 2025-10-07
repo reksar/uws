@@ -18,13 +18,13 @@
     value: "{{ theme }}"
 
 # Most of GTK3 apps use the $GTK_THEME env var.
-- include_tasks: "set_env.yml"
+- import_tasks: "set_env.yml"
   vars:
     gtk_opt: "GTK_THEME"
     gtk_val: "{{ theme }}"
 
 # Some GNOME apps may get the gtk-theme from gsettings (dconf).
-- include_tasks: "set_dconf.yml"
+- import_tasks: "set_dconf.yml"
   vars:
     gtk_opt: "gtk-theme"
     gtk_val: "{{ theme }}"
