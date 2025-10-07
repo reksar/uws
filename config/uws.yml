@@ -7,16 +7,23 @@ settings:
   desktop:
 
     # Select a Desktop Environment:
-    #   * niri
-    #   * hyprland
-    #   * Any bool false value to skip setup a GUI and setup the console
-    #     workstation only (TODO)
+    # * niri
+    # * hyprland
+    # * Any bool false value to skip setup a GUI and setup the console
+    #   workstation only (TODO)
     de: niri
 
     terminal: foot
 
     gtk:
-      theme: adw-gtk3
+
+      theme: adw-gtk3-dark
+
+      # Select a preferred interface colors:
+      # * dark
+      # * light
+      # * default
+      prefer: dark
 
   # Locales to be installed in the system.
   # NOTE: Use the format of `/etc/locale.gen`.
@@ -33,9 +40,9 @@ settings:
 
     layout:
 
-      # Can be one of (case insensitive):
-      #  alt+shift
-      #  ctrl+shift
+      # Select (case insensitive):
+      # * alt+shift
+      # * ctrl+shift
       switch: alt+shift
 
       # A list of keyboard layouts. Case insensitive.

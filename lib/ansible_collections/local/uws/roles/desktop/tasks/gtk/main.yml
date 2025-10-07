@@ -1,3 +1,4 @@
 - import_tasks: "install_theme_adw.yml"
 - import_tasks: "install_theme_gruvbox.yml"
 - import_tasks: "apply_theme.yml"
+- import_tasks: "apply_colors.yml"

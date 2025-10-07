@@ -1,0 +1,27 @@
+# Apply preferred GTK interface colors.
+
+- set_fact:
+    opt: "{{ settings.desktop.gtk.prefer }}"
+    interface: "org.gnome.desktop.interface color-scheme "
+
+- set_fact:
+    prefer: "default"
+  when: opt == 'default'
+
+- set_fact:
+    prefer: "prefer-dark"
+  when: opt == 'dark'
+
+- set_fact:
+    prefer: "prefer-light"
+  when: opt == 'light'
+
+- name: "/?/ Preferred GTK colors"
+  shell: "gsettings get {{ interface }}"
+  changed_when: false
+  failed_when: false
+  register: colors
+
+- name: "/*/ Preferred GTK colors"
+  shell: "gsettings set {{ interface }} '{{ prefer }}'"
+  when: not colors.rc and colors.stdout != '\'' + prefer + '\''
