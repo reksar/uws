@@ -1,0 +1,74 @@
+- set_fact:
+
+    themes:
+      - "Gruvbox-Dark-Soft"
+      - "Gruvbox-Light-Soft"
+
+    # These themes will be installed too, but without the GTK support.
+    unused:
+      - "Gruvbox-Light-Soft-hdpi"
+      - "Gruvbox-Light-Soft-xhdpi"
+      - "Gruvbox-Dark-Soft-hdpi"
+      - "Gruvbox-Dark-Soft-xhdpi"
+
+    themes_dir:
+      system: "/usr/share/themes"
+
+      # The theme native installer uses this path.
+      obsolete: "{{ ansible_env.HOME }}/.themes"
+
+- name: "/!/ Required system packages"
+  package:
+    name:
+      - "sassc"
+      - "gtk-engine-murrine"
+  become: true
+
+- name: "/?/ GTK theme Gruvbox"
+  loop: "{{ themes }}"
+  stat:
+    path: "/usr/share/themes/{{ item }}/gtk-3.0/gtk.css"
+    get_checksum: false
+    get_attributes: false
+    get_mime: false
+  register: files
+
+- name: "Install theme"
+  when: files.results | map(attribute='stat.exists') is not all
+  vars:
+    tmp_repo: "/tmp/gtk-gruvbox"
+  block:
+
+  - name: "/v/ GTK theme Gruvbox repo"
+    git:
+      repo: "https://github.com/Fausto-Korpsvart/Gruvbox-GTK-Theme"
+      dest: "{{ tmp_repo }}"
+      depth: 1
+    register: repo
+
+  - name: "Install GTK theme Gruvbox"
+    shell:
+      cmd: "themes/install.sh --tweaks soft --libadwaita"
+      chdir: "{{ tmp_repo }}"
+
+  - name: "/x/ GTK theme Gruvbox repo"
+    file:
+      path: "{{ tmp_repo }}"
+      state: "absent"
+
+  # The theme installed to the obsolete '~/.themes/'. User themes should be in
+  # '~/.local/share/themes/', but it is better to install the system-wide
+  # '/usr/share/themes/'.
+  - name: "/>/ Gruvbox theme to system path"
+    loop: "{{ themes }}"
+    copy:
+      src: "{{ themes_dir.obsolete }}/{{ item }}"
+      dest: "{{ themes_dir.system }}/"
+    become: true
+
+  - name: "/x/ Gruvbox obsolete"
+    vars:
+    loop: "{{ themes + unused }}"
+    file:
+      path: "{{ themes_dir.obsolete }}/{{ item }}"
+      state: "absent"

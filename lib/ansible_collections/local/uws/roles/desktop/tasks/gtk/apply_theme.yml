@@ -1,0 +1,67 @@
+# Apply the GTK theme from uws settings to applications.
+#
+# NOTE: Some GTK applications may be running as daemon that need to be reloaded
+# to apply new theme. Check out the `ps aux` and `busctl --user list`.
+
+- set_fact:
+    theme: "{{ settings.desktop.gtk.theme }}"
+
+
+# This is mainly for GTK4, but some GTK3 apps also support the settings.
+- name: "/*/ GTK theme"
+  loop:
+    - "gtk-3.0"
+    - "gtk-4.0"
+  local.uws.config_option:
+    file: "{{ ansible_env.HOME }}/.config/{{ item }}/settings.ini"
+    section: "Settings"
+    option: "gtk-theme-name"
+    value: "{{ theme }}"
+
+
+# Most of GTK3 apps use the $GTK_THEME env var.
+
+- name: "/*/ GTK_THEME env var for systemd"
+  local.uws.config_option:
+    file: "{{ ansible_env.HOME }}/.config/environment.d/gtk.conf"
+    option: "GTK_THEME"
+    value: "{{ theme }}"
+
+- name: "/?/ User ID"
+  shell: "id --user"
+  changed_when: false
+  register: uid
+
+- set_fact:
+    runtime: "/run/user/{{ uid.stdout | int }}"
+
+- name: "/?/ GTK_THEME in the current systemd env"
+  shell: >
+    systemctl --user show-environment | grep '^GTK_THEME={{ theme }}$'
+  environment:
+    XDG_RUNTIME_DIR: "{{ runtime }}"
+  changed_when: false
+  failed_when: false
+  register: env
+
+- name: "/*/ GTK_THEME for the current systemd env"
+  when: env.rc
+  shell: |
+    export GTK_THEME={{ theme }}
+    systemctl --user set-environment GTK_THEME={{ theme }}
+    dbus-update-activation-environment --systemd GTK_THEME
+  environment:
+    XDG_RUNTIME_DIR: "{{ runtime }}"
+
+
+# Some GNOME apps may require gsettings for gtk-theme.
+
+- name: "/?/ gsettings gtk-theme"
+  shell: "gsettings get org.gnome.desktop.interface gtk-theme"
+  failed_when: false
+  changed_when: false
+  register: gsettings
+
+- name: "/*/ gsettings gtk-theme"
+  when: gsettings.rc == 0 and gsettings.stdout != '\'' + theme + '\''
+  shell: "gsettings set org.gnome.desktop.interface gtk-theme {{ theme }}"

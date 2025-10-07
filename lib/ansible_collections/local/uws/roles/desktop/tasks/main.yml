@@ -1,6 +1,1 @@
-- name: "/!/ Common packages for desktop"
-  package:
-    name:
-      - "{{ settings.ttf }}"
-      - "firefox"
-  become: true
+- import_tasks: "gtk/main.yml"

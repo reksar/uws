@@ -7,14 +7,16 @@ settings:
   desktop:
 
     # Select a Desktop Environment:
-    #   * false (setup the console workstation)
     #   * niri
     #   * hyprland
-    #
-    # TODO: Do not setup the desktop when 'false'.
+    #   * Any bool false value to skip setup a GUI and setup the console
+    #     workstation only (TODO)
     de: niri
 
     terminal: foot
+
+    gtk:
+      theme: adw-gtk3
 
   # Locales to be installed in the system.
   # NOTE: Use the format of `/etc/locale.gen`.

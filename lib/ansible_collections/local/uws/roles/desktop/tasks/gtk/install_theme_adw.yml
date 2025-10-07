@@ -1,0 +1,8 @@
+# Themes:
+# * adw-gtk3
+# * adw-gtk3-dark
+
+- name: "/!/ ADW GTK theme"
+  package:
+    name: "adw-gtk-theme"
+  become: true

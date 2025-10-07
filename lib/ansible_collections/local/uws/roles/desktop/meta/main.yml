@@ -3,5 +3,5 @@ dependencies:
   - role: "workstation"
   - role: "sddm"
   - role: "{{ settings.desktop.de }}"
-  - role: "firefox"
   - role: "qemu"
+  - role: "firefox"
