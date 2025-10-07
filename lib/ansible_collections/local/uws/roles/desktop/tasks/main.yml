@@ -1,1 +1,8 @@
 - import_tasks: "gtk/main.yml"
+
+- name: "/!/ Default app packages for desktop"
+  package:
+    name:
+      - "gthumb"
+      - "shotcut"
+  become: true

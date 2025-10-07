@@ -1,0 +1,4 @@
+- name: "/!/ Papirus icons"
+  package:
+    name: "papirus-icon-theme"
+  become: true

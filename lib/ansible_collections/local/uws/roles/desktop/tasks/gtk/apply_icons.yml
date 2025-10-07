@@ -1,0 +1,14 @@
+# Apply the icon theme for GTK.
+
+- set_fact:
+    theme: "{{ settings.desktop.gtk.icons }}"
+
+- import_tasks: "set_env.yml"
+  vars:
+    gtk_opt: "GTK_ICON_THEME"
+    gtk_val: "{{ theme }}"
+
+- import_tasks: "set_dconf.yml"
+  vars:
+    gtk_opt: "icon-theme"
+    gtk_val: "{{ theme }}"

@@ -1,0 +1,37 @@
+# Set the system environment var `gtk_opt` to `gtk_val` value via systemd.
+# Provide these Ansible vars before running these tasks.
+
+- set_fact:
+    conf: "{{ ansible_env.HOME }}/.config/environment.d/gtk.conf"
+
+- name: "/*/ GTK env var {{ gtk_opt }} via systemd"
+  local.uws.config_option:
+    file: "{{ conf }}"
+    option: "{{ gtk_opt }}"
+    value: "{{ gtk_val }}"
+
+- name: "/?/ User ID"
+  shell: "id --user"
+  changed_when: false
+  register: uid
+
+- set_fact:
+    runtime: "/run/user/{{ uid.stdout | int }}"
+
+- name: "/?/ {{ gtk_opt }} in the current systemd env"
+  shell: >
+    systemctl --user show-environment | grep '^{{ gtk_opt }}={{ gtk_val }}$'
+  environment:
+    XDG_RUNTIME_DIR: "{{ runtime }}"
+  changed_when: false
+  failed_when: false
+  register: env
+
+- name: "/*/ {{ gtk_opt }} for the current systemd env"
+  when: env.rc
+  shell: |
+    export {{ gtk_opt }}={{ gtk_val }}
+    systemctl --user set-environment {{ gtk_opt }}={{ gtk_val }}
+    dbus-update-activation-environment --systemd {{ gtk_opt }}
+  environment:
+    XDG_RUNTIME_DIR: "{{ runtime }}"

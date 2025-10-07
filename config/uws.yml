@@ -18,6 +18,7 @@ settings:
     gtk:
 
       theme: adw-gtk3-dark
+      icons: Papirus
 
       # Select a preferred interface colors:
       # * dark

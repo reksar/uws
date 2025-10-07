@@ -1,0 +1,15 @@
+# Configure dconf via for GNOME GTK. Provide the `gtk_opt` and its value
+# `gtk_val` value before running these tasks.
+
+- set_fact:
+    interface: "org.gnome.desktop.interface "
+
+- name: "/?/ gsettings {{ gtk_opt }}"
+  shell: "gsettings get {{ interface }} {{ gtk_opt }}"
+  failed_when: false
+  changed_when: false
+  register: gsettings
+
+- name: "/*/ gsettings {{ gtk_opt }}"
+  when: gsettings.rc == 0 and gsettings.stdout != '\'' + gtk_val + '\''
+  shell: "gsettings set {{ interface }} {{ gtk_opt }} {{ gtk_val }}"
