@@ -3,3 +3,7 @@
   * [ ] Status bar
     * [ ] Language (keyboard layout)
     * [ ] Style for window *buttons*
+[ ] Git
+  [ ] Alias to add file changes partially
+[ ] bash
+  [ ] Alias: get the name of package for given file

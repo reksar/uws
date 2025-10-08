@@ -17,3 +17,4 @@ reset = reset --no-quiet
 add = add --verbose
 add-deleted = "!git ls-files --deleted | xargs git add --verbose"
 add-modified = "!git ls-files --modified | xargs git add --verbose"
+add-new = "!git ls-files --others --exclude-standard | xargs git add --verbose"

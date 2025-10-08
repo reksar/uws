@@ -5,6 +5,7 @@
       - "patch"
       - "sshfs"
       - "strace"
+      - "wget"
 
       # The unified interface for all archives
       - "atool"
