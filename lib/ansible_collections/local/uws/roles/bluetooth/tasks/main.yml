@@ -16,5 +16,9 @@
 - name: "Bluetooth setup"
   when: has_bluetooth
   block:
+
   - include_tasks: "packages.yml"
-  - include_tasks: "driver.yml"
+  - include_tasks: "btusb.yml"
+
+  - include_tasks: "hidp.yml"
+    when: not userspace_hid

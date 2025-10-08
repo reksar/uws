@@ -1,0 +1,4 @@
+# BlueZ >= 5.70 automatically enables the UserspaceHID and does not supports
+# legacy HID devices. Disabling the UserspaceHID allows to support HID and HOG
+# devices, but requires the HIDP kernel module.
+userspace_hid: false

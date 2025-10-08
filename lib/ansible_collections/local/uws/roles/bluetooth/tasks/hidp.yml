@@ -1,0 +1,42 @@
+- name: "Fail if no Bluetooth HIDP kernel module"
+  shell: "modinfo hidp"
+  changed_when: false
+
+- name: "Stop Bluetooth service"
+  systemd:
+    name: "bluetooth.service"
+    state: "stopped"
+  become: true
+
+- name: "Clear records then create parent dir back"
+  become: true
+  vars:
+    dir: "/var/lib/bluetooth"
+  block:
+  # The records are stored in '/var/lib/bluetooth/<adapter MAC>/<device MAC>'.
+  # Instead of clearing the content of '/var/lib/bluetooth/*', removing the
+  # parent dir itself ...
+  - name: "Remove old Bluetooth pairing records"
+    file:
+      path: "{{ dir }}"
+      state: "absent"
+  # ... and then create it back empty.
+  - name: "/!/ {{ dir }}"
+    file:
+      path: "{{ dir }}"
+      state: "directory"
+      mode: "u=rwx,g=,o="
+
+- name: "Disable UserspaceHID for Bluetooth"
+  local.uws.config_option:
+    file: "/etc/bluetooth/input.conf"
+    section: "General"
+    option: "UserspaceHID"
+    value: "false"
+  become: true
+
+- name: "Start Bluetooth service"
+  systemd:
+    name: "bluetooth.service"
+    state: "started"
+  become: true
