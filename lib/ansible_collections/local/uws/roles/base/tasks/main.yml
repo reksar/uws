@@ -1,5 +1,6 @@
-- name: Install packages for NTFS support
+- name: "Base system packages"
   package:
     name:
       - "ntfs-3g"
+      - "usbutils"
   become: true

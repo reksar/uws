@@ -6,3 +6,4 @@ dependencies:
   - role: "locale"
   - role: "network"
   - role: "tmux"
+  - role: "bluetooth"

@@ -1,0 +1,20 @@
+- name: "/?/ PCI Bluetooth"
+  shell: "lspci | grep -i bluetooth"
+  changed_when: false
+  failed_when: false
+  register: pci
+
+- name: "/?/ USB Bluetooth"
+  shell: "lsusb | grep -i bluetooth"
+  changed_when: false
+  failed_when: false
+  register: usb
+
+- set_fact:
+    has_bluetooth: "{{ not (pci.rc and usb.rc) }}"
+
+- name: "Bluetooth setup"
+  when: has_bluetooth
+  block:
+  - include_tasks: "packages.yml"
+  - include_tasks: "driver.yml"

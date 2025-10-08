@@ -1,0 +1,19 @@
+- name: "/!/ Bluetooth system packages"
+  package:
+    name:
+     - "bluez"
+     - "bluez-utils"
+  become: true
+
+- name: "/*/ Bluetooth service"
+  systemd:
+    name: "bluetooth.service"
+    state: "started"
+    enabled: true
+  become: true
+
+- name: "/!/ Bluetooth GUI"
+  package:
+    name: "blueman"
+  when: settings.desktop.de
+  become: true

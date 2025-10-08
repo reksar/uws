@@ -1,0 +1,20 @@
+- name: "/?/ Bluetooth kernel module"
+  shell: "lsmod | grep btusb"
+  changed_when: false
+  failed_when: false
+  register: mod
+
+- name: "Load Bluetooth kernel module"
+  shell: "modprobe btusb"
+  when: mod.rc
+  become: true
+
+- name: "/?/ Boot with the Bluetooth kernel module"
+  shell: "systemd-analyze cat-config modprobe.d | grep btusb"
+  changed_when: false
+  failed_when: false
+  register: mod_d
+
+- debug:
+    msg: "TODO: Load btusb module"
+  when: mod_d.rc
