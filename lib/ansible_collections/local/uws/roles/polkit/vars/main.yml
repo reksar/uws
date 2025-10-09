@@ -1,0 +1,4 @@
+agent: "mate-polkit"
+exe: "/usr/lib/mate-polkit/polkit-mate-authentication-agent-1"
+desktop_entries: "{{ ansible_env.HOME }}/.config/autostart"
+polkit_rules: "/etc/polkit-1/rules.d"

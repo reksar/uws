@@ -1,19 +1,14 @@
-- name: "/!/ Bluetooth system packages"
+- name: "/!/ Bluetooth packages"
   package:
     name:
-     - "bluez"
-     - "bluez-utils"
+    - "bluez"
+    - "bluez-utils"
   become: true
 
-- name: "/*/ Bluetooth service"
-  systemd:
-    name: "bluetooth.service"
-    state: "started"
-    enabled: true
-  become: true
-
-- name: "/!/ Bluetooth GUI"
+# WARN: Depends on the 'roles/polkit'! It is expected that the PolKit should be
+# installed on the same condition as this package.
+- name: "/!/ Blueman package"
   package:
     name: "blueman"
-  when: settings.desktop.de
   become: true
+  when: settings.desktop.de

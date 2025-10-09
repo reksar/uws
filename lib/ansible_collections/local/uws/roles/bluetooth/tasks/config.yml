@@ -1,0 +1,42 @@
+- set_fact:
+    etc: "/etc/bluetooth"
+
+- name: "/?/ Need to change Bluetooth config"
+  copy:
+    src: "input.conf"
+    dest: "{{ etc }}/"
+  check_mode: true
+  register: test
+
+- name: "Change config"
+  when: test.changed
+  become: true
+  block:
+
+  - name: "Stop Bluetooth service"
+    systemd:
+      name: "bluetooth.service"
+      state: "stopped"
+
+  - name: "/>/ Bluetooth input config"
+    copy:
+      src: "input.conf"
+      dest: "{{ etc }}/"
+
+  - name: "Clear records then create parent dir back"
+    vars:
+      lib: "/var/lib/bluetooth"
+    block:
+    # The records stored in '/var/lib/bluetooth/<adapter MAC>/<device MAC>'.
+    # Instead of clearing the content '/var/lib/bluetooth/*', remove the parent
+    # dir itself ...
+    - name: "Remove old Bluetooth records"
+      file:
+        path: "{{ lib }}"
+        state: "absent"
+    # ... and create it back.
+    - name: "/!/ {{ lib }}"
+      file:
+        path: "{{ lib }}"
+        state: "directory"
+        mode: "u=rwx,g=,o="

@@ -10,15 +10,18 @@
   failed_when: false
   register: usb
 
-- set_fact:
-    has_bluetooth: "{{ not (pci.rc and usb.rc) }}"
-
 - name: "Bluetooth setup"
-  when: has_bluetooth
+  when: not (pci.rc and usb.rc)
   block:
 
-  - include_tasks: "packages.yml"
-  - include_tasks: "btusb.yml"
+  - import_tasks: "packages.yml"
+  - import_tasks: "btusb.yml"
+  - import_tasks: "hidp.yml"
+  - import_tasks: "config.yml"
 
-  - include_tasks: "hidp.yml"
-    when: not userspace_hid
+  - name: "/*/ Bluetooth service"
+    systemd:
+      name: "bluetooth.service"
+      state: "started"
+      enabled: true
+    become: true

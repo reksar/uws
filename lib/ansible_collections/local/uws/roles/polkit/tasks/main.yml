@@ -1,0 +1,51 @@
+- name: "/!/ PolKit system packages"
+  package:
+    name:
+      # This is the TTY PolKit (Policy Kit) that does not work ...
+      - "polkit"
+      # ... without a GUI agent.
+      - "{{ agent }}"
+  become: true
+
+# When in sudo group, give a permissions without asking for password.
+- name: "/>/ PolKit rules"
+  copy:
+    src: "pass.rules"
+    dest: "{{ polkit_rules }}/"
+  become: true
+  notify: "Restart PolKit daemon"
+
+- name: "/>/ PolKit desktop entry"
+  template:
+    src: "polkit.desktop"
+    dest: "{{ desktop_entries }}/"
+  when: settings.desktop.de == 'niri'
+
+- name: "/?/ PolKit agent process"
+  shell: "ps -e -o cmd | grep {{ exe | basename }}"
+  changed_when: false
+  failed_when: false
+  register: ps
+
+- name: "Run PolKit agent"
+  when: ps.rc
+  block:
+
+  - name: "/?/ gio"
+    shell: "gio version"
+    changed_when: false
+    failed_when: false
+    register: gio
+
+  - name: "Run PolKit agent via gio"
+    when: not gio.rc
+    shell: "gio launch {{ desktop_entries }}/polkit.desktop"
+    environment:
+      DISPLAY: ":0"
+      XDG_RUNTIME_DIR: "/run/user/{{ ansible_user_uid }}"
+
+  - name: "Run PolKit agent"
+    when: gio.rc
+    shell: "{{ exe }} &"
+    async: 0
+    poll: 0

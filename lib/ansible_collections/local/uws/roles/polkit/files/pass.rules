@@ -1,0 +1,8 @@
+polkit.addRule(function(action, subject) {
+  const groups = ["sudo", "wheel"];
+  for (let i of groups) {
+    if (subject.isInGroup(i)) {
+      return polkit.Result.YES;
+    }
+  }
+});

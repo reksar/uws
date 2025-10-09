@@ -1,0 +1,5 @@
+- name: "Restart PolKit daemon"
+  systemd:
+    name: "polkit"
+    state: "restarted"
+  become: true
