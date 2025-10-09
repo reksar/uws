@@ -29,3 +29,6 @@
 
 # Create the config file if not exists.
 - import_tasks: "test/nonexistent_file.yml"
+
+# Put the bool variable to the `value`.
+- import_tasks: "test/bool_value.yml"

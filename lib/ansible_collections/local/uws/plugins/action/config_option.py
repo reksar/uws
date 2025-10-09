@@ -29,10 +29,12 @@ class ActionModule(ActionModuleBase):
 
     def setup(self):
 
-        self.file = self.arg('file')
-        self.value = self.arg('value', None)
-        self.option = self.arg('option')
-        self.section = self.arg('section', '')
+        self.file = str(self.arg('file'))
+        self.option = str(self.arg('option'))
+        self.section = str(self.arg('section', ''))
+
+        raw_value = self.arg('value', None)
+        self.value = None if raw_value is None else str(raw_value)
 
         # Separator between the `option` name and `value`.
         # NOTE: No spaces around the separator.

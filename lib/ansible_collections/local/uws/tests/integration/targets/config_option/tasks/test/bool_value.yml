@@ -1,0 +1,18 @@
+# These tasks just should not fail.
+
+- set_fact:
+    test_file: "{{ playbook_dir }}/test.conf"
+    true_value: true
+    false_value: false
+
+- name: "Set option to the bool true"
+  local.uws.config_option:
+    file: "{{ test_file }}"
+    option: "true_value"
+    value: "{{ true_value }}"
+
+- name: "Set option to the bool false"
+  local.uws.config_option:
+    file: "{{ test_file }}"
+    option: "false_value"
+    value: "{{ false_value }}"
