@@ -1,0 +1,7 @@
+%sudo ALL=(ALL) NOPASSWD: \
+  /bin/systemctl, \
+  /usr/bin/cat, \
+  /usr/bin/cp, \
+  /usr/bin/ls, \
+  /usr/bin/mv, \
+  /usr/bin/pacman

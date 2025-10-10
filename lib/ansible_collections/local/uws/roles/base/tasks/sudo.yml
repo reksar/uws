@@ -1,0 +1,14 @@
+- name: "/!/ sudo package"
+  package:
+    name: "sudo"
+  become: true
+
+- name: "/>/ No password for some operations for sudo group"
+  copy:
+    src: "nopasswd"
+    dest: "/etc/sudoers.d/"
+    owner: "root"
+    group: "root"
+    mode: "0440"
+    validate: "/usr/sbin/visudo --check --file=%s"
+  become: true

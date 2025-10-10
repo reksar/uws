@@ -1,6 +1,8 @@
-- name: "Base system packages"
+- name: "/!/ Base system packages"
   package:
     name:
       - "ntfs-3g"
       - "usbutils"
   become: true
+
+- import_tasks: "sudo.yml"
