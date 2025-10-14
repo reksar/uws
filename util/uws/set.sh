@@ -68,9 +68,20 @@ extra_vars="uws='$uws' $playbook_target $xdg_vars"
 # -- Extra vars }}}
 
 
+# -- Become password {{{
+if [[ -f "$uws/.become" ]]
+then
+  [[ $(stat --format="%a" "$uws/.become") -ne 600 ]] && chmod 600 "$uws/.become"
+  become="--become-password-file $uws/.become"
+else
+  become="--ask-become-pass"
+fi
+# -- Become password }}}
+
+
 # FIXME: extra vars are not supported for remote host!
 ensure_ansible && ansible-playbook \
   $connection \
-  --ask-become-pass \
+  $become \
   --extra-vars="$extra_vars" \
   "$playbook"

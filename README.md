@@ -57,6 +57,10 @@ Some configs are depends on the hardware configuration, that must be done first.
 ./uws test ansible
 ```
 
+Some Ansible tasks may require a *sudo* password to `become` a root. You can
+put it to the `.become` file at the project root. Otherwise Ansible will ask
+for it.
+
 Global settings for playbooks and roles: `config/uws.yml`. Other settings are
 stored in a role 'vars/'.
 

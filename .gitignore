@@ -1,6 +1,7 @@
 venv
 __pycache__
 
+.become
 lib/ansible_collections/**/tests/output/
 lib/ansible_collections/**/tests/integration/inventory
 
