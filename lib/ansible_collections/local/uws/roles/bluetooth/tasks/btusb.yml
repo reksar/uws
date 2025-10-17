@@ -6,7 +6,7 @@
 
 - name: "Load Bluetooth kernel module"
   shell: "modprobe btusb"
-  when: mod.rc
+  when: mod.rc != 0
   become: true
 
 - name: "/?/ Boot with the Bluetooth kernel module"
@@ -17,4 +17,4 @@
 
 - debug:
     msg: "TODO: Load btusb module"
-  when: mod_d.rc
+  when: mod_d.rc != 0

@@ -104,7 +104,7 @@
     keymap_toggle: "{{ extra_keymap | basename | split('.') | first }}"
 
 - name: "/*/ Default keymap"
-  when: not keymap_toggle
+  when: keymap_toggle == ''
   block:
 
   - name: "Set the default console keymap"
@@ -123,7 +123,7 @@
     notify: Reload console config
 
 - name: "/*/ Toggle keymap"
-  when: keymap_toggle
+  when: keymap_toggle != ''
   block:
 
   - name: "Trying to `loadkeys` for both keymaps"

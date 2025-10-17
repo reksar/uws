@@ -28,7 +28,7 @@
   register: env
 
 - name: "/*/ {{ gtk_opt }} for the current systemd env"
-  when: env.rc
+  when: env.rc != 0
   shell: |
     export {{ gtk_opt }}={{ gtk_val }}
     systemctl --user set-environment {{ gtk_opt }}={{ gtk_val }}

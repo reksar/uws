@@ -17,7 +17,7 @@
   notify: "Restart the Network Manager service"
 
 - name: "/!/ Network Manager GUI"
-  when: settings.desktop.de
+  when: settings.desktop.de is not none
   package:
     name:
       - "nm-connection-editor"

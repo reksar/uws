@@ -24,4 +24,4 @@
 
 - name: "/*/ Preferred GTK colors"
   shell: "gsettings set {{ interface }} '{{ prefer }}'"
-  when: not colors.rc and colors.stdout != '\'' + prefer + '\''
+  when: colors.rc == 0 and colors.stdout != '\'' + prefer + '\''

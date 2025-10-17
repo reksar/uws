@@ -3,4 +3,4 @@
 - import_tasks: "font/psf.yml"
 
 - import_tasks: "font/ttf.yml"
-  when: settings.desktop.de
+  when: settings.desktop.de is not none

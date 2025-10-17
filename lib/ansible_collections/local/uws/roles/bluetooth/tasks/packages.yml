@@ -5,10 +5,14 @@
     - "bluez-utils"
   become: true
 
-# WARN: Depends on the 'roles/polkit'! It is expected that the PolKit should be
-# installed on the same condition as this package.
-- name: "/!/ Blueman package"
-  package:
-    name: "blueman"
-  become: true
-  when: settings.desktop.de
+- name: "/!/ Bluetooth GUI"
+  when: settings.desktop.de is not none
+  block:
+
+  - name: "/!/ Blueman package"
+    package:
+      name: "blueman"
+    become: true
+
+  - include_role:
+      name: "polkit"

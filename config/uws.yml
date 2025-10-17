@@ -9,8 +9,7 @@ settings:
     # Select a Desktop Environment:
     # * niri
     # * hyprland
-    # * Any bool false value to skip setup a GUI and setup the console
-    #   workstation only (TODO)
+    # * none - to setup the TTY console workstation only (TODO)
     de: niri
 
     terminal: foot

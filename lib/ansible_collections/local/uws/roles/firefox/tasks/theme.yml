@@ -28,7 +28,7 @@
 
 
 - name: "Install Firefox theme"
-  when: profile and not theme_exists
+  when: profile != '' and not theme_exists
   vars:
     url: "https://github.com/ashish-kus/MiniSthetic_Firefox"
     tmp: "/tmp/firefox-theme"

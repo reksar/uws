@@ -28,7 +28,7 @@
   register: ps
 
 - name: "Run PolKit agent"
-  when: ps.rc
+  when: ps.rc != 0
   block:
 
   - name: "/?/ gio"
@@ -38,14 +38,14 @@
     register: gio
 
   - name: "Run PolKit agent via gio"
-    when: not gio.rc
+    when: gio.rc == 0
     shell: "gio launch {{ desktop_entries }}/polkit.desktop"
     environment:
       DISPLAY: ":0"
       XDG_RUNTIME_DIR: "/run/user/{{ ansible_user_uid }}"
 
   - name: "Run PolKit agent"
-    when: gio.rc
+    when: gio.rc != 0
     shell: "{{ exe }} &"
     async: 0
     poll: 0

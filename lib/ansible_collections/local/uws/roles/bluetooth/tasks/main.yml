@@ -11,7 +11,7 @@
   register: usb
 
 - name: "Bluetooth setup"
-  when: not (pci.rc and usb.rc)
+  when: pci.rc == 0 or usb.rc == 0
   block:
 
   - import_tasks: "packages.yml"
