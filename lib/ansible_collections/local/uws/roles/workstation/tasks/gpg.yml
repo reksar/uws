@@ -1,0 +1,9 @@
+- name: "/!/ GNU OpenPGP"
+  package:
+    name: "gnupg"
+  become: true
+
+- name: "/>/ gpg.conf"
+  copy:
+    src: "gpg.conf"
+    dest: "{{ ansible_env.HOME }}/.gnupg/"

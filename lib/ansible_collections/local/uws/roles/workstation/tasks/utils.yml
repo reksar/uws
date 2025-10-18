@@ -1,11 +1,13 @@
-# Install some CLI utils
-- package:
+- name: "/!/ System CLI utils"
+  package:
     name:
 
       - "patch"
       - "sshfs"
       - "strace"
       - "wget"
+      - "tree"
+      - "pass"
 
       # The unified interface for all archives
       - "atool"

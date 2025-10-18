@@ -1,0 +1,8 @@
+- name: "/!/ Podman packages"
+  package:
+    name:
+      # crun or runc is required
+      - "crun"
+      - "podman"
+      - "podman-compose"
+  become: true
