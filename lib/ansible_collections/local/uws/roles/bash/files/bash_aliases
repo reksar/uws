@@ -1,3 +1,17 @@
+# Download mp4 (1080p)
+alias dlv='yt-dlp \
+  -f "bestvideo[height<=1080]+bestaudio/best[height<=1080]" \
+  --merge-output-format mp4 \
+  -o "%(title)s.%(ext)s"'
+
+# Download mp3 (best quality)
+alias dla='yt-dlp \
+  -f bestaudio \
+  --extract-audio \
+  --audio-format mp3 \
+  --audio-quality 0 \
+  -o "%(title)s.%(ext)s"'
+
 alias services='systemctl list-units --type=service --all'
 alias ls='ls --color=auto --group-directories-first'
 alias ll='ls -lah --color=auto --group-directories-first'
