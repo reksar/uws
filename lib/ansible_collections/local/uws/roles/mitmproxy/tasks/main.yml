@@ -1,0 +1,12 @@
+- name: "/!/ mitmproxy"
+  package:
+    name: "mitmproxy"
+  become: true
+
+# For intercepting HTTPS requests.
+- name: "/>/ mitmproxy CA Cert"
+  copy:
+    src: "{{ ansible_env.HOME }}/.mitmproxy/mitmproxy-ca-cert.pem"
+    dest: "/etc/ca-certificates/trust-source/anchors/mitmproxy.crt"
+  become: true
+  notify: "Update CA Certs"

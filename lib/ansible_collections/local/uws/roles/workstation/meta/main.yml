@@ -7,3 +7,4 @@ dependencies:
   - role: "network"
   - role: "tmux"
   - role: "bluetooth"
+  - role: "mitmproxy"

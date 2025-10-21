@@ -1,0 +1,3 @@
+- name: "Update CA Certs"
+  shell: "trust extract-compat"
+  become: true
