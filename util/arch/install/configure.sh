@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-uws="$(cd "$(dirname "$BASH_SOURCE[0]")/../../.." && pwd)"
+uws="$(cd "$(dirname $(readlink -f "$BASH_SOURCE[0]"))/../../.." && pwd)"
 disk=${1#/dev/}
 notification_title="[Arch Setup]"
 

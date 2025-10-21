@@ -7,7 +7,7 @@
 # * closes LUKS encrypted containers
 
 
-uws="$(cd "$(dirname "$BASH_SOURCE[0]")/../.." && pwd)"
+uws="$(cd "$(dirname $(readlink -f "$BASH_SOURCE[0]"))/../.." && pwd)"
 notification_title="[RELEASEDISK]"
 . "$uws/lib/notifications.sh" || exit 1
 

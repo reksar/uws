@@ -1,6 +1,6 @@
 #!/bin/bash
 
-uws="$(cd "$(dirname "$BASH_SOURCE[0]")/../../.." && pwd)"
+uws="$(cd "$(dirname $(readlink -f "$BASH_SOURCE[0]"))/../../.." && pwd)"
 . "$uws/lib/test.sh"
 . "$uws/lib/uws/set.sh"
 

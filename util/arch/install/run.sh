@@ -1,7 +1,6 @@
 #!/bin/bash
 
-
-uws="$(cd "$(dirname "$BASH_SOURCE[0]")/../../.." && pwd)"
+uws="$(cd "$(dirname $(readlink -f "$BASH_SOURCE[0]"))/../../.." && pwd)"
 settings="$uws/util/arch/install/settings.sh"
 partition_maker="$uws/util/disk/system.sh"
 notification_title="[Arch Install]"

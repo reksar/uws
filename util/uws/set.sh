@@ -1,6 +1,6 @@
 #!/bin/bash
 
-uws="${uws:-$(cd "$(dirname $BASH_SOURCE[0])/../.." && pwd)}"
+uws="$(cd "$(dirname $(readlink -f "$BASH_SOURCE[0]"))/../.." && pwd)"
 
 . "$uws/lib/uws/ansible.sh"
 . "$uws/lib/uws/set.sh"

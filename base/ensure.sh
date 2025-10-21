@@ -1,6 +1,6 @@
 #!/bin/bash
 
-uws=${wus:-$(cd $(dirname $BASH_SOURCE[0]) && cd .. && pwd)}
+uws="$(cd "$(dirname $(readlink -f "$BASH_SOURCE[0]"))/.." && pwd)"
 
 [[ `type -t ERR` != "function" ]] && . "$uws/lib/log.sh"
 . "$uws/base/python/ensure.sh"

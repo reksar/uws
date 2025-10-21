@@ -7,7 +7,7 @@
 # See https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#Configuring_GRUB_2
 
 
-uws="$(cd "$(dirname "$BASH_SOURCE[0]")/.." && pwd)"
+uws="$(cd "$(dirname $(readlink -f "$BASH_SOURCE[0]"))/.." && pwd)"
 notification_title="[GRUB]"
 . "$uws/lib/notifications.sh"
 

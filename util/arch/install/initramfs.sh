@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-uws="$(cd "$(dirname "$BASH_SOURCE[0]")/../../.." && pwd)"
+uws="$(cd "$(dirname $(readlink -f "$BASH_SOURCE[0]"))/../../.." && pwd)"
 notification_title="[Arch initramfs]"
 
 . "$uws/lib/notifications.sh"

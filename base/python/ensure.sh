@@ -4,7 +4,7 @@
 # Must be included due to pyenv ensuring.
 
 
-uws=${uws:-$(cd $(dirname $BASH_SOURCE[0]) && cd .. && cd .. && pwd)}
+uws="$(cd "$(dirname $(readlink -f "$BASH_SOURCE[0]"))/../.." && pwd)"
 
 [[ `type -t ERR` != "function" ]] && . "$uws/lib/log.sh"
 [[ `type -t is_exe` != "function" ]] && . "$uws/lib/check.sh"
